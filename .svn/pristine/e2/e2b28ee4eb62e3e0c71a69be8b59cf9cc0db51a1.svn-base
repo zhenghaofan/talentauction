@@ -1,0 +1,258 @@
+package com.auction.company.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.stereotype.Service;
+
+import com.auction.common.dao.BaseDao;
+import com.auction.common.util.Util;
+import com.auction.company.dao.CompanyDao;
+import com.auction.company.service.CompanyService;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+@Service
+public class CompanyServiceImpl implements CompanyService{
+	
+	@Resource
+	private CompanyDao companyDao;
+	@Resource
+	private BaseDao baseDao;
+
+	@Override
+	public String addCompany(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(Util.isVerify(request.getParameter("companyName"), 1, 50, null)){
+				String userId = request.getSession().getAttribute("userId").toString();
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Map<String,Object> companyParams = new HashMap<String, Object>();
+				companyParams.put("companyId", Integer.parseInt(userId));
+				companyParams.put("name", request.getParameter("companyName"));
+				companyParams.put("creatTime", df.format(new Date()));
+	    		int num = companyDao.addCompany(companyParams);
+	    		if(num>0){
+	    			Map<String, Object> params = new HashMap<String, Object>();
+                    Map<String, Object> paramsMap = new HashMap<String, Object>();
+                    paramsMap.put("companyId", userId);
+                    params.put("tableName", "rigistration");
+                    params.put("trem", "userId='"+userId+"'");
+                    params.put("paramsMap", paramsMap);
+                    baseDao.baseUpdate(params);
+                    
+	    			request.getSession().setAttribute("companyId", userId);
+	    			
+	    			json.put("code", 200);
+		            json.put("message", "添加成功！");
+	    		}else{
+	    			json.put("code", 301);
+		            json.put("message", "添加失败！");
+	    		}
+			}else{
+				json.put("code", 302);
+	            json.put("message", "请输入公司名称！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+			json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getSameCompanyList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(request.getSession().getAttribute("email")!=null){
+				int num = request.getSession().getAttribute("email").toString().indexOf("@");
+				if(num>0){
+					//截取邮箱后缀
+					String emailSuffixes = request.getSession().getAttribute("email").toString().substring(num+1, request.getSession().getAttribute("email").toString().length());
+					List<Map<String, Object>> queryList = companyDao.getSameCompanyList(emailSuffixes);
+					json.put("queryList", queryList);
+					json.put("code", 200);
+		            json.put("message", "获取成功！");
+				}else{
+					json.put("code", 301);
+		            json.put("message", "邮箱无效！");
+				}
+			}else{
+				json.put("code", 302);
+	            json.put("message", "请重新登陆！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+			json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getCompanyInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		
+		String companyId = request.getParameter("companyId");
+		if((companyId==null || "".equals(companyId.trim())) && request.getSession().getAttribute("companyId")!=null){
+			companyId = request.getSession().getAttribute("companyId").toString();
+		}
+		try {
+			if(companyId!=null){
+				Map<String, Object> companyInfo = companyDao.getCompanyInfo(companyId);
+				if(companyInfo!=null && companyInfo.size()>0){
+					json.put("companyInfo", companyInfo);
+				}else{
+					json.put("companyInfo", "");
+				}
+				json.put("code",200);
+	            json.put("message", "获取成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "获取失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String saveCompanyInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			
+    		String companyId = request.getSession().getAttribute("companyId").toString();
+    		String userId = request.getSession().getAttribute("userId").toString();
+    		
+    		Map<String, Object> paramsMap = new HashMap<String, Object>();
+    		if(Util.isVerify(request.getParameter("name"), 1, 50, null)){
+    			paramsMap.put("name", request.getParameter("name"));
+    		}
+    		if(Util.isVerify(request.getParameter("nickName"), 1, 50, null)){
+    			paramsMap.put("nickName", request.getParameter("nickName"));
+    		}
+    		if(Util.isVerify(request.getParameter("province"), 0, 0, "[0-9]{0,9}")){
+    			paramsMap.put("province", request.getParameter("province"));
+    		}
+    		if(Util.isVerify(request.getParameter("city"), 0, 0, "[0-9]{0,9}")){
+    			paramsMap.put("city", request.getParameter("city"));
+    		}
+    		if(Util.isVerify(request.getParameter("area"), 0, 0, "[0-9]{0,6}")){
+    			paramsMap.put("area", request.getParameter("area"));
+    		}
+    		if(Util.isVerify(request.getParameter("size"), 0, 0, "[0-9]")){
+    			paramsMap.put("size", request.getParameter("size"));
+    		}
+    		if(Util.isVerify(request.getParameter("progress"), 0, 0, "[0-9]")){
+    			paramsMap.put("progress", request.getParameter("progress"));
+    		}
+    		
+			if(paramsMap!=null && paramsMap.size()==7){
+				
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("tableName", "company");
+				params.put("trem", "companyId='"+companyId+"'");
+				params.put("paramsMap", paramsMap);
+				int num = baseDao.baseUpdate(params);
+				if(num>0){
+					companyDao.isSaveUserInfo(userId);
+					request.getSession().setAttribute("isSaveUserInfo", 1);
+				}
+				json.put("code", 200);
+	            json.put("message", "更新成功");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "请填写完整信息！");
+			}
+        }catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+
+	@Override
+	public String updateCompanyInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+    		String companyId = request.getSession().getAttribute("companyId").toString();
+    		
+    		Map<String, Object> paramsMap = new HashMap<String, Object>();
+    		if(Util.isVerify(request.getParameter("name"), 1, 50, null)){
+    			paramsMap.put("name", request.getParameter("name"));
+    		}
+    		if(Util.isVerify(request.getParameter("nickName"), 1, 50, null)){
+    			paramsMap.put("nickName", request.getParameter("nickName"));
+    		}
+    		if(Util.isVerify(request.getParameter("province"), 0, 0, "[0-9]{0,9}")){
+    			paramsMap.put("province", request.getParameter("province"));
+    		}
+    		if(Util.isVerify(request.getParameter("city"), 0, 0, "[0-9]{0,9}")){
+    			paramsMap.put("city", request.getParameter("city"));
+    		}
+    		if(Util.isVerify(request.getParameter("area"), 0, 0, "[0-9]{0,6}")){
+    			paramsMap.put("area", request.getParameter("area"));
+    		}
+    		if(Util.isVerify(request.getParameter("size"), 0, 0, "[0-9]")){
+    			paramsMap.put("size", request.getParameter("size"));
+    		}
+    		if(Util.isVerify(request.getParameter("progress"), 0, 0, "[0-9]")){
+    			paramsMap.put("progress", request.getParameter("progress"));
+    		}
+    		if(Util.isVerify(request.getParameter("website"),0,0,"^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:.;]*[-a-zA-Z0-9+&@#/%=~_|]")){
+    			paramsMap.put("website", request.getParameter("website"));
+    		}
+    		if(Util.isVerify(request.getParameter("addr"), 1, 500, null)){
+    			paramsMap.put("addr", request.getParameter("addr"));
+    		}
+    		if(Util.isVerify(request.getParameter("welfare"), 1, 30, null)){
+    			paramsMap.put("welfare", request.getParameter("welfare"));
+    		}
+    		if(Util.isVerify(request.getParameter("companyIntro"), 1, 500, null)){
+    			paramsMap.put("companyIntro", request.getParameter("companyIntro"));
+    		}
+    		if(Util.isVerify(request.getParameter("logoName"), 0, 0, "[0-9a-zA-Z.]{0.50}")){
+    			paramsMap.put("logoName", request.getParameter("logoName"));
+    		}
+    		
+			if(paramsMap!=null && paramsMap.size()>0){
+				
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("tableName", "company");
+				params.put("trem", "companyId='"+companyId+"'");
+				params.put("paramsMap", paramsMap);
+				int num = baseDao.baseUpdate(params);
+				if(num>0){
+					json.put("code", 200);
+		            json.put("message", "更新成功！");
+				}else{
+					json.put("code", 302);
+		            json.put("message", "更新失败！");
+				}
+			}else{
+				json.put("code", 301);
+	            json.put("message", "请填写更新信息！");
+			}
+        }catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+}

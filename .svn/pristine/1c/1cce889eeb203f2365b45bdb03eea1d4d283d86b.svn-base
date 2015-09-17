@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/placedefault.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="css/placedefault.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/placedefault" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/placedefault-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl"></div> 
+		<div id="main" ng-controller="defaultCtrl">
+			 <div class="default-wrap" ng-init="getSpecialList()">
+	  			<div class="time-box">
+	  				<div class="time-con">还剩<i class="top-time-text" ng-bind="day">0</i>天<i class="time-text" ng-bind="hours">0</i>时<i class="time-text" ng-bind="min">0</i>分<i class="time-text" ng-bind="sec">0</i>秒结束</div>
+	  				<div class="clear"></div>
+	  			</div>
+	  			
+	  			<div class="place-box">
+	  				<div class="sidebar">
+	  					<div class="seleted-item box-shadow">
+	  						<div class="seleted-title">已选择</div>
+	  						<div class="seleted-con">
+	  							<ul>
+	  								<li ng-if="spcText"><span class="seleted-con-s" ng-bind-template="专场：{{spcText}}"></span></li>
+	  								<li ng-if="tmpArray[0].exp != '0'"><span class="seleted-con-s c-p" ng-click="clearExe('#exp')">经验：{{expText}}<i class="close_ico">X</i></span></li>
+	  								<li ng-if="tmpArray[1].city != 0"><span class="seleted-con-s c-p" ng-click="clearExe('#city')">城市：{{cityText}}<i class="close_ico">X</i></span></li>
+	  								<li ng-if="tmpArray[2].edu != 0"><span class="seleted-con-s c-p" ng-click="clearExe('#edu')">学历：{{eduText}}<i class="close_ico">X</i></span></li>
+	  							</ul>
+	  						</div>
+	  					</div>
+	  					
+	  					<div class="regular-list box-shadow">
+	  						<div id="exp" class="regular-item">
+	  							<div class="regular-title">
+	  								<span><img class="regular-img img-w12" src="/img/ico_skills.png">专场</span>
+	  							</div>
+	
+	  							<div class="regular-con">
+	  								<ul>
+	  									<li ng-repeat="item in skillsList" ng-class="{true: 'item-seleted'}[item.seleted]" 
+	  									ng-click="sltExe(item, $event, 'special')" ng-bind="item.name"></li>
+	  								</ul>
+	  							</div>
+	  						</div>
+	  						
+	  						<div id="exp" class="regular-item">
+	  							<div class="regular-title">
+	  								<span><img class="regular-img img-w14" src="/img/exp_ico.png">经验</span>
+	  							</div>
+	
+	  							<div class="regular-con">
+	  								<ul>
+	  									<li ng-repeat="item in jobYear" ng-class="{true: 'item-seleted'}[item.seleted]" 
+	  									ng-click="sltExe(item, $event, 'exp')" ng-bind="item.value"></li>
+	  								</ul>
+	  							</div>
+	  						</div>
+	
+	  						<div id="city" class="regular-item">
+	  							<div class="regular-title">
+	  								<span><img class="regular-img img-w12" src="/img/city_ico.png">城市</span>
+	  							</div>
+	
+	  							<div class="regular-con">
+	  								<ul>
+	  									<li ng-repeat="item in getHotCitys" ng-class="{true: 'item-seleted'}[item.seleted]"
+	  									 ng-click="sltExe(item, $event, 'city')" ng-bind="item.value"></li>
+	  								</ul>
+	  							</div>
+	  						</div>
+	
+	  						<div id="edu" class="regular-item">
+	  							<div class="regular-title">
+	  								<span><img class="regular-img img-w12" src="/img/edu_ico.png ">学历</span>
+	  							</div>
+	
+	  							<div class="regular-con">
+	  								<ul>
+	  									<li ng-repeat="item in education" ng-class="{true: 'item-seleted'}[item.seleted]" 
+	  									ng-click="sltExe(item, $event, 'edu')" ng-bind="item.value"></li>
+	  								</ul>
+	  							</div>
+	  						</div> 
+	  					</div>
+	  					
+	  					<div class="qrcode-box box-shadow">
+	  						<div class="qrcode-title">官方微信</div>
+	  						<div><img class="qrcode-img" src="/img/qrcode.jpg" /></div>
+	  						<div class="qrcode-tip" ng-if="status == 1">绑定账号随时查看候选人回复</div>
+	  						<div class="qrcode-tip" ng-if="status != 1">绑定账号随时获取面试邀请</div>
+	  					</div>
+	  					
+	  					<div class="warm-box box-shadow">
+	  						<div class="warm-title">温馨提示</div>
+	  						<div class="warm-con">
+	  							<span ng-if="status != 1">平均出价反映了公司对人才的估值，但人才的实际薪资还是要面试后才能确定，但浮动不会太大。</span>
+	  							<span ng-if="status == 1">
+	  								<div class="warm-item">1.&nbsp;出价拍卖表示您能够得到候选人的面试机会，而录用结果根据您的面试情况而定。</div>
+	  								<div class="warm-item">2.&nbsp;深广人才对流性强，目标工作地为候选人的首选， 并不代表唯一工作地选择。</div>
+	  							</span>
+	  						</div>
+	  					</div>
+	  					  					  					  					  				
+	  					<div class="hr-qq-box box-shadow" ng-if="user.status == 1">
+	  						<div>加入实力拍HR交流QQ群</div>
+	  						<div>和同行聊聊</div>
+	  						<div class="qq-text">345580895</div>
+	  					</div>
+	
+	  					<div class="hr-qq-box box-shadow" ng-if="user.status == 0">
+	  						<div>加入实力拍人才交流QQ群</div>
+	  						<div>和同行聊聊</div>
+	  						<div class="qq-text">338403574</div>
+	  					</div>
+	  				</div>
+	  				
+	  				<div class="container">
+	  					<div class="search-warp">
+	  						<div class="search-item">
+		  						<div id="drop_down" class="drop-down">
+		  							<span class="drop-btn">职位</span>
+									<ul id="drop_list" class="drop-list">
+			  							<li>职位</li>
+			  							<li>工作经历</li>
+			  							<li>项目经历</li>
+			  						</ul>	  						
+		  						</div>
+		  						<input type="text" maxlength="25" placeholder="请输入关键字">
+		  						<button class="search-btn" ng-click="search()">搜索</button>
+	  						</div>
+	  						<div class="search-item">
+	  							<div>
+	  								<span>热门职位：</span>
+	  								<span class="words-item" ng-repeat="item in wordsList" ng-bind="item"></span>
+	  							</div>
+	  						</div>
+	  					</div>
+	  					
+	  					<div class="box-shadow">
+		  					<div class="header">
+		  						<div>
+		  							<span class="title-item-list f-r" ng-if="queryBidPools.rowCount" ng-bind-template="共{{queryBidPools.rowCount}}份简历" style="cursor: auto;"></span>
+		  							<span class="title-item-list item-seleted" ng-click="sltExe(2, $event, 'sort')">本期拍卖 20人</span>
+		  							<span class="title-item-list" ng-click="sltExe(0, $event, 'sort')">上期拍卖 12人</span>
+		  							<!-- <span class="title-item-list" ng-click="sltExe(1, $event, 'sort')">价格从低到高</span> -->
+		  						</div>
+		  					</div>
+		  					
+		  					<div class="list-box">
+		  						<div class="list-con">
+	                  				<div class="list-con-item" ng-repeat="item in queryBidPools.bidPools" >
+	     								<span class="new-tips" ng-if="item.isShelves"></span>
+	     								<span class="oc-tips" ng-if="item.isOxcoder"></span>
+	     								<!-- <a ng-href="/cvlookdetail?userId={{item.userId}}"> -->
+	     								<div class="con-item-tips ">
+	     									<div><span class="team" ng-if="!!item.summary[0]" ng-bind="item.summary[0]" title="{{item.summary[0]}}" ng-class="{'1': 'team-m'}[item.sunmarylength]"></span></div>
+	     									<div><span class="experience" ng-if="!!item.summary[1]" ng-bind="item.summary[1]" title="{{item.summary[1]}}"></span></div>
+	     									<!-- <span class="title" ng-bind-template="{{item.summary[2]}}{{item.summary[2] ? ' ”' : ''}}"></span> -->
+	     								</div>
+	
+	     								<div class="con-item-title">
+	     									<div class="item-title-text">
+	     										<div class="item-title-box-l">
+	     											<a ng-href="/cvlookdetail?userId={{item.userId}}" target="_blank">
+	     												<!-- <span class="date" ng-bind="item.code + '号'"></span> -->
+	     												<span class="city" ng-bind="item.destination"></span>
+	     											</a>
+	     										</div>
+	     										<span class="name" ng-bind="item.jobTitle"></span>
+	     									</div>
+	     								</div>
+	
+	     								<div class="con-item-tip" ng-if="item.status == 0 || item.status == 1" ng-class="{1: 'com-bid-tip'}[item.status]"><span ng-bind="item.statusText" ></span></div>
+	     								<div class="con-item-avater">
+	     									<div class="squre-pay" ng-if="item.avgPrice != 0">{{item.avgPrice}}k</div>
+	     									<div class="squre-pay" ng-if="item.avgPrice == 0">暂无</div>
+	     									<div class="squre-text">平均出价</div>
+	     								</div>
+	
+	     								<div class="con-item-company">
+	     									<span class="experience"><em class="f-b">经验：</em>{{item.jobYear}} 年</span>
+	     									<span class="edu" ><em class="f-b">学历：</em>{{item.education}}</span>
+	     								</div>
+	     								<div class="con-item-bid">
+	     									<!-- <span class="max-price"><em class="f-b">最高月薪：</em>{{item.maxPrice}}元</span> -->
+	     									<span class="browse"><em class="f-b">浏览：</em>{{item.readCount}} 次</span>
+	     									<span class="bid-price"><em class="f-b">被拍：</em>{{item.num}} 次</span>						
+	     								</div>
+	
+	     								<div class="con-more-detial">
+	     									<div class="com-code-no">No.{{item.code}}</div>
+	     									<a ng-href="/cvlookdetail?userId={{item.userId}}" target="_blank" class="com-more-btn com-more-cbtn">查看简历</a>
+	     								</div>
+	     								<!-- </a> -->
+	                  				</div>
+	  							
+		  							<div class="list-con-filling" ng-if="!queryBidPools.bidPools || queryBidPools.bidPools.length == 0">
+     									<h1>暂无数据</h1>
+     								</div>
+		  						</div>
+	    						<div id="page-warp">
+	    							<div class="list-pager">
+	    								<span class="list-pager-btn" ng-if="pageIndex > 1" ng-click="turnPage($event, '-')">上一页</span>
+	    								<a class="list-pager-btn" ng-class="{true: 'slt'}[(pageIndex == item)]" ng-repeat="item in _pageCount" ng-bind="item" ng-click="turnPage($event, item)"></a>
+	    								<span class="list-pager-btn" ng-if="(pageIndex < totalPage) && totalPage" ng-click="turnPage($event, '+')">下一页</span>
+	    							</div>
+    							</div>
+		  					</div>
+		  					<div class="clear"></div>
+	  					</div>	  						  					
+	  				</div>
+	  			</div>	 	
+			 </div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

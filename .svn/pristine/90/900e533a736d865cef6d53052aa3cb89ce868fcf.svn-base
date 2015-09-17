@@ -1,0 +1,60 @@
+
+
+body {
+	background-color: #2d4e7b;
+}
+
+
+/* 用户选择*/
+.slt-wrap {
+	position: relative;
+}
+.slt-wrap .logo {
+	text-align: center;
+	padding: 50px 0 60px;
+}
+.slt-wrap .logo .ico {
+	width: 65%;
+	max-width: 280px;
+}
+
+.slt-jump {
+	width: 230px;
+	margin: 0 auto;
+}
+.slt-jump .item {
+	float: left;
+}
+.slt-jump .job {
+	margin-right: 30px;
+}
+.slt-jump .job .ico {
+	width: 100px;
+	height: 100px;
+	border-radius: 60px;
+	background: #fff url("../img/app_slt_user.png") no-repeat;
+	background-size: 180px;
+	background-position: 12px 10px;
+	display: block;
+}
+.slt-jump .comp {
+	
+}
+.slt-jump .comp .ico {
+	width: 100px;
+	height: 100px;
+	border-radius: 60px;
+	background: #fff url("../img/app_slt_user.png") no-repeat;
+	background-size: 180px;
+	background-position: -100px 10px;
+	display: block;
+}
+.slt-jump .text {
+	width: 100px;
+	color: #fff;
+	font-size: 1.4em;
+	text-align: center;
+	margin-top: 20px;
+	display: inline-block;
+}
+

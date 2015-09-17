@@ -1,0 +1,32 @@
+if (typeof define !== 'function') {
+	var define = require('amdefine')(module);
+}
+
+define(['app', '$'], function(app, $) {
+	app.factory('info', ['$q', '$http', function($q, $http){
+	
+	function getEdus() {
+		return [{
+			id: '0',
+			value: '其他'
+		},{
+			id: '1',
+			value: '大专'
+		},{
+			id: '2',
+			value: '本科'
+		},{
+			id: '3',
+			value: '硕士'
+		},{
+			id: '4',
+			value: '博士'
+		}];			
+	};
+
+	return {
+		getEdus : getEdus
+	};
+	
+	}]);
+});

@@ -1,0 +1,411 @@
+
+
+
+.invite-wrap {
+	width: 1024px;
+	color: #6B7485;
+	margin: 106px auto 100px;
+}
+.invite-item {
+	margin-bottom: 30px;
+}
+.fz-1 {
+	font-size: 16px;
+}
+.fz-2 {
+	font-size: 18px;
+}
+.fz-3 {
+	font-size: 16px;
+}
+.fc-1 {
+	color: #38b5e2;
+}
+.fc-2 {
+	color: #5b8dc8;
+}
+.fb {
+	font-weight: bold;
+}
+
+
+
+
+.title-wrap {
+	background: url("../img/bg-invite.jpg") no-repeat;
+	background-position: 50% 100%;
+}
+.invite-title {
+	width: 1024px;
+	padding: 40px 0 20px;
+	margin: 0 auto;
+}
+.invite-title > div {
+	margin-bottom: 10px;
+}
+
+
+.inp-wrap {
+	width: 1024px;
+	border-radius: 3px;
+	margin: 0 auto;
+	background: #F7F7FB;
+}
+.inp-wrap input {
+	width: 400px;
+	height: 42px;
+	text-indent: 12px;
+	border: 1px solid #F3F1F1;
+	border-radius: 3px;
+	display: inline-block;
+}
+.inp-wrap textarea {
+	width: 400px;
+	height: 80px;
+	resize: none;
+	text-indent: 12px;
+	padding-top: 6px;
+	border: 1px solid #F3F1F1;
+	border-radius: 3px;
+	display: inline-block;	
+}
+.inp-wrap .remarks {
+	font-size: 16px;
+	margin-right: 6px;
+}
+.inp-wrap .checked {
+	min-height: 25px;
+	text-align: left;
+}
+.inp-wrap .checked .invalid {
+	color: #FF1414;
+	line-height: 25px;
+	margin-left: 62px;
+	display: none;
+}
+
+/****** ��舵�������� ******/
+.inp-wrap .dot-wrap {
+	text-align: center;
+	padding: 30px 0 60px;
+}
+.dot-wrap .dot {
+	width: 20px;
+	height: 20px;
+	color: #fff;
+	line-height: 20px;
+	text-align: center;
+	border-radius: 50px;
+	margin: 0 auto 8px;
+	background: #D9DBE0;
+	display: inline-block;
+}
+.dot-wrap .dot.slt {
+	width: 24px;
+	height: 24px;
+	line-height: 24px;
+	background: #5b8dc8;
+}
+.dot-wrap .line {
+	width: 150px;
+	height: 8px;
+	background: #D9DBE0;
+	display: inline-block;
+}
+.dot-wrap label {
+	color: #D9DBE0
+}
+.dot-wrap label.slt {
+	color: #6B7485;
+}
+.dot-wrap label:first-child {
+	margin-right: 126px;
+}
+
+/****** ��宠�烽��璇� ******/
+.inp-wrap .step-1 {
+	width: 382px;
+	margin: 0 auto;
+	padding-bottom: 30px;
+}
+.step-1 input {
+	width: 320px;
+}
+.step-1 .step-1-item {
+	text-align: center;
+}
+.step-1 .tip {
+	margin-top: 20px;
+	margin-left: 42px;	
+}
+.step-1 .btn {
+	width: 80px;
+	height: 38px;
+	color: #fff;
+	letter-spacing: 5px;
+	border: none;
+	border-radius: 3px;
+	margin-left: 60px;
+	display: block;
+	background-color: #5b8dc8;
+	cursor: pointer;
+}
+.step-1 .btn:hover {
+	background-color: #4182c6;
+}
+
+/****** ���璇锋����� ******/
+.inp-wrap .step-2 {
+	width: 463px;
+	margin: 0 auto;
+	padding-bottom: 30px;
+}
+.step-2 .step-2-item {
+	text-align: center;
+}
+.step-2 .tip {
+	font-size: 14px;
+	margin: 25px 0 15px;
+}
+.step-2 .info {
+	font-size: 16px;
+	text-align: left;
+	margin: 15px 0;
+}
+.step-2 .info div {
+	margin-bottom: 30px;
+}
+.step-2 .code {
+	text-align: left;
+}
+.step-2 .code input {
+	width: 110px;
+}
+.step-2 .code .panel{
+	width: 100px;
+	color: #fff;
+	font-size: 20px;
+	text-align: center;
+	letter-spacing: 5px;
+	vertical-align: middle;
+	padding: 8px 0;
+	margin-left: 15px;
+	background: #ccc;
+	display: inline-block;
+	cursor: pointer;
+}
+.step-2 .cp {
+	margin-bottom: 50px;
+	margin-top: 22px;
+}
+.step-2 .cp input {
+	width: 341px; 
+}
+.step-2 .cp-btn {
+	width: 55px;
+	height: 40px;
+	color: #fff;
+	border: none;
+	border-radius: 3px;
+	background: #5b8dc8;
+	cursor: pointer;	
+}
+.step-2-item  > a {
+	width: 135px;
+	height: 40px;
+	color: #fff;
+	letter-spacing: 5px;
+	padding-left: 20px;
+	border: none;
+	border-radius: 3px;
+	margin-left: 157px;
+	display: block;
+	background: #F33141 url("../img/ico-invite-wb.png") no-repeat;
+	background-position: 12px 50%;
+	cursor: pointer;	
+}
+.step-2-item  > a > span{
+	line-height: 40px;
+}
+.step-2 .btn {
+	width: 100px;
+	height: 38px;
+	color: #fff;
+	letter-spacing: 5px;
+	border: none;
+	border-radius: 3px;
+	margin-left: 60px;
+	display: block;
+	background: #5b8dc8;
+	cursor: pointer;
+}
+.step-2 .btn:hover, .step-2 .cp-btn:hover {
+	background: #4182c6;
+}
+
+/****** ���璇峰��琛� ******/
+.list-wrap {
+	width: 1024px;
+	margin: 0 auto;
+	border-radius: 3px;
+	background: #F7F7FB;
+}
+.list-wrap .title {
+	height: 50px;
+	line-height: 50px;
+	padding-left: 50px;
+	border-bottom: 1px solid #ccc;
+}
+.list-box {
+	padding: 30px 50px;
+}
+.list-box .th {
+	margin-bottom: 15px;
+}
+.list-box .th span {
+	text-align: center;
+	font-weight: bold;
+	display: inline-block;
+}
+.list-box .th .name {
+	width: 100px;
+}
+.list-box .th .mail {
+	width: 350px;
+}
+.list-box .th .state {
+	width: 200px;
+}
+.list-box .th .time {
+	width: 200px;
+}
+.list-box .tr {
+	padding: 5px 0;
+	margin-bottom: 18px;
+	cursor: pointer;
+}
+.list-box .tr:hover {
+	background: #ccc;
+}
+.list-box .tr span {
+	text-align: center;
+	display: inline-block;
+}
+.list-box .tr .name {
+	width: 100px;
+}
+.list-box .tr .mail {
+	width: 350px;
+}
+.list-box .tr .state {
+	width: 200px;
+}
+.list-box .tr .time {
+	width: 200px;
+}
+
+
+/****** ���璇风�舵�� ******/
+.state-wrap {
+	font-size: 13px;
+	padding: 0 50px;
+	border-radius: 3px;
+	margin-bottom: 20px;
+	background: #fff;
+	display: none;
+}
+.state-wrap .text {
+	position: relative;
+	height: 40px;
+	line-height: 40px;
+}
+.state-wrap .text span {
+	position: absolute;
+	display: inline-block;
+}
+.state-wrap .text .step-1 {
+	left: 0;
+}
+.state-wrap .text .step-2 {
+	left: 165px;
+}
+.state-wrap .text .step-3 {
+	left: 378px;
+}
+.state-wrap .text .step-4 {
+	left: 576px;
+}
+.state-wrap .text .step-5 {
+	right: 0;
+}
+.state-wrap .rangle {
+  top: -16px;
+  left: -16px;  
+  width: 0;
+  height: 0;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-bottom: 16px solid #fff;
+}
+
+.state-wrap .line {
+	position: relative;
+	height: 3px;
+	background: #C4C8CE;
+}
+.state-wrap .dot {
+	position: absolute;
+  	top: -2.5px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50px;
+	background-color: #A2A8B3;
+	display: inline-block;
+}
+.state-wrap .dot.slt {
+	background-color: #5b8dc8;
+}
+.state-wrap .line .step-1 {
+	left: 0;
+}
+.state-wrap .line .step-2 {
+	left: 200px;
+}
+.state-wrap .line .step-3 {
+	left: 400px;
+}
+.state-wrap .line .step-4 {
+	left: 600px;
+}
+.state-wrap .line .step-5 {
+	right: 0;
+}
+
+.state-wrap .time {
+	position: relative;
+	height: 55px;
+	line-height: 40px;
+}
+.state-wrap .time span {
+	position: absolute;
+	width: 85px;
+	font-size: 13px;
+	line-height: 18px;
+	padding-top: 8px;
+	display: inline-block;
+}
+.state-wrap .time .step-1 {
+	left: 0;
+}
+.state-wrap .time .step-2 {
+	left: 147px;
+}
+.state-wrap .time .step-3 {
+	left: 347px;
+}
+.state-wrap .time .step-4 {
+	left: 547px;
+}
+.state-wrap .time .step-5 {
+	right: 0;
+}

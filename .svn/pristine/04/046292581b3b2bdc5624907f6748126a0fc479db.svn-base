@@ -1,0 +1,32 @@
+package com.auction.util;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+/** 
+ * @author tobber
+ * @version 2015年4月30日
+ */
+public class FileUtils {
+
+	 /**保存文件
+     * @param stream 文件流
+     * @param path
+     * @param filename
+     * @throws IOException
+     */
+    public void SaveFileFromInputStream(InputStream stream,String path,String filename) throws IOException
+    {      
+        FileOutputStream fs=new FileOutputStream( path + "/"+ filename);
+        byte[] buffer =new byte[1024*1024];
+        int byteread = 0; 
+        while ((byteread=stream.read(buffer))!=-1)
+        {
+           fs.write(buffer,0,byteread);
+           fs.flush();
+        } 
+        fs.close();
+        stream.close();      
+    }  
+}

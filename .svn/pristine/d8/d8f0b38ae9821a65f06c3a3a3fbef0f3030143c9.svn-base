@@ -1,0 +1,258 @@
+
+.viewport {
+    padding-top: 100px;
+    background-color: #ECEEF1;
+    overflow: hidden;
+}
+
+.account-wrap {
+	width: 750px;
+	color: #6B7485;
+	margin: 0 auto 80px;
+}
+.btn {
+	color: #fff;
+	text-align: center;
+	border: 0;
+	display: inline-table;
+	cursor: pointer;
+}
+.btn.btn-danger {
+	width: 100px;
+	height: 35px;
+	line-height: 35px;
+	background-color: #fd7d7d;
+}
+.btn.btn-danger:hover {
+	background-color: #f55a5a;
+}
+.btn.btn-disable {
+	background-color: #cbcfd3;
+}
+
+.fc-1 {
+	color: #71A8E0;
+}
+.fc-2 {
+	color: #0c9788;
+}
+.fc-3 {
+	color: #4182c5;
+}
+.fc-4 {
+	color: #d0d3d8;
+}
+.fz-1 {
+	font-size: 12px;
+}
+.fw-b {
+	font-weight: bold;
+}
+.title-ico {
+    vertical-align: middle;
+    background: url("../img/bg-ico.png") no-repeat;
+    display: inline-block;
+}
+.plus {
+	position: relative;
+}
+.no-data {
+	width: 180px;
+	height: 280px;
+	font-size: 18px;
+	line-height: 250px;
+	margin: 0 auto;
+	background: url("../img/ico_cry.png") no-repeat 0 75px;
+}
+
+
+
+.info-box {
+	margin-bottom: 20px;
+	background-color: #fff;
+}
+.info-box .title {
+    height: 50px;
+    font-size: 16px;
+    line-height: 50px;
+    padding: 0 20px;
+    border-bottom: 1px solid #eceef1;
+}
+.info-box .title-ico {
+    width: 18px;
+    height: 34px;
+    background-position: -3px -55px;
+}
+.info-box .info-con {
+	padding: 25px 35px;
+}
+.info-box .info-con .mgn-1 {
+	margin-right: 15px;
+}
+.info-box .btn-open {
+	color: #6B7485;
+	font-size: 12px;
+	padding: 2px 10px;
+	border: 1px solid #e0e1e4;
+	border-radius: 2px;
+	background-color: #f7f7f7;
+}
+.info-box .btn-open:hover {
+	background-color: #fff;
+}
+
+
+.record-box {
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	background-color: #fff;
+}
+.record-box .title {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 20px;
+    border-bottom: 1px solid #eceef1;
+}
+.record-box .record-table {
+	width: 700px;
+	height: 270px;
+	margin: 0 auto;	
+}
+.record-box .menu {
+    width: 82px;
+    text-align: center;
+    line-height: 14px;
+    border-right: 1px solid #eceef1;
+    display: inline-block;
+    cursor: pointer;
+}
+.record-box .menu:hover {
+	color: #70a7df;
+}
+.record-box .menu.slt {
+	color: #70a7df;
+}
+.record-box .menu:last-child {
+	border: 0;
+}
+.record-box .tr {
+    height: 45px;
+    line-height: 45px;
+    padding: 0 15px;
+    border-bottom: 1px solid #eceef1;
+}
+.record-box .tr.prenext {
+	font-size: 12px;
+	text-align: right;
+	border-bottom: 0;
+}
+.record-box .tr span {
+	text-align: center;
+	white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+	display: inline-block;
+}
+.record-box .time {
+	width: 160px;
+}
+.record-box .email {
+	width: 240px;
+}
+.record-box .count {
+	width: 130px;
+}
+.record-box .state {
+	width: 120px;
+}
+.record-box .pre,
+.record-box .next {
+	color: #70a7df;
+	cursor: pointer;
+}
+.record-box .pre:hover,
+.record-box .next:hover {
+	color: #70a7df;
+}
+.record-box .num {
+	margin: 0 5px;
+}
+
+
+
+.pay-box {
+	padding: 20px 40px 25px;
+	background-color: #fff;
+	display: none;
+}
+.pay-box .title {
+    height: 50px;
+    font-size: 14px;
+    line-height: 50px;
+}
+.pkg-box {
+	margin-bottom: 10px;
+}
+.pkg-box .pkg-item {
+	position: relative;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    padding: 0 18px;
+    margin-right: 10px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+    display: inline-block;
+    cursor: pointer;
+}
+.pkg-box .pkg-item.slt {
+	color: #4182c6;
+	border: 2px solid #4c98db;
+	
+}
+.pkg-box .pkg-item.slt:after {
+	content: '';
+	position: absolute;
+	top: 11px;
+	right: -1px;
+	width: 25px;
+	height: 25px;
+	background: url("../img/bg-ico.png") no-repeat;
+    background-position: -250px -247px;
+    display: inline-block;
+}
+.info-text span {
+	height: 35px;
+	line-height: 35px;
+	display: block;
+}
+.btn-group {
+	margin: 20px 0 50px;
+}
+.btn-group .btn-pay {
+    width: 100px;
+    height: 32px;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 2px;
+    line-height: 32px;
+    background-color: #70a7df;
+}
+.btn-group .btn-pay:hover {
+    background-color: #4182c6;
+}
+.tip-wrap {
+	padding-top: 20px;
+	border-top: 1px solid #eceef1;
+}
+.tip-wrap span {
+	min-height: 22px;
+	line-height: 22px;
+	display: block;
+}
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

@@ -1,0 +1,69 @@
+package com.auction.common.service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/** 
+ * @author tobber
+ * @version 2015年4月15日
+ */
+
+public interface UserService {  
+	
+	/**
+     * 用户注册
+     * @param request
+     * @return
+     */
+    public String userRegister(HttpServletRequest request,HttpServletResponse response); 
+    
+    /**
+     * 邮箱验证（判断邮箱是否已存在）
+     * @param request
+     * @return
+     */
+    public String emailVerify(HttpServletRequest request,HttpServletResponse response);
+    
+    /**
+     * 用户登录
+     * @param request
+     * @return
+     */
+    public String userLogin(HttpServletRequest request,HttpServletResponse response);
+    
+    /**
+     * 用户修改邮箱
+     * @param request
+     * @return
+     */
+    public String editEmail(HttpServletRequest request,HttpServletResponse response);
+    
+    /**
+     * 修改密码
+     * @param request
+     * @return
+     */
+    public String editPassword(HttpServletRequest request);
+    
+    /**
+     * 获取企业联系人信息
+     * @param request
+     * @return
+     */
+    public String getContacts(HttpServletRequest request);
+    
+    /**
+     * 更改企业联系人
+     * @param request
+     * @return
+     */
+    public String updateContacts(HttpServletRequest request);
+    
+    /**
+     * 重置密码（密码找回）
+     * @param request
+     * @return
+     */
+    public String resetPwd(HttpServletRequest request);
+}
+

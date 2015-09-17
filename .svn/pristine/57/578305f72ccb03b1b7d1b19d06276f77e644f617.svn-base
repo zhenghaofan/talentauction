@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE configuration  
+  PUBLIC "-//mybatis.org//DTDConfig 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">  
+  
+<!-- mybatis的数据类型和处理器等等...都可以实现接口重写，然后配置  -->  
+<configuration>  
+    <mappers>  
+    <!--映射文件-->  
+       <mapper resource="/com/auction/common/model/mapper/user.xml"/> 
+       <mapper resource="/com/auction/common/model/mapper/common.xml"/>
+       <mapper resource="/com/auction/common/model/mapper/invite.xml"/> 
+       <mapper resource="/com/auction/common/model/mapper/base.xml"/> 
+       <mapper resource="/com/auction/common/model/mapper/bidme.xml"/>
+       <mapper resource="/com/auction/resume/model/mapper/resume.xml"/> 
+       <mapper resource="/com/auction/resume/model/mapper/cvmake.xml"/>
+       <mapper resource="/com/auction/company/model/mapper/company.xml"/>
+       <mapper resource="/com/auction/wechat/model/mapper/wechat.xml"/>
+    </mappers>  
+</configuration> 

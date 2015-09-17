@@ -1,0 +1,111 @@
+
+
+body {
+	background-color: #e2e2e2;
+}
+
+
+/* 用户登录*/
+.skill-wrap {
+	position: relative;
+}
+.skill-wrap .inp-item {
+	width: 265px;
+	margin: 0 auto;
+}
+.top-bar {
+	height: 50px;
+	color: #fff;
+	font-size: 1.3em;
+	line-height: 50px;
+	text-align: center;
+	background-color: #2d4e7b;
+}
+.top-bar .bar-back {
+	float: left;
+	height: 50px;
+}
+.top-bar .back-ico {
+	width: 15px;
+	padding: 12px 10px 0 15px;
+}
+.top-bar .bar-title {
+	margin-left: -40px;
+}
+
+.sign-form .tip {
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	background-color: #e2e2e2;
+}
+.sign-form .tip .text {
+	color: #b2b2b2;
+	font-size: 1.1em;
+}
+.sign-form .tip .skill-text {
+	color: #fff;
+	padding: 6px 8px;
+	border-radius: 2px;
+	margin-left: 10px;
+	background-color: #3a89ce;
+}
+.sign-form .tip .skill-text:first-child {
+	margin-left: 0;
+}
+.sign-form .tip .skill-text:after {
+	content: 'x';
+	margin-left: 6px;
+}
+.skill-box ul li {
+	color: #666;
+	font-size: 1.2em;
+	padding: 11px 20px;
+	border-bottom: 1px solid #e5e5e5;
+	display: none;
+	cursor: pointer;
+}
+.skill-box .skill-item {
+	background-color: #fff;
+}
+.skill-box .skill-title {
+	display: block;
+}
+.skill-box ul li.slt {
+	color: #3a89ce;
+}
+.angle {
+	float: right;
+	width: 8px;
+	height: 8px;
+	border-top: 2px solid #666;
+	border-left: 2px solid #666;
+	margin-top: 8px;
+	display: inline-block;
+	transform:rotate(45deg);
+	-ms-transform:rotate(45deg);
+	-moz-transform:rotate(45deg);
+	-webkit-transform:rotate(45deg);
+	-o-transform:rotate(45deg); 
+}
+.angle.down {
+	margin-top: 2px;
+	transform:rotate(-136deg);
+	-ms-transform:rotate(-136deg);
+	-moz-transform:rotate(-136deg);
+	-webkit-transform:rotate(-136deg);
+	-o-transform:rotate(-136deg);
+}
+.hook {
+	float: right;
+	width: 10px;
+	height: 18px;
+	border-top: 2px solid #3a89ce;
+	border-left: 2px solid #3a89ce;
+	display: none;
+	transform:rotate(-136deg);
+	-ms-transform:rotate(-136deg);
+	-moz-transform:rotate(-136deg);
+	-webkit-transform:rotate(-136deg);
+	-o-transform:rotate(-136deg); 	
+}

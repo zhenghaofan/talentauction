@@ -1,0 +1,263 @@
+
+body {
+	background-color: #fff;
+}
+html, body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+h1, h2, h3, h4, h5 {
+    font-weight: normal;
+}
+
+
+.plus-wrap {
+	color: #6B7485;
+	margin: 46px 0 50px;
+    overflow: hidden;
+}
+.btn {
+	color: #fff;
+	text-align: center;
+	border: 0;
+	display: inline-table;
+	cursor: pointer;
+}
+.btn.btn-open {
+	width: 200px;
+	height: 50px;
+	color: white;
+	font-size: 20px;
+	line-height: 50px;
+	background-color: #48bde7;
+	/* background-color: #939495; */
+}
+.btn.btn-open:hover {
+	background-color: #61cdf4;
+	/* background-color: #939495; */
+}
+.btn.btn-danger {
+	width: 100px;
+	height: 35px;
+	line-height: 35px;
+	background-color: #fd7d7d;
+}
+.btn.btn-danger:hover {
+	background-color: #f55a5a;
+}
+.btn.btn-disable {
+	background-color: #cbcfd3;
+}
+
+.fc-1 {
+	color: #71A8E0;
+}
+.fc-2 {
+	color: #0c9788;
+}
+.fc-3 {
+	color: #4182c5;
+}
+.fc-4 {
+	color: #d0d3d8;
+}
+.fz-1 {
+	font-size: 12px;
+}
+.plus {
+	position: relative;
+}
+
+
+.seats {
+    height: 400px；
+    margin: 0 -9999px;
+    background: #f6f4f0 url(../img/banner_sec01.jpg) center top no-repeat;
+}
+.seats-dot {
+	height: 399px;
+	background: url(../img/bg_seats_dot.png);
+}
+.seats-con {
+    width: 800px;
+    margin: 0 auto;
+}
+.seats-con .text {
+	position: relative;	
+	color: #fff;
+	font-size: 48px;
+    text-align: center;
+    padding-top: 100px;
+    margin-bottom: 50px;
+}
+.seats-con .plus {
+	top: -30px;
+	font-size: 30px;
+}
+.seats-con .btn-group {
+	text-align: center;
+}
+
+.plus-box {
+	width: 800px;
+	margin: 0 auto;
+}
+.plus-box .title {
+	height: 110px;
+    line-height: 160px;
+	font-size: 24px;
+	text-align: center;
+	border-bottom: 1px solid #ccc;
+}
+.plus-box .title .plus {
+	top: -20px;
+	font-size: 20px;
+}
+
+.intro .tip {
+	text-align: center;
+	margin-top: 45px;
+	margin-bottom: 30px;
+}
+.intro .tip .plus {
+	top: -12px;
+	font-size: 12px;
+}
+.intro .tip h3 {
+	margin-bottom: 10px;
+}
+.intro .intro-con {
+	text-align: center;
+}
+
+.spulist {
+	text-align: center;
+	padding-top: 50px;
+	margin-bottom: 50px;
+}
+.spu-tr {
+	margin-bottom: 40px;
+}
+.spu-item {
+	margin-right: 50px;
+	display: inline-block;
+}
+.spu-box {
+	width: 220px;
+	height: 120px;
+	color: #fff;
+	text-align: center;
+	padding-top: 30px;
+	background-color: #48bde7;
+}
+.spu-item:last-child {
+	margin-right: 0;
+}
+.spu-item span {
+	display: block;
+}
+.spu-item .price {
+	font-size: 36px;
+}
+.spu-item .count {
+	font-size: 14px;
+	margin-top: 25px;
+}
+.spulist .btn-group {
+    height: 120px;
+    border: 1px solid #e6e9ec;
+    border-top: 0;
+}
+.spulist .btn.btn-pay {
+	width: 140px;
+	height: 35px;
+	color: #fff;
+	font-size: 14px;
+	line-height: 35px;
+	margin-top: 50px;
+	background-color: #48bde7;
+}
+.spulist .btn.btn-pay:hover{
+	background-color: #61cdf4;
+}
+
+
+.contact {
+	text-align: center;
+}
+.contact span {
+	color: rgba(252, 118, 92, .8);
+}
+.seats-font{
+    font-size: 30px;
+}
+.spu-list{
+	width: 33.3333%;
+    float: left;
+}
+.clear{
+    clear: both;
+    margin-bottom: 40px;
+}
+
+.pay-modal .modal-dialog{
+	position: absolute;
+    top: 36%;
+    left: 38%;
+    margin: 0 auto;
+}
+.pay-modal .modal-content{
+    width: 473px;
+    padding: 15px;
+}
+.paying{
+	padding: 25px 10px 25px 27px;
+}
+.paying img{
+	display: block;
+	margin: 0 auto;
+}
+.paying-btn{
+    margin-top: 20px;
+    
+}
+.paying .modal-body{
+    padding: 15px 15px;
+}
+.modal-body p{
+	line-height: 1.8
+}
+.btn1{
+	padding: 9px 21px;
+    background: url("../img/ico_user_btn1.png") no-repeat -33px -323px;
+    border: 1px solid transparent;
+    border-radius: 1px;
+    text-shadow: -1px -1px 0px #3195b9;
+    color: #fff;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.btn1:hover {
+    background-position: -203px -323px;
+}
+.btn2{
+    padding: 9px 25px;
+    background: url("../img/ico_user_btn1.png") no-repeat -25px -226px;
+    border: 1px solid transparent;
+    border-radius: 1px;
+    color: #888;
+    text-shadow: -1px -1px 2px #F8F8F8;
+    margin-left: 108px;
+    cursor: pointer;
+}
+.btn2:hover {
+	background-position: -136px -228px;
+}
+
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

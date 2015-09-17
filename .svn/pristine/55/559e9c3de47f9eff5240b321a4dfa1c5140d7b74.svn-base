@@ -1,0 +1,193 @@
+
+
+.result-wrap {
+	width: 1024px;
+  	color: #6B7485;
+  	margin: 130px auto 100px;
+  	overflow: hidden;
+}
+.result-title {
+	text-align: center;
+	padding: 25px 40px;
+	border-radius: 3px;
+	background: #fff;
+}
+.result-body {
+	margin-top: 30px;
+}
+.result-title span {
+	font-size: 20px !important;
+	line-height: 36px;
+}
+
+
+/****** 左侧栏******/
+.box-l {
+	float: left;
+	width: 720px;
+	border-radius: 3px;
+	margin-bottom: 30px;
+	overflow: hidden;
+}
+/****** 左侧二维码******/
+.box-l .qrcode {
+	text-align: center;
+	padding: 30px 0 40px;
+	background: #fff;
+}
+.box-l .qrcode span {
+	font-size: 16px;
+	display: block;
+}
+
+/****** 简历信息******/
+.box-l .l-item {
+	color: #6B7485;
+	border-bottom: 1px dashed #D1D2D7;
+	background-color: #fff;
+}
+.box-l .l-item:last-child {
+	border-bottom: 0;
+}
+.box-l .item-title {
+	height: 60px;
+	font-size: 20px;
+	line-height: 70px;
+	padding-left: 40px;
+}
+.box-l .item-con {
+	font-size: 16px;
+	line-height: 30px;
+	padding: 10px 40px 30px;
+}
+.box-l .item-img {
+	width: 20px;
+	margin-bottom: -1px;
+}
+.box-l .l-item a {
+	color: #3fa9f5;
+}
+.box-l .l-item .fb {
+	font-weight: bold;
+}
+.box-l .l-item .mgn-1 {
+	margin: 0 5px;
+}
+.box-l .l-item .mgn-2 {
+  margin-right: 10px;
+}
+.box-l .l-item .img-1 {
+	width: 25px;
+	margin-right: -3px;
+}
+/****** 基本信息******/
+.box-l .info-box {
+	font-size: 16px;
+	padding: 30px 40px;
+}
+.box-l .info-box .name {
+	color: #3fa9f5;
+	font-size: 20px;
+}
+.box-l .info-box ul li {
+	line-height: 30px;
+}
+
+
+/****** 右侧栏******/
+.box-r {
+	float: right;
+	width: 275px;
+	color: #6B7485;
+	margin-right: 2px;
+}
+/****** 求职意向******/
+.box-r .itt-box {
+	min-height: 251px;
+	border-radius: 5px;
+	background: #fff;
+}
+.box-r .itt-title {
+	height: 60px;
+	font-size: 18px;
+	line-height: 60px;
+	padding: 0 20px 0 45px;
+	border-bottom: 1px solid #ccc;
+	background: url("../img/ico_tips.png") no-repeat 20px 50%;
+}
+.box-r .itt-title img {
+	float: right;
+	margin-top: 20px;
+	cursor: pointer;
+}
+.box-r .itt-con {
+	padding: 20px 25px;
+}
+.box-r .itt-con span {
+	font-size: 16px;
+	line-height: 30px;
+	display: block;
+}
+/****** 操作简历******/
+.box-r .opt-box {
+	margin-top: 30px;
+	border-radius: 5px;
+	background: #fff;
+	overflow: hidden;
+}
+.box-r .opt-box div {
+	float: left;
+	width: 137.5px;
+	height: 71px;
+	font-size: 16px;
+	text-align: center;
+	cursor: pointer;
+}
+.box-r .opt-box span {
+  margin-top: 40px;
+  display: block;
+}
+.box-r .opt-box .bg-l-1:hover {
+	color: #fff;
+	background: #75A9E2 url("../img/ico_dl_3.png") no-repeat 50% 16px;
+}
+.box-r .opt-box .bg-l-1 {
+	border-right: 1px solid #ccc;
+	background: url("../img/ico_dl_1.png") no-repeat 50% 16px;
+	background-size: 20px;
+}
+.box-r .opt-box .bg-l-2 {
+	color: #ccc;
+	background: url("../img/ico_dl_2.png") no-repeat 50% 16px;
+}
+.box-r .opt-box .bg-r-1:hover {
+	color: #fff;
+	background: #75A9E2 url("../img/ico_up_3.png") no-repeat 50% 16px;
+}
+.box-r .opt-box .bg-r-1 {
+	background: url("../img/ico_up_1.png") no-repeat 50% 16px;
+	background-size: 24px 20px;
+}
+.box-r .opt-box .bg-r-2 {
+	color: #ccc;
+	background: url("../img/ico_up_2.png") no-repeat 50% 16px;
+}
+/****** 右侧二维码******/
+.box-r .code {
+	height: 326px;
+	font-size: 16px;
+	text-align: center;
+	padding: 15px 0 10px;
+	margin-top: 30px;
+	border-radius: 5px;
+	background: #fff;
+}
+.box-r .code img {
+	width: 100%;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

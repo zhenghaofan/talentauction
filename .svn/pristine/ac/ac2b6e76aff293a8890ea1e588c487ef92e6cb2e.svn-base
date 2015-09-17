@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>公司主页</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/compdefault.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<script src="../js/mobile/uiservice.js"></script>
+	<script src="../js/mobile/compdefault.js"></script>
+</head>
+<body>
+	<div class="viewport">
+		<div class="comp-wrap">
+			<div class="info-item-title">
+				<span></span>
+			</div>
+			
+			<div class="info-base-warp">
+				<div class="context">
+					<div>
+						<span class="scale"></span>
+						<span class="cityName"></span>
+						<span class="trade"></span>
+						<span class="funds"></span>					
+					</div>
+					<div>
+						<span class="website"></span>
+						<span class="addr"></span>
+					</div>
+					<div class="benefit_list"></div>
+				</div>
+			</div>
+			
+			<div class="info-detail-warp">
+				<div class="title">
+					<span>公司产品</span>
+				</div>
+				<div class="products context"></div>
+			</div>
+			
+			<div class="info-detail-warp">
+				<div class="title">
+					<span>公司介绍</span>
+				</div>
+				<div class="companyIntro context">
+					<div class="mar_b10"><p></p></div>
+				</div>
+			</div>
+			
+			<div class="info-detail-warp">
+				<div class="title">
+					<span>创始团队</span>
+				</div>
+				<div class="founder context"></div>
+			</div>
+			
+			<div class="info-detail-warp">
+				<div class="title">
+					<span>人才需求</span>
+				</div>
+				<div class="demand context"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

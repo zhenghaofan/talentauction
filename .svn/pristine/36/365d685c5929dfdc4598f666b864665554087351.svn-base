@@ -1,0 +1,47 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('listCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$('.viewport').show();
+		
+//		user.getCompanyList()
+//		.then(function(data) {
+//			$scope.dataList = _formateData(data.companyList);
+//		}, function(err) {
+//			console.error(err.message);
+//		});
+		
+		$scope.getList = function() {
+            $q.when($http.post('/user/resetPwd', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.compList = _formateData(data.companyList);
+            }, function(err) {
+            	console.error('resetPwd', err);
+            });			
+		};
+	
+		function _formateData(data) {
+			var sizeList = info.getCompanyScale();
+			var progressList = info.getCompanyProgress();
+			var sizeText, progressText;
+			
+			for( var i = 0, len = data.length; i < len; i++ ) {
+				sizeText = sizeList[Number(data[i].size)].value;
+				progressText = progressList[Number(data[i].progress)].value;
+				data[i].sizeText = sizeText;
+				data[i].progressText = progressText;
+			}
+			
+			return data;
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

@@ -1,0 +1,53 @@
+package com.auction.common.xssFilter;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimerTask;
+import javax.annotation.Resource;
+import com.auction.common.dao.CommonDao;
+
+/** 
+ * @author tobber
+ * @version 2015年6月9日
+ * 定时器：候选人拍卖数据3天不回复，系统自动拒绝操作
+ */
+
+public class TimerTaskBid extends TimerTask{
+	@Resource 
+	private CommonDao commonDao;
+	
+	@Override
+	public void run() {
+		try {
+			List<Map<String, Object>> bidLogsList = commonDao.getBidLogsList();
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			long nowTime = System.currentTimeMillis();
+			String time = df.format(new Date());
+			List<Integer> paramsList = new ArrayList<Integer>();
+			if(bidLogsList!=null && bidLogsList.size()>0){ //df.parse(updateTime).getTime();
+				for (int i = 0; i < bidLogsList.size(); i++) {
+					long bidTime = df.parse(bidLogsList.get(i).get("bidTime").toString()).getTime();
+					if(nowTime-bidTime>3*24*60*601000){
+						paramsList.add(Integer.parseInt(bidLogsList.get(i).get("bidTime").toString()));
+					}
+				}
+				if(paramsList.size()>0){
+					Map<String, Object> paramsMap = new HashMap<String, Object>();
+					paramsMap.put("isReplyTime", time);
+					paramsMap.put("isReply", 2);
+					paramsMap.put("rejectReason", "非常感谢贵公司的青睐，但由于个人原因，我不能接受您的邀请，希望以后有机会合作。");
+					paramsMap.put("paramsList", paramsList);
+					commonDao.batchUpdateBidLogs(paramsMap);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+}

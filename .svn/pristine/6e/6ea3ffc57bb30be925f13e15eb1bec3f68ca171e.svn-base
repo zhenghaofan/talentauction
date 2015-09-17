@@ -1,0 +1,44 @@
+package com.auction.company.service;
+
+import javax.servlet.http.HttpServletRequest;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+public interface CompanyService {
+	/**
+     * 添加公司
+     * @param request
+     * @return
+     */
+    public String addCompany(HttpServletRequest request); 
+    
+    /**
+     * 获取同邮箱后缀公司列表
+     * @param request
+     * @return
+     */
+    public String getSameCompanyList(HttpServletRequest request);
+    
+    /**
+     * 获取公司基本信息
+     * @param request
+     * @return
+     */
+    public String getCompanyInfo(HttpServletRequest request);
+    
+    /**
+     * 保存公司基本信息
+     * @param request
+     * @return
+     */
+    public String saveCompanyInfo(HttpServletRequest request);
+    
+    /**
+     * 更新公司基本信息
+     * @param request
+     * @return
+     */
+    public String updateCompanyInfo(HttpServletRequest request);
+}

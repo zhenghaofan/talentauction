@@ -1,0 +1,72 @@
+package com.auction.company.web;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.auction.company.service.FeesService;
+import com.auction.util.Util;
+
+/** 
+ * @author tobber
+ * @version 2015年7月28日
+ */
+@Controller
+@RequestMapping(value="fees")
+public class FeesController {
+	@Resource
+	private FeesService feesService;
+	
+	@RequestMapping(value = "getResumePools")//获取简历池信息
+	@ResponseBody
+	public void getResumePools(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.feesService.getResumePools(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getUserResume")//查看简历详情
+	@ResponseBody
+	public void getUserResume(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.feesService.getUserResume(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "interviewInvite")//面试邀请
+	@ResponseBody
+	public void interviewInvite(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.feesService.interviewInvite(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getInviteLogs")//获取企业拍卖纪录
+	@ResponseBody
+	public void getInviteLogs(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.feesService.getInviteLogs(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getInviteDetail")//拍卖纪录获取详情
+	@ResponseBody
+	public void getInviteDetail(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.feesService.getInviteDetail(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getDebitLogs")//获取扣款纪录
+	@ResponseBody
+	public void getDebitLogs(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.feesService.getDebitLogs(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "alipayapi")//支付宝对接
+	@ResponseBody
+	public void alipayapi(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.feesService.alipayapi(request);
+        new Util().responesWriter(response,result);
+	}
+}

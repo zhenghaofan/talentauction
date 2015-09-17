@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/signup.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<script src="../js/mobile/uiservice.js"></script>
+	<script src="../js/mobile/signup.js"></script>
+</head>
+<body>
+	<div class="viewport">
+		<div class="top-bar">
+			<i class="bar-back"><img class="back-ico" src="../css/img/app_back.png"></i>
+			<span class="bar-title">注册</span>
+			<div class="clear"></div>
+		</div>
+		<div class="sign-wrap">
+			<div class="sign-form">
+				<div class="inp-item">
+					<input type="text" id="email" maxlength="50" placeholder="邮箱"/>
+				</div>
+				<div class="inp-item">
+					<input type="password" id="pwd" maxlength="16" placeholder="密码"/>
+					<span class=""></span>
+				</div>
+				<div class="inp-item mgn-1 job">
+					<input type="text" id="skill" maxlength="30" readonly="true" placeholder="专业技能"/>
+					<span class="angle"></span>
+				</div>
+				<div class="inp-item mgn-1 job">
+					<input type="text" id="city" maxlength="30" readonly="true" placeholder="目标城市"/>
+					<span class="angle"></span>
+				</div>
+				<div class="inp-item comp">
+					<input type="text" id="name" maxlength="15" placeholder="联系人姓名"/>
+				</div>
+				<div class="inp-item comp">
+					<input type="text" id="title" maxlength="15" placeholder="职位"/>
+				</div>
+				<div class="inp-item mgn-2">
+					<input type="text" id="phone" maxlength="11" placeholder="手机号"/>
+					<span class="send-btn">获取验证码</span>
+				</div>
+				<div class="inp-item">
+					<input type="text" id="code" maxlength="6" placeholder="短信验证码"/>
+				</div>
+			</div>
+			
+			<div class="btn-group">
+				<span class="btn" id="submit">注册</span>
+			</div>
+		</div>
+		
+		<div class="tip-wrap">
+			<div class="text">
+				<p id="tip_text"></p>
+			</div>
+			<div class="logo">
+				<img class="ico" src="../css/img/app_slp_bg.png"/>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

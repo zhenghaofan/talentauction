@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>全局变量配置文件</comment>
+<!-- cookie 最大超时时间 -->
+<entry key="MAX_COOKIE">360000000</entry>
+
+<!-- 邮件配置 -->
+<!-- <entry key="MAIL_HOST">smtp.qq.com</entry> -->
+<entry key="MAIL_HOST">smtp.ym.163.com</entry>
+<entry key="MAIL_USERNAME">shilipai1@shilipai.net</entry>
+<entry key="MAIL_PASSWORD">123456/</entry>
+<entry key="MAIL_SENDADDRESS">shilipai1@shilipai.net</entry>
+
+<!-- 用户激活 -->
+<entry key="MAIL_URL">http://localhost:8080/talents/emailActivation</entry>
+<!-- 密码找回 -->
+<entry key="PWD_RETRIEVE_URL">http://localhost:8080/base/upwd</entry>
+
+<entry key="SERVICE_URL">http://www.shilipai.net</entry>
+
+<!-- 临时图片保存路径 -->
+<entry key="UPLOAD_TEMPORARY_URL">/Users/tobber/Desktop/upload/temporary/</entry>
+
+<!-- 简历上传 保存路径 -->
+<entry key="UPLOAD_URL">/Users/tobber/Desktop/upload/resume/</entry>
+<!-- 公司logo上传路经 -->
+<entry key="UPLOAD_COMPANY_LOGO_URL">/Users/tobber/Desktop/upload/company/companyLogo/</entry>
+<!-- 公司产品logo上传路径 -->
+<entry key="UPLOAD_PRODUCTS_LOGO_URL">/Users/tobber/Desktop/upload/company/productsLogo/</entry>
+<!-- 公司创始人头像上传路径 -->
+<entry key="UPLOAD_FOUNDER_LOGO_URL">/Users/tobber/Desktop/upload/company/founderLogo/</entry>
+<!-- 公司环境上传路径 -->
+<entry key="UPLOAD_ENVIRONMENT_LOGO_URL">/Users/tobber/Desktop/upload/company/environment/</entry>
+
+<!-- 公司图片路径 -->
+<entry key="UPLOAD_COMPANY_URL">/Users/tobber/Desktop/upload/company/</entry>
+<!-- 候选人图片路径 -->
+<entry key="UPLOAD_USER_URL">/Users/tobber/Desktop/upload/user/</entry>
+
+<!-- UI设计，产品原始图片保存路经 -->
+<entry key="UPLOAD_USER_ORIGINAL_URL">/Users/tobber/Desktop/upload/user/original/</entry>
+<!-- UI设计，产品压缩图片保存路经 -->
+<entry key="UPLOAD_USER_COMPRESSION_URL">/Users/tobber/Desktop/upload/user/compression/</entry>
+
+<!-- 朋友推荐URL -->
+<entry key="INVITE_URL">http://localhost:8080/base/</entry>
+
+<!-- 微信APPID  -->
+<entry key="WECHAT_APPID">wx6081b92be56b4b77</entry>
+<!-- 微信APPSECRET -->
+<entry key="WECHAT_APPSECRET">ace7b200e8e6acf77b19539d1192a2e4</entry>
+<!-- 拍卖天数 -->
+<entry key="BID_DAY">14</entry>
+
+</properties>

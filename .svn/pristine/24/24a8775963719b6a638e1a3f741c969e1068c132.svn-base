@@ -1,0 +1,165 @@
+package com.auction.common.web;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.json.JSONObject;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import com.auction.common.dao.BaseDao;
+import com.auction.common.dao.UserDao;
+import com.auction.util.MD5Util;
+import com.auction.util.SendCloudThread;
+import com.auction.util.SysConfig;
+import com.auction.util.Util;
+
+/** 
+ * @author tobber
+ * @version 2015年4月15日
+ */
+@Controller
+@RequestMapping(value = "talents")
+public class SendEmail {
+
+	@Resource  
+    private UserDao userDao;
+	@Resource  
+    private BaseDao baseDao;
+	
+	@RequestMapping(value = "sendEmail")//邮件发送
+	public String sendEmail(HttpServletRequest request,HttpServletResponse response) throws IOException { 
+    	//创建json对象
+        JSONObject json = new JSONObject();
+    	try {  
+    		final String email = request.getParameter("email");
+    		String state = request.getParameter("status");
+    		if(email!=null && !"".equals(email.trim())){
+    			Map<String, Object> userMap = userDao.getUserInfoByEmail(email);
+    			if(userMap!=null && userMap.size()>0){
+    				String url = null;
+    				String statusStr=null;
+    				
+                    if(userMap.get("status")!=null && "1".equals(userMap.get("status").toString())){
+                    	statusStr="企业交流q群：345580895";
+                    }else{
+                    	statusStr = "人才交流q群：338403574";
+                    }
+                    DateFormat dateDf=new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	        		String activaCode = MD5Util.encode2hex(request.getParameter("email"))+"_"+df.parse(df.format(new Date())).getTime();
+	        		
+    				if(state!=null && !"".equals(state.trim())){
+    					url = SysConfig.getValue("PWD_RETRIEVE_URL").toString()+"?code="+activaCode;
+                        String substitution_vars = "{\"to\": [\""+email+"\"], \"sub\" : { \"%email%\" : [\""+email+"\"], \"%rigistUrl%\" : [\""+url+"\"], \"%url%\" : [\""+url+"\"], \"%date%\" : [\""+dateDf.format(new Date())+"\"], \"%userQQ%\" : [\""+statusStr+"\"]}}";
+                        new Thread(new SendCloudThread("passwordReset", substitution_vars, "实力拍密码重置")).start();
+                        
+                        Map<String, Object> params = new HashMap<String, Object>();
+                		Map<String, Object> paramsMap = new HashMap<String, Object>();
+                		params.put("tableName", "rigistration");
+                		params.put("trem", "email='"+email+"'");
+                		paramsMap.put("activaCode", activaCode);
+                		params.put("paramsMap", paramsMap);
+                		baseDao.baseUpdate(params);
+                		
+    					json.put("code", "200");
+        	            json.put("message", "发送成功");
+    				}else{
+    					if(userMap.get("isSuccess")!=null && "0".equals(userMap.get("isSuccess").toString())){
+    						url = SysConfig.getValue("MAIL_URL").toString()+"?code="+activaCode;
+	                        String substitution_vars = "{\"to\": [\""+email+"\"], \"sub\" : { \"%email%\" : [\""+email+"\"], \"%rigistUrl%\" : [\""+url+"\"], \"%url%\" : [\""+url+"\"], \"%date%\" : [\""+dateDf.format(new Date())+"\"], \"%userQQ%\" : [\""+statusStr+"\"]}}";
+	                        new Thread(new SendCloudThread("userActivation", substitution_vars, "实力拍激活邮件")).start();
+        					
+	                        Map<String, Object> params = new HashMap<String, Object>();
+	                		Map<String, Object> paramsMap = new HashMap<String, Object>();
+	                		params.put("tableName", "rigistration");
+	                		params.put("trem", "email='"+email+"'");
+	                		paramsMap.put("activaCode", activaCode);
+	                		params.put("paramsMap", paramsMap);
+	                		baseDao.baseUpdate(params);
+	                		
+	                        json.put("code", "200");
+            	            json.put("message", "发送成功");
+    					}else{
+    						json.put("code", "301");
+    	    	            json.put("message", "当前账号已激活，不需要重新激活！");
+    					}
+    				}
+    				
+    			}else{
+    				json.put("code", "302");
+    	            json.put("message", "该邮箱还没有注册！");
+    			}
+    		}else{
+    			json.put("code", "302");
+	            json.put("message", "该邮箱还没有注册！");
+    		}
+        } catch (Exception e) { 
+        	e.printStackTrace();
+        	json.put("code", "500");
+            json.put("message", "服务器异常！");
+        }  
+    	
+    	new Util().responesWriter(response,json.toString());
+		return null;
+    }
+		
+	
+	@RequestMapping(value = "emailActivation")//邮箱验证激活
+	public String emailActivation(HttpServletRequest request,HttpServletResponse response) throws IOException { 
+		String viewName="base/signin";
+		try {  
+        	String code=request.getParameter("code");
+        	int flag = 0;
+        	Map<String, Object> userMap = null;
+        	if(Util.isVerify(request.getParameter("code"), 0, 0, "[0-9A-Za-z_]{1,100}")){
+        		userMap = userDao.getUserInfoByActivaCode(code);
+        		if(userMap!=null && userMap.get("activaCode")!=null && !"".equals(userMap.get("activaCode").toString())){
+        			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        			String[] codeStr = request.getParameter("code").split("_");
+	        		long newTime = df.parse(df.format(new Date())).getTime();
+        			if(newTime-Long.parseLong(codeStr[1])<=24*60*60*1000){ //邮件有效期1天
+        				if(userMap.get("isSuccess")!=null && "1".equals(userMap.get("isSuccess").toString())){
+        					flag = 1;
+        				}else{
+        					Map<String, Object> params = new HashMap<String, Object>();
+                    		Map<String, Object> paramsMap = new HashMap<String, Object>();
+                    		params.put("tableName", "rigistration");
+                    		params.put("trem", "activaCode='"+request.getParameter("code")+"'");
+                    		paramsMap.put("isSuccess", 1);
+                    		params.put("paramsMap", paramsMap);
+                    		flag = baseDao.baseUpdate(params);
+        				}
+        			}
+        		}
+        	}
+        	if(flag>0){
+        		request.getSession().setAttribute("email", userMap.get("email").toString());
+                request.getSession().setAttribute("status", userMap.get("status").toString());
+                request.getSession().setAttribute("userId", userMap.get("userId").toString());
+                request.getSession().setAttribute("isSuccess", userMap.get("isSuccess").toString());
+                request.getSession().setAttribute("isSaveUserInfo",userMap.get("isSaveUserInfo").toString());
+                if(userMap.get("companyId")!=null && !"".equals(userMap.get("companyId").toString())){
+                	request.getSession().setAttribute("companyId", userMap.get("companyId").toString());
+                }
+                String _useName = userMap.get("email").toString().replace("@", "&");
+                Cookie c= new Cookie("userEmail",_useName); 
+                c.setPath("/");
+                response.addCookie(c);
+                Cookie s= new Cookie("status",userMap.get("status").toString()); 
+                s.setPath("/");
+                response.addCookie(s);
+                viewName="common/talentRoute";
+        	}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+        } 
+		return "redirect:/"+viewName;
+    }
+}

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<!-- <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0"> -->
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/compindex.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/compindex.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/compindex" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/dist/compindex-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="indexCtrl">
+			<div class="comp-wrap">
+				<div class="comp-item">
+					<div class="guide1-wrap">
+						<div class="text-1">
+							<strong>招聘互联网人才，我们比猎头更专业</strong>
+						</div>
+						<div class="text-2">
+							<strong>每周一，程序员、设计师、运维测试、产品策划准时开拍</strong>
+						</div>
+						<div class="text-3">
+							<a id="com_start_bid" href="/base/signup?c=1">开始招聘</a>
+						</div>
+					</div>
+				</div>
+				<div class="comp-item">
+					<div class="guide2-wrap">
+						<div class="title">
+							<span>只面试靠谱的候选人</span>
+						</div>
+						<div class="detial-con">
+							<div class="detial-item">
+								<div class="item-icon">
+									<div class="ico slt-1"></div>
+								</div>
+								<div class="item-title">公司注册</div>
+								<div class="item-msg">必须使用企业邮箱注册和填写真实资料</div>
+							</div>
+							<div class="detial-item">
+								<div class="item-icon">
+									<div class="ico slt-2"></div>
+								</div>
+								<div class="item-title">出价邀请</div>
+								<div class="item-msg">看到合适的人可立即发送面试邀请，但必须附上您大概能为他提供的薪资</div>
+							</div>
+							<div class="detial-item">
+								<div class="item-icon">
+									<div class="ico slt-3"></div>
+								</div>
+								<div class="item-title">获取联系</div>
+								<div class="item-msg">候选人答应面试邀请后，您可以获取他的姓名、电话和email</div>
+							</div>
+							<div class="detial-item disabled no-after">
+								<div class="item-icon">
+									<div class="ico slt-4"></div>
+								</div>
+								<div class="item-title">安排面试</div>
+								<div class="item-msg">面试过后，最终的薪资不需要和您的出价一致，要结合实际能力来给</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="comp-item">
+					<div class="guide3-wrap">
+						<div class="content">
+							<div class="title">
+								<span>企业福利</span>
+							</div>
+							<div class="detial-con">
+								<div class="detial-item">
+									<div class="item-icon">
+										<div class="ico slt-1"></div>
+									</div>
+									<div class="item-title">精选人才</div>
+									<div class="item-msg">实力拍为您严格审核每一份简历</div>
+								</div>
+								<div class="detial-item no-after">
+									<div class="item-icon">
+										<div class="ico slt-2"></div>
+									</div>
+									<div class="item-title">节省时间</div>
+									<div class="item-msg">只看靠谱的简历，只发有把握的Offer</div>
+								</div>
+								<div class="detial-item">
+									<div class="item-icon">
+										<div class="ico slt-3"></div>
+									</div>
+									<div class="item-title">主动出击</div>
+									<div class="item-msg">小公司也能招到大牛</div>
+								</div>
+							</div>
+						</div>
+					</div>	
+				</div>
+				<div class="comp-item">
+					<div class="guide4-wrap">
+						<div class="content">
+							<div class="title ">
+								<span>媒体报道</span>
+							</div>
+							
+							<div class="item-l">
+								<div class="item-con">
+									<a href="http://kuailiyu.cyzone.cn/article/12004.html" target="_blank" class="logo">
+										<img class="img" src="/img/index_pic_cyb.png">
+									</a>
+									
+									<div class="media-detial">
+										<div class="media-title">创业邦</div>
+										<div class="media-text">实力拍是一个帮助中高端的人才找到最合适的公司，让一部分的猎头HR失业的网站。 以互联网人才作为切入点，目标定位于年薪10W到 60W的中高端人才。目标是革了中端猎头公司的命。</div>
+										<i class="media-direct"></i>
+									</div>
+								</div>
+							</div>
+							
+							<div class="item-r">
+								<div class="item-con">
+									<a href="http://www.36kr.com/p/218952.html" target="_blank" class="logo">
+										<img class="media-img" src="/img/index_pic_36k.png">
+									</a>
+									<div class="media-detial">
+										<div class="media-title">36氪</div>
+										<div class="media-text">实力拍最大的特点是向行业精英们提供一种私密的求职方式，让他们不需要投简历和找猎头，总的来讲就是不用将自己的简历泄露给那些未必对自己感兴趣的人。</div>
+										<i class="media-direct"></i>
+									</div>
+								</div>
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>					
+				</div>
+				<div class="comp-item">
+					<div class="guide5-wrap">
+						<div class="title">
+							<span><a href="/question">常见问题</a></span>
+						</div>
+						<div class="content">
+							<div class="ques-l">
+								<div class="ques-item">
+									<div class="ques-title">实力拍收费吗？</div>
+									<div class="ques-detial">我们对企业是完全免费的，后期可能会提供收费的增值服务。</div>
+								</div>
+							</div>
+							
+							<div class="ques-r">
+								<div class="ques-item">
+									<div class="ques-title">实力拍提供怎样的候选人？</div>
+									<div class="ques-detial">我们推荐至少3年以上经验并且有丰富项目经验的实力人才。</div>
+								</div>
+							</div>
+							
+							<div class="clear"></div>
+							
+						</div>
+						
+						<!-- <div class="ques-ans-more"><a href="/question?type=2">更多问题</a></div> -->
+					</div>			
+				</div>
+				<div class="comp-item">
+					<div class="guide6-wrap">
+						<div class="title"><span>合作伙伴</span></div>
+						<div class="content">
+						
+							<div class="cooper-item">
+								<div class="img-box"><a href="http://www.histarter.com/" target="_blank"><img src="/img/index_cooper_his.png"></a></div>
+								<div class="img-text" style="display: none;">
+									<i class="cooper-i"></i>
+									<span class="box-title">中国唯一初创团队招聘平台</span>
+								</div>
+							</div>
+							
+							<div class="cooper-item">
+								<div class="img-box"><a href="http://segmentfault.com/" target="_blank"><img src="/img/index_cooper_seg.png"></a></div>
+								<div class="img-text">
+									<i class="cooper-i"></i>
+									<span class="box-title">中文开发者的技术交流平台</span>
+								</div>
+							</div>
+							
+							<div class="cooper-item">
+								<div class="img-box"><a href="https://gitcafe.com/" target="_blank"><img src="/img/index_cooper_git.png"></a></div>
+								<div class="img-text" style="display: none;">
+									<i class="cooper-i"></i>
+									<span class="box-title">在线托管软件项目的服务平台</span>
+								</div>
+							</div>
+							
+							<div class="cooper-item">
+								<div class="img-box"><a href="http://www.oxcoder.com/" target="_blank"><img src="/img/index_cooper_cod.png"></a></div>
+								<div class="img-text" style="display: none;">
+									<i class="cooper-i"></i>
+									<span class="box-title">企业的在线编程笔试系统</span>
+								</div>
+							</div>
+							
+							<div class="clear"></div>
+						</div>
+					</div>				
+				</div>
+				<div class="comp-item">
+					<div class="guide7-wrap">
+						<div class="title">意向反馈</div>
+						<div class="warm-item">
+							<input type="text" placeholder="如：专场建议，使用体验等" ng-model="mySession" class="ng-pristine ng-valid">
+							<botton ng-click="sendSession()">发送</botton>
+						</div>
+						<div class="warm-tip" id="session_tip"></div>				
+					</div>				
+				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

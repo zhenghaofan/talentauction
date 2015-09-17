@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/index.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/index" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/index-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl"></div> 
+		<div id="main" ng-controller="indexCtrl">
+			<div class="index-wrap">
+				<div class="index-item">
+					<div class="guide1-wrap">
+						<div class="content">
+							<div class="text-1">
+								<strong>实力拍专场人才拍卖，最大化你的价值</strong>
+							</div>
+							<div class="text-1">
+								<strong>程序员 设计师 产品经理 运营 拍卖中</strong>
+							</div>
+							<div class="text-2">
+								<strong>上传简历，马上开始收offer</strong>
+							</div>
+							<div class="text-3">
+								<a id="com_start_bid" onclick="goog_report_conversion('http://www.shilipai.net/registerpage')" href="/registerpage?c=1">投递简历</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="index-item">
+					<div class="guide2-wrap">
+						<div class="hot-con">
+							<a class="hot-item" href="/company/1117.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/bai-du.png">
+								</div>
+								
+								 <div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>百度</h2>
+										<p>百度一下，你就知道</p>
+									</div>
+								</div>
+							</a>
+							<a class="hot-item" href="/company/238.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/teng-xun.png">
+								</div>
+								
+								 <div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>腾讯</h2>
+										<p>智慧沟通，灵感无限</p>
+									</div>
+								</div>
+							</a>							
+							<a class="hot-item" href="/company/976.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/gan-ji.png">
+								</div>
+								
+								<div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>赶集网</h2>
+										<p>更专业的分类信息网</p>
+									</div>
+								</div>
+							</a>
+							<a class="hot-item" href="/company/344.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/qi-la.png">
+								</div>
+								
+								<div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>去哪儿</h2>
+										<p>聪明你的旅行</p>
+									</div>
+								</div> 
+							</a>
+							<a class="hot-item" href="/company/481.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/weipinhui.png">
+								</div>
+								
+								 <div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>唯品会</h2>
+										<p>一家专门做特卖的网站</p>
+									</div>
+								</div>
+							</a>														
+							<a class="hot-item" href="/company/1078.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/you-ku.png">
+								</div>
+								
+								<div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>优酷土豆</h2>
+										<p>中国第一大视频应用和网络平台</p>
+									</div>
+								</div> 
+							</a>
+							<a class="hot-item" href="/company/64.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/4399.png">
+								</div>
+								
+								<div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>4399</h2>
+										<p>最大的休闲娱乐平台</p>
+									</div>
+								</div>
+							</a>
+							<a class="hot-item" href="/company/865.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/Gameloft.png">
+								</div>
+								
+								 <div class="hot-box-bg">
+									<div class="hot-text">
+										<h2>Gameloft</h2>
+										<p>一家世界著名的移动端视频游戏跨国公司</p>
+									</div>
+								</div>
+							</a>
+							<a class="hot-item" href="/company/242.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/qiushibaike.png">
+								</div>
+								
+								 <div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>糗事百科</h2>
+										<p>国内最成功的原创搞笑内容分享社区</p>
+									</div>
+								</div>
+							</a>																												
+							<a class="hot-item" href="/company/565.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/zhifubao.png">
+								</div>
+								
+								<div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>支付宝</h2>
+										<p>知托付</p>
+									</div>
+								</div> 
+							</a>
+							<a class="hot-item" href="/company/2372.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/paipaidai.png">
+								</div>
+								
+								<div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>拍拍贷</h2>
+										<p>国内第一家P2P网贷平台</p>
+									</div>
+								</div> 
+							</a>							
+							<a class="hot-item" href="/company/843.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/zhuliangtian.png">
+								</div>
+								
+								 <div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>住两天</h2>
+										<p>农家乐景区住宿预定平台</p>
+									</div>
+								</div>
+							</a>							
+							<a class="hot-item" href="/company/172.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/yaochufa.png">
+								</div>
+								
+								<div class="hot-box-bg">
+									<div class="hot-text">
+										<h2>要出发</h2>
+										<p>周边游</p>
+									</div>
+								</div>
+							</a>
+							<a class="hot-item" href="/company/714.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/UCloud.png">
+								</div>
+								
+								<div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>UCloud</h2>
+										<p>国内技术与服务最为顶尖的基础云服务商</p>
+									</div>
+								</div>
+							</a>							
+							<a class="hot-item" href="/company/199.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/yy.png">
+								</div>
+								
+								<div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>YY欢聚时代</h2>
+										<p>全球最大的语音视频互动平台</p>
+									</div>
+								</div>
+							</a>							
+							<a class="hot-item" href="/company/123.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/lianmeng.png">
+								</div>
+								
+								 <div class="hot-box-bg" style="display: none;">
+									<div class="hot-text">
+										<h2>脸萌</h2>
+										<p>超萌超潮的拼脸软件</p>
+									</div>
+								</div>
+							</a>							
+							<a class="hot-item" href="/company/1676.html">
+								<div class="img-box">
+									<img class="hot-img" src="../img/tcl.png">
+								</div>
+								
+								<div class="hot-box-bg">
+									<div class="hot-text">
+										<h2>TCL通讯</h2>
+										<p>TCL通讯正向移动互联网领域转型</p>
+									</div>
+								</div>
+							</a>																					
+						</div>						
+					</div>
+				</div>
+				<div class="index-item">
+					<div class="guide3-wrap">
+						<div class="title">
+							<span>如何使用实力拍</span>
+						</div>
+						<div class="detial-con">
+							<div class="detial-item">
+								<div class="item-icon">
+									<div class="ico slt-1"></div>
+								</div>
+								<div class="item-title">填写/上传简历</div>
+								<div class="item-msg">注册，填写上传简历，并提交申请</div>
+							</div>
+							<div class="detial-item">
+								<div class="item-icon">
+									<div class="ico slt-2"></div>
+								</div>
+								<div class="item-title">一周遇见企业</div>
+								<div class="item-msg">简历通过筛选后，每周一上午9点匿名上架进入拍卖环节，等待企业开出附上薪资的面试邀请</div>
+							</div>
+							<div class="detial-item">
+								<div class="item-icon">
+									<div class="ico slt-3"></div>
+								</div>
+								<div class="item-title">选择企业面试</div>
+								<div class="item-msg">挑选您中意的企业，接受邀请安排约见。当然，您也可以选择拒绝不中意的公司，遇见更好的机会</div>
+							</div>
+							<div class="detial-item disabled no-after">
+								<div class="item-icon">
+									<div class="ico slt-4"></div>
+								</div>
+								<div class="item-title">入职领取3000元奖金</div>
+								<div class="item-msg">通过试用正式入职后，您可以通过实力拍官方微信领取3000元入职奖金</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="index-item">
+					<div class="guide4-wrap">
+						<div class="content">
+							<div class="title">
+								<span>活动专题</span>
+							</div>
+							<div class="detial-con">
+								<div class="detial-item">
+									<div class="item-icon">
+										<div class="ico slt-1"></div>
+									</div>
+									<div class="item-title">精选人才</div>
+									<div class="item-msg">实力拍为您严格审核每一份简历</div>
+								</div>
+								<div class="detial-item no-after">
+									<div class="item-icon">
+										<div class="ico slt-2"></div>
+									</div>
+									<div class="item-title">节省时间</div>
+									<div class="item-msg">只看靠谱的简历，只发有把握的Offer</div>
+								</div>
+								<div class="detial-item">
+									<div class="item-icon">
+										<div class="ico slt-3"></div>
+									</div>
+									<div class="item-title">主动出击</div>
+									<div class="item-msg">小公司也能招到大牛</div>
+								</div>
+							</div>
+						</div>
+					</div>	
+				</div>
+				<div class="index-item">
+					<div class="guide5-wrap">
+						<div class="content">
+							<div class="title ">
+								<span>媒体报道</span>
+							</div>
+							
+							<div class="item-l">
+								<div class="item-con">
+									<a href="http://kuailiyu.cyzone.cn/article/12004.html" target="_blank" class="logo">
+										<img class="img" src="/img/index_pic_cyb.png">
+									</a>
+									
+									<div class="media-detial">
+										<div class="media-title">创业邦</div>
+										<div class="media-text">实力拍是一个帮助中高端的人才找到最合适的公司，让一部分的猎头HR失业的网站。 以互联网人才作为切入点，目标定位于年薪10W到 60W的中高端人才。目标是革了中端猎头公司的命。</div>
+										<i class="media-direct"></i>
+									</div>
+								</div>
+							</div>
+							
+							<div class="item-r">
+								<div class="item-con">
+									<a href="http://www.36kr.com/p/218952.html" target="_blank" class="logo">
+										<img class="media-img" src="/img/index_pic_36k.png">
+									</a>
+									<div class="media-detial">
+										<div class="media-title">36氪</div>
+										<div class="media-text">实力拍最大的特点是向行业精英们提供一种私密的求职方式，让他们不需要投简历和找猎头，总的来讲就是不用将自己的简历泄露给那些未必对自己感兴趣的人。</div>
+										<i class="media-direct"></i>
+									</div>
+								</div>
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>					
+				</div>
+				<div class="index-item">
+					<div class="guide6-wrap">
+						<div class="title">
+							<span><a href="/question">常见问题</a></span>
+						</div>
+						<div class="content">
+							<div class="ques-l">
+								<div class="ques-item">
+									<div class="ques-title">什么是人才拍卖？</div>
+									<div class="ques-detial">人才拍卖其实是让企业用开出初步的工资、期权等条件的形式来拍卖面试人才的机会，并不是价高者得，而是根据人才的喜好来选择给哪个公司的。</div>
+								</div>
+							</div>
+							
+							<div class="ques-r">
+								<div class="ques-item">
+									<div class="ques-title">实力拍主要服务哪些人群？</div>
+									<div class="ques-detial">在人才方面，我们主要服务有3年以上经验的候选者。但是优秀的毕业生或只有1-2年经验的人才我们也会考虑。</div>
+								</div>
+							</div>
+							
+							<div class="clear"></div>
+							
+						</div>
+						
+						<!-- <div class="ques-ans-more"><a href="/question?type=2">更多问题</a></div> -->
+					</div>			
+				</div>
+				<div class="index-item">
+					<div class="guide7-wrap">
+						<div class="title"><span>合作伙伴</span></div>
+						<div class="content">
+						
+							<div class="cooper-item">
+								<div class="img-box"><a href="http://www.histarter.com/" target="_blank"><img src="/img/index_cooper_his.png"></a></div>
+								<div class="img-text" style="display: none;">
+									<i class="cooper-i"></i>
+									<span class="box-title">中国唯一初创团队招聘平台</span>
+								</div>
+							</div>
+							
+							<div class="cooper-item">
+								<div class="img-box"><a href="http://segmentfault.com/" target="_blank"><img src="/img/index_cooper_seg.png"></a></div>
+								<div class="img-text">
+									<i class="cooper-i"></i>
+									<span class="box-title">中文开发者的技术交流平台</span>
+								</div>
+							</div>
+							
+							<div class="cooper-item">
+								<div class="img-box"><a href="https://gitcafe.com/" target="_blank"><img src="/img/index_cooper_git.png"></a></div>
+								<div class="img-text" style="display: none;">
+									<i class="cooper-i"></i>
+									<span class="box-title">在线托管软件项目的服务平台</span>
+								</div>
+							</div>
+							
+							<div class="cooper-item">
+								<div class="img-box"><a href="http://www.oxcoder.com/" target="_blank"><img src="/img/index_cooper_cod.png"></a></div>
+								<div class="img-text" style="display: none;">
+									<i class="cooper-i"></i>
+									<span class="box-title">企业的在线编程笔试系统</span>
+								</div>
+							</div>
+							
+							<div class="clear"></div>
+						</div>
+					</div>				
+				</div>
+				<div class="index-item">
+					<div class="guide8-wrap">
+						<div class="title">意向反馈</div>
+						<div class="warm-item">
+							<input type="text" placeholder="如：专场建议，使用体验等" ng-model="mySession" class="ng-pristine ng-valid">
+							<botton ng-click="sendSession()">发送</botton>
+						</div>
+						<div class="warm-tip" id="session_tip"></div>				
+					</div>				
+				</div>
+			</div>			
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/sltsign.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<script src="../js/mobile/uiservice.js"></script>
+	<script src="../js/mobile/sltsign.js"></script>
+</head>
+<body>
+	<div class="viewport">
+		<div class="slt-wrap">
+			<div class="logo">
+				<img class="ico" src="../css/img/applogo.png"/>
+			</div>
+			
+			<div class="slt-jump">
+				<div class="item job">
+					<a class="ico" href="/wap/signup.html"></a>
+					<span class="text">找工作</span>
+				</div>
+				
+				<div class="item comp">
+					<a class="ico" href="/wap/signup.html?s=1"></a>
+					<span class="text">企业方</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

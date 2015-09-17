@@ -1,0 +1,359 @@
+
+
+body {
+	background: url(/img/spec_ios_bg.jpg) top left no-repeat #072c58;
+}
+.default-wrap {
+	color: #6B7485;
+	margin: 130px auto 100px;
+	overflow: hidden;
+}
+.sidebar {
+	float: left;
+	width: 245px;
+	margin-right: 30px;
+	border-radius: 5px;
+	display: inline-block;
+}
+.place-box {
+	width: 1024px;
+	min-height: 900px;
+	padding: 15px 30px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.place-box .container {
+	width: 747px;
+	display: inline-block;
+}
+
+/****** 专场时间 ******/
+.time-box {
+	width: 1024px;
+	margin: 0 auto;
+}
+.time-con {
+	float: right;
+	color: #fff;
+}
+.time-text {
+	font-style: normal;
+	margin-left: 5px;
+}
+
+/****** 已选择 ******/
+.sidebar .seleted-item {
+	padding: 20px;
+	border-radius: 3px;
+	margin-bottom: 20px;
+	background-color: #fff;
+}
+.sidebar .seleted-title {
+	font-size: 16px;
+	line-height: 24px;
+}
+.sidebar .seleted-con {
+	margin-top: 10px;
+}
+.sidebar .seleted-con li {
+	margin-bottom: 10px;
+}
+.sidebar .seleted-con-s {
+	color: #fff;
+	padding: 5px 10px;
+	border-radius: 3px;
+	background-color: #71a8e0;
+	display: inline-block;
+}
+
+/****** 筛选面板 ******/
+.sidebar .regular-list {
+	padding: 20px;
+	border-radius: 3px;
+	background-color: #fff;
+}
+.sidebar .regular-item {
+	margin-bottom: 10px;
+}
+.sidebar .regular-title {
+	font-size: 16px;
+}
+.sidebar .regular-img {
+	width: 16px;
+	margin-right: 5px;
+	margin-bottom: -1px;
+}
+.sidebar .img-w12 {
+	width: 12px;
+}
+.sidebar .img-w14 {
+	width: 14px;
+}
+.sidebar .regular-list ul {
+	margin-top: 10px;
+	padding-bottom: 5px;
+}
+.sidebar .regular-con li {
+	font-size: 15px;
+	margin-right: 14px;	
+	margin-bottom: 10px;
+	display: inline-block;
+	cursor: pointer;
+}
+.sidebar .item-seleted, .regular-con li:hover {
+	color: #4182c5;
+}
+
+/****** 二维码 ******/
+.qrcode-box {
+	padding: 20px;
+	border-radius: 3px;
+	margin: 20px 0;
+	background-color: #fff;
+}
+.qrcode-title {
+	font-size: 16px;
+	color: #5c6467;
+	text-align: center;
+}
+.qrcode-tip {
+	color: #6e7377;
+	text-align: center;
+}
+.qrcode-img {
+	width: 200px;
+	margin: 0 auto;
+	display: inherit;
+}
+
+/****** 温馨提示 ******/
+.warm-box {
+	margin-top: 20px;
+	background-color: #fff;
+	border-radius: 3px;
+}
+.warm-title {
+	height: 45px;
+	color: #4182c6;
+	font-size: 16px;
+	line-height: 45px;
+	padding-left: 15px;
+	border-bottom: 1px solid #eceef1;
+}
+.warm-con {
+	line-height: 24px;
+	padding: 20px 15px;
+}
+
+/****** 加入实力拍 ******/
+.hr-qq-box {
+	line-height: 30px;
+	padding: 20px;
+	border-radius: 3px;
+	border-top: 4px solid #4182C6;
+	margin-top: 20px;
+	background-color: #fff;
+}
+.qq-text {
+	font-size: 18px;
+}
+
+/****** 专场技能 ******/
+.skills-warp {
+	padding: 20px 30px;
+	border-radius: 3px;
+	margin-bottom: 20px;
+	background: #fff;
+}
+.skills-warp .skills-title {
+	height: 45px;
+	font-size: 16px;
+	padding: 0 24px;
+	background: url("../img/ico_skills.png") no-repeat left 4px;
+}
+.skills-warp .job-name span:hover {
+	color: #568cca;
+}
+.skills-warp .job-name-item {
+	font-size: 14px;
+	padding: 3px 6px;
+	margin-right: 45px;
+	border-radius: 3px;
+	display: inline-block;
+	cursor: pointer;
+}
+.skills-warp .job-name-item:last-child {
+	margin-right: 0;
+}
+.skills-warp .job-name-item.item-seleted {
+	color: #fff !important;
+	background: #4182c6;
+}
+.skills-warp .skills-name {
+	margin-top: 20px;
+	padding: 0 14px;
+}
+.skills-warp .skills-name span:hover{
+	color: #568cca;
+}
+.skills-warp .skills-name-item {
+	margin-right: 22px;
+	margin-bottom: 20px;
+	display: inline-block;
+	cursor: pointer;
+}
+.skills-warp .skills-name-item.slt {
+	color: #4182c6;
+}
+
+/****** 数据列表头******/
+.container .header {
+	height: 58px;
+	padding-left: 30px;
+	border-radius: 3px 3px 0 0;
+	border-bottom: 1px solid #eceef1;
+	background-color: #fff;
+}
+.header .f-r {
+	float: right;
+}
+.header .title-item-list {
+	color: #373737;
+	font-size: 16px;
+	line-height: 58px;
+	text-align: center;
+	display: inline-block;
+	cursor: pointer;
+	margin-right: 20px;
+}
+.header .title-item-list:hover {
+	color: #568cca;
+}
+.header .item-seleted {
+	color: #4182c5;
+}
+
+/****** 数据内容******/
+.list-box .list-con-item {
+	height: 100px;
+	padding: 15px 0;
+	border-bottom: 1px solid #eceef1;
+	background-color: #fff;
+	position: relative;
+}
+.list-box .list-con-item:hover {
+	background-color: #E6E8EC;
+}
+.con-item-avater, .con-item-bid, .con-item-company, 
+.con-item-tips, .con-item-title {
+	float: left;
+}
+.con-item-bid span, .con-item-company span, .con-item-tips span {
+	color: #494d56;
+	line-height: 24px;
+	display: block;
+}
+.list-box .con-item-tips {
+	width: 180px;
+	color: #656769;
+	text-align: center;
+	padding-top: 20px;
+	padding-left: 10px;
+}
+.list-box .con-item-tips span {
+	max-width: 200px;
+	color: #8d96a5;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 0 10px;
+	border: 1px solid #8d96a5;
+	margin-bottom: 5px;
+	display: inline-block;
+}
+.list-box .con-item-title {
+	width: 120px;
+}
+.list-box .item-title-text {
+	font-size: 16px;
+	line-height: 24px;
+}
+.list-box .item-title-box-l {
+	margin-top: 30px;
+	font-size: 18px;
+}
+.list-box .list-con-item a {
+	color: #535a62;
+}
+.list-box .item-title-text .name {
+	font-size: 14px;
+	display: block;
+	word-wrap: break-word;
+	line-height: 24px;
+	color: #697687;
+}
+.list-box .con-item-avater {
+	width: 90px;
+	text-align: center;
+	font-size: 20px;
+	padding-top: 30px;
+}
+.list-box .squre-pay {
+	height: 28px;
+	color: #404950;
+}
+.list-box .squre-text {
+	font-size: 14px;
+	color: #656769;
+}
+.list-box .con-item-company {
+	width: 80px;
+	margin-left: 10px;
+	padding-top: 30px;
+}
+.list-box .f-b {
+	color: #8b93a0;
+}
+.list-box .con-item-bid {
+	width: 110px;
+	margin-left: 20px;
+	padding-top: 30px;
+}
+.list-box .con-more-detial {
+	float: left;
+	width: 90px;
+}
+.list-box .com-code-no {
+	margin-top: 20px;
+	text-align: center;
+	margin-bottom: 5px;
+	color: #8b97a5;
+}
+.list-box .con-more-detial .com-more-btn {
+	background-color: #ccc;
+	display: inline-block;
+	padding: 7px 10px;
+	border-radius: 3px;
+	margin-left: 5px;
+	text-indent: 1px;
+}
+.list-box .con-more-detial .com-more-cbtn {
+	background-color: #75a8e1;
+	color: #fff;
+}
+.list-box .con-more-detial .com-more-cbtn:hover {
+	background-color: #4182c6;
+}
+.list-box  .list-con-filling {
+	height: 150px;
+	color: #616268;
+	padding-top: 100px;
+	text-align: center;
+	background-color: #fff;
+}
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}
+

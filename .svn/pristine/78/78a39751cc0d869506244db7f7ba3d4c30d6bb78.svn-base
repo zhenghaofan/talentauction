@@ -1,0 +1,8 @@
+package com.auction.wechat.dao;
+/** 
+ * @author tobber
+ * @version 2015年5月29日
+ */
+public interface WechatDao {
+
+}

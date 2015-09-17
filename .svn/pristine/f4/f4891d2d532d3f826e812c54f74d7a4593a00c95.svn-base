@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/placedesigner.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="css/placedesigner.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/placedesigner" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/placedesigner-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl"></div> 
+		<div id="main" ng-controller="designerCtrl">
+			<div class="designer-wrap">
+				<div class="top-time-box content-b">
+					<div class="top-time">还剩<i class="top-time-text" ng-bind="day">0</i>天<i class="top-time-text" ng-bind="hours">0</i>时<i class="top-time-text" ng-bind="min">0</i>分<i class="top-time-text" ng-bind="sec">0</i>秒&nbsp;结束</div>
+					<div class="clear"></div>
+				</div>
+				
+				<div class="nav_warp" ng-init="getSpecialList()">
+					<div class="c_l">
+						<span>筛选</span>
+					</div>
+					<div class="c_r">
+						<div class="work_item">
+							<div class="title">
+								<span>经验</span>
+							</div>
+							<div class="content">
+								<span ng-repeat="item in jobYear" ng-bind="item.value" ng-click="sltExe(item, $event, 'experience')"></span>
+							</div>					
+						</div>
+						<div class="city_item">
+							<div class="title">
+								<span>目标城市</span>
+							</div>
+							<div class="content">
+								<span ng-repeat="item in getHotCitys" ng-bind="item.value" ng-click="sltExe(item, $event, 'city')"></span>
+							</div>					
+						</div>
+						<div class="edu_item">
+							<div class="title">
+								<span>学历</span>
+							</div>
+							<div class="content">
+								<span ng-repeat="item in education" ng-bind="item.value" ng-click="sltExe(item, $event, 'education')"></span>
+							</div>					
+						</div>
+					</div>
+					<ul class="special_list">
+						<li>
+							<span><i ng-bind="_spcName"></i></span>
+							<ul>
+								<li ng-repeat="item in skillsList" ng-if="item.id != _spc">
+									<a ng-href="{{'/base/placedefault?spc=' + item.id}}" ng-bind="item.name"></a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					<div class="clear"></div>
+				</div>
+				
+				<div id="cv_warp" class="cv_warp">				
+					<div class="cv_item " ng-repeat="item in queryBidPools" ng-click="jumpTo('/base/placebid?userId=' + item.userId)">
+						<div class="photo">
+							<img alt="" ng-src="{{'/upload/user/compression/'+ item.productImgArray[0]}}">
+							<div class="tips">
+								<span ng-bind="'No.' + item.code"></span>
+								<span ng-bind-template="平均出价{{item.avgPrice? item.avgPrice : 0}}K"></span>
+								<span ng-bind-template="被拍{{item.num? item.num : 0}}次"></span>
+							</div>									
+						</div>
+						<div class="detail">
+							<div class="title">
+								<span ng-bind="item.jobTitle"></span>
+							</div>
+							<div class="work">
+								<span class="city" ng-bind="item.destination"></span>
+								<span class="take" ng-bind="item.jobYear + '年经验'"></span>
+								<span class="look" ng-bind="item.readCount + '次'"></span>
+							</div>
+						</div>
+					</div>
+					<div class="clear"></div>
+					<div class="no-data" ng-if="!queryBidPools.length">
+						<span>暂无数据</span>
+					</div>
+					<div class="load" ng-class="{true: 'disabled'}[(pageIndex == totalPage)]" ng-if="queryBidPools.length">
+						<span ng-class="{true: 'close'}[(pageIndex == totalPage)]" ng-bind="pageIndex < totalPage? '加载中...' : '加载完毕'"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

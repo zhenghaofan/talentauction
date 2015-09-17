@@ -1,0 +1,331 @@
+package com.auction.resume.model;
+/** 
+ * @author tobber
+ * @version 2015年4月17日
+ */
+public class Resume {
+	private int resumeId;
+	private int userId;
+	private String telephone;
+	private String expectedProvince;
+	private String destination;
+	private String expectedSalary;
+	private String nowSalary;
+	private String jobTitle;
+	private int jobYear;
+	private String languages;
+	private String certificates;
+	private String educations;
+	private String skills;
+	private String creatTime;
+	private String updateTime;
+	private String checkTime;
+	private String entryTime;
+	private int surplusTime;
+	private int cvBidStatus;
+	private int cvCheckStatus;
+	private int cvCheckResult;
+	private int bidCount;
+	private String name; 
+	private int sex;
+	private String province;
+	private String city;
+	private String age;
+	private String idCard;
+	private String userEmail;
+	private String userImg;
+	private int education;
+	private String rejectReason;
+	private String summary;
+	private int readCount;
+	private String details;
+	private int jobState;
+	private String companyProgress;
+	private String companySize;
+	private String companyArea;
+	private int code;
+	private String special;
+	private String specialCount;
+	private int status;
+	private int isOnline;
+	private String productUrl;
+	private String productImg;
+	
+	
+	public int getResumeId() {
+		return resumeId;
+	}
+	public void setResumeId(int resumeId) {
+		this.resumeId = resumeId;
+	}
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	public String getTelephone() {
+		return telephone;
+	}
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+	public String getDestination() {
+		return destination;
+	}
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+	public String getExpectedSalary() {
+		return expectedSalary;
+	}
+	public void setExpectedSalary(String expectedSalary) {
+		this.expectedSalary = expectedSalary;
+	}
+	public String getLanguages() {
+		return languages;
+	}
+	public void setLanguages(String languages) {
+		this.languages = languages;
+	}
+	public String getCertificates() {
+		return certificates;
+	}
+	public void setCertificates(String certificates) {
+		this.certificates = certificates;
+	}
+	public String getEducations() {
+		return educations;
+	}
+	public void setEducations(String educations) {
+		this.educations = educations;
+	}
+	public String getSkills() {
+		return skills;
+	}
+	public void setSkills(String skills) {
+		this.skills = skills;
+	}
+	public String getCreatTime() {
+		return creatTime;
+	}
+	public void setCreatTime(String creatTime) {
+		this.creatTime = creatTime;
+	}
+	public String getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
+	public String getCheckTime() {
+		return checkTime;
+	}
+	public void setCheckTime(String checkTime) {
+		this.checkTime = checkTime;
+	}
+	public int getCvBidStatus() {
+		return cvBidStatus;
+	}
+	public void setCvBidStatus(int cvBidStatus) {
+		this.cvBidStatus = cvBidStatus;
+	}
+	public int getCvCheckStatus() {
+		return cvCheckStatus;
+	}
+	public void setCvCheckStatus(int cvCheckStatus) {
+		this.cvCheckStatus = cvCheckStatus;
+	}
+	public int getCvCheckResult() {
+		return cvCheckResult;
+	}
+	public void setCvCheckResult(int cvCheckResult) {
+		this.cvCheckResult = cvCheckResult;
+	}
+	public int getBidCount() {
+		return bidCount;
+	}
+	public void setBidCount(int bidCount) {
+		this.bidCount = bidCount;
+	}
+	public String getJobTitle() {
+		return jobTitle;
+	}
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+	public int getJobYear() {
+		return jobYear;
+	}
+	public void setJobYear(int jobYear) {
+		this.jobYear = jobYear;
+	}
+	public int getSurplusTime() {
+		return surplusTime;
+	}
+	public void setSurplusTime(int surplusTime) {
+		this.surplusTime = surplusTime;
+	}
+	public String getNowSalary() {
+		return nowSalary;
+	}
+	public void setNowSalary(String nowSalary) {
+		this.nowSalary = nowSalary;
+	}
+	public String getEntryTime() {
+		return entryTime;
+	}
+	public void setEntryTime(String entryTime) {
+		this.entryTime = entryTime;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getSex() {
+		return sex;
+	}
+	public void setSex(int sex) {
+		this.sex = sex;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getAge() {
+		return age;
+	}
+	public void setAge(String age) {
+		this.age = age;
+	}
+	public String getIdCard() {
+		return idCard;
+	}
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
+	}
+	public String getUserEmail() {
+		return userEmail;
+	}
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+	public String getUserImg() {
+		return userImg;
+	}
+	public void setUserImg(String userImg) {
+		this.userImg = userImg;
+	}
+	public int getEducation() {
+		return education;
+	}
+	public void setEducation(int education) {
+		this.education = education;
+	}
+	public String getRejectReason() {
+		return rejectReason;
+	}
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
+	}
+	public String getExpectedProvince() {
+		return expectedProvince;
+	}
+	public void setExpectedProvince(String expectedProvince) {
+		this.expectedProvince = expectedProvince;
+	}
+	public String getProvince() {
+		return province;
+	}
+	public void setProvince(String province) {
+		this.province = province;
+	}
+	public String getSummary() {
+		return summary;
+	}
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+	public int getReadCount() {
+		return readCount;
+	}
+	public void setReadCount(int readCount) {
+		this.readCount = readCount;
+	}
+	public String getDetails() {
+		return details;
+	}
+	public void setDetails(String details) {
+		this.details = details;
+	}
+	public int getJobState() {
+		return jobState;
+	}
+	public void setJobState(int jobState) {
+		this.jobState = jobState;
+	}
+	public String getCompanyProgress() {
+		return companyProgress;
+	}
+	public void setCompanyProgress(String companyProgress) {
+		this.companyProgress = companyProgress;
+	}
+	public String getCompanySize() {
+		return companySize;
+	}
+	public void setCompanySize(String companySize) {
+		this.companySize = companySize;
+	}
+	public String getCompanyArea() {
+		return companyArea;
+	}
+	public void setCompanyArea(String companyArea) {
+		this.companyArea = companyArea;
+	}
+	public String getSpecial() {
+		return special;
+	}
+	public void setSpecial(String special) {
+		this.special = special;
+	}
+	public int getCode() {
+		return code;
+	}
+	public void setCode(int code) {
+		this.code = code;
+	}
+	public String getSpecialCount() {
+		return specialCount;
+	}
+	public void setSpecialCount(String specialCount) {
+		this.specialCount = specialCount;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public int getIsOnline() {
+		return isOnline;
+	}
+	public void setIsOnline(int isOnline) {
+		this.isOnline = isOnline;
+	}
+	public String getProductUrl() {
+		return productUrl;
+	}
+	public void setProductUrl(String productUrl) {
+		this.productUrl = productUrl;
+	}
+	public String getProductImg() {
+		return productImg;
+	}
+	public void setProductImg(String productImg) {
+		this.productImg = productImg;
+	}
+}

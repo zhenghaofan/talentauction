@@ -1,0 +1,32 @@
+package com.auction.wechat.service;
+
+import javax.servlet.http.HttpServletRequest;
+
+/** 
+ * @author tobber
+ * @version 2015年5月29日
+ */
+public interface WechatService {
+
+	/**
+     * 微信服务端收发消息接口 
+     * @param request
+     * @return
+     */
+    public String wechatServlet(HttpServletRequest request);
+    
+    /**
+     * 微信路由控制 
+     * @param request
+     * @return
+     */
+    public String wechatRoute(HttpServletRequest request);
+    
+    /**
+     * 账号绑定
+     * @param request
+     * @return
+     */
+    public String userWechatBind(HttpServletRequest request);
+}
+

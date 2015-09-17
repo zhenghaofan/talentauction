@@ -1,0 +1,46 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('sltCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		
+		
+		/* 获取匹配公司*/
+		$scope.getCompList = function() {
+            $q.when($http.post('/company/getSameCompanyList'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.queryList = data.queryList;
+            	console.log($scope.queryList);
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getSameCompanyList', err);
+            });
+		};
+		
+		
+		/* 使用公司*/
+		$scope.useExistCompany = function(id) {
+            $q.when($http.post('/company/addCompany'))
+            .then(function(result) {
+            	var data = result.data;
+            }, function(err) {
+            	console.error('addCompany', err);
+            });			
+		};
+		
+		/* 添加公司*/
+		$scope.useExistCompany ＝ function() {
+			
+		};
+		
+		
+ 	}]);
+	
+	app.bootstrap();
+});

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/account.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/account.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/account" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/dist/account-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="accountCtrl">
+			<div class="account-wrap">
+				<div class="info-box box-shadow" ng-init="getAccountInfo()">
+					<div class="title">
+						<span class="title-ico"></span>
+						<span>账户信息</span>
+					</div>
+					<div class="info-con">
+						<div class="text">
+							账户：<span class="fc-1 fw-b mgn-1" ng-bind="accountInfo.name"></span>
+							邮箱：<span class="fc-1 fw-b mgn-1" ng-bind="user.email"></span>
+							金币：<span class="fc-1 fw-b" ng-bind-template="{{accountInfo.gold}}（{{accountInfo.gold/50}}次邀约）"></span>
+							<span class="btn btn-open" ng-click="shoePayPanel()">充值</span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="record-box box-shadow">
+					<div class="title">
+						<span class="menu slt" ng-click="sltPayList($event, 0)">充值记录</span>
+						<span class="menu" ng-click="sltPayList($event, 1)">扣除记录</span>
+					</div>
+					<div class="record-table" ng-init="getPayList()">
+						<div class="tr" ng-if="!listStatus && payList.length" ng-repeat="item in payList">
+							<span class="time" ng-bind="item.payment"></span>
+							<span class="email" ng-bind-template="向账号{{item.email}}"></span>
+							<span class="describe fc-6" ng-bind="item.subject"></span>
+						</div>
+						<div class="tr" ng-if="listStatus && payList.length" ng-repeat="item in payList">
+							<span class="time" ng-bind="item.inviteTime"></span>
+							<span class="code" ng-bind-template="向简历编号#{{item.code}}发送邀请"></span>
+							<span class="count fc-5" ng-bind-template="{{item.gold}}金币"></span>
+							<span class="state" ng-switch="item.status">
+								<span class="fc-6" ng-switch-when="0">进行中</span>
+								<span class="fc-1" ng-switch-when="1">成功</span>
+								<span class="fc-1" ng-switch-when="2">失败</span>
+							</span>
+						</div>
+						<div class="tr prenext" ng-if="pageIndex > 1">
+							<span class="pre" ng-if="pageIndex > 1" ng-click="turnPage($event, '-')">&lt;上一页</span>
+							<span class="num" ng-bind-template="第{{pageIndex}}页"></span>
+							<span class="next" ng-if="(pageIndex < totalPage) && totalPage" ng-click="turnPage($event, '+')">下一页&gt;</span>
+						</div>
+						<div class="no-data" ng-if="!payList.length">
+							<span>暂无记录</span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="pay-box box-shadow">
+					<div class="title">
+						<span>充值实力拍<i class="">+</i>，享受更多特权</span>
+					</div>
+					<div class="pkg-box">
+						<span class="pkg-item slt" ng-click="sltPkg($event, 1, 499)">
+							<span>499元500金币10次邀约</span>
+						</span>
+						<span class="pkg-item" ng-click="sltPkg($event, 2, 950)">
+							<span>950元1000金币20次邀约</span>
+						</span>
+						<span class="pkg-item" ng-click="sltPkg($event, 3, 2250)">
+							<span>2250元2000金币50次邀约</span>
+						</span>
+					</div>
+					<div class="info-text">
+						<span>
+							开通账号：<span class="fc-1" ng-bind-template="{{user.email}}"></span>
+						</span>
+						<span>
+							开通账号：<span class="fc-1">支付宝</span>
+						</span>
+						<span>
+							应付金额：<span class="fc-5" ng-bind-template="{{pkgPice}}元"></span>
+						</span>
+					</div>
+					<div class="btn-group">
+						<button class="btn btn-pay" ng-click="jumpPay()">确定支付</button>
+					</div>
+					<div class="tip-wrap">
+						<span>温馨提示：</span>
+						<span>若当前网络不稳定，建议您稍后在次尝试支付，仍不能成功，您可以发邮件至wubin@redscarf.info，表明实力拍+遇到问题，我们会在3个小时内联系您并帮您解决问题。</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

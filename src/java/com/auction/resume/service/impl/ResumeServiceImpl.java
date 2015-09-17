@@ -1,0 +1,699 @@
+package com.auction.resume.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import net.sf.json.JSONObject;
+
+import com.auction.common.dao.BaseDao;
+import com.auction.util.SendCloudThread;
+import com.auction.util.SysConfig;
+import com.auction.util.Util;
+import com.auction.wechat.Util.CommonUtil;
+import com.auction.wechat.model.resp.TemplateData;
+import com.auction.wechat.model.resp.WxTemplate;
+import com.auction.resume.dao.CvMakeDao;
+import com.auction.resume.dao.ResumeDao;
+import com.auction.resume.service.ResumeService;
+
+/** 
+ * @author tobber
+ * @version 2015年4月17日
+ */
+
+@Service
+public class ResumeServiceImpl implements ResumeService{
+	@Resource
+	private ResumeDao resumeDao;
+	@Resource
+	private BaseDao baseDao;
+	@Resource
+	private CvMakeDao cvMakeDao;
+	
+	@Override
+	public String getUserBackupResume(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+    		String userId = request.getSession().getAttribute("userId").toString();
+	       
+    		Map<String, Object> resumeMap = resumeDao.getBackupResumDetail(userId);
+	        if(resumeMap!=null && resumeMap.size()>0){
+	        	json.put("resume", resumeMap);
+	        	
+	        	Map<String, Object> params = new HashMap<String, Object>();
+	        	params.put("resumeId", resumeMap.get("resumeId").toString());
+	        	//教育经验
+	        	params.put("tableName", "b_educations");
+	        	json.put("educations",resumeDao.getEducationsAll(params));//教育经历
+		        //项目经验
+	        	params.put("tableName", "b_projects");
+	            json.put("projects", resumeDao.getProjectsAll(params));
+	            //工作经验
+	            params.put("tableName", "b_workexp");
+	            json.put("work_experiences", resumeDao.getWorkExpAll(params));
+	            json.put("code", 200);
+	            json.put("message", "简历获取成功");
+	            
+	        }else{
+	        	json.put("code", 301);
+	            json.put("message", "没有简历信息");
+	        }
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+
+	@Override
+	public String getJobInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+	    	Map<String, Object> jobInfoMap = resumeDao.getJobInfo(request.getSession().getAttribute("userId").toString());
+	    	if(jobInfoMap!=null && jobInfoMap.size()>0){
+	    		json.put("jobInfo",jobInfoMap);
+	    	}else{
+	    		json.put("jobInfo","");
+	    	}
+	    	json.put("code", 200);
+	        json.put("message", "获取成功");
+	    } catch (Exception e) { 
+	        e.printStackTrace();
+	        json.put("code", 500);
+		    json.put("message", "服务器异常");;  
+	    } 
+		return json.toString();
+	}
+
+	@Override
+	public String getBidLogs(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		int page = 1;
+		int pageSize = 20;
+        try {  
+        	Map<String, Object> params = new HashMap<String, Object>();
+    		if(Util.isVerify(request.getParameter("page"), 0, 0, "[1-9][0-9]{0,10}")){
+    			page = Integer.parseInt(request.getParameter("page"));
+    		}
+    		if(Util.isVerify(request.getParameter("pageSize"), 0, 0, "[1-9][0-9]{0,1}")){
+    			pageSize = Integer.parseInt(request.getParameter("pageSize"));
+    		}
+    		if(Util.isVerify(request.getParameter("reply"), 0, 0, "[0-3]")){
+    			params.put("isReply", request.getParameter("reply"));
+    		}
+    		params.put("userId", request.getSession().getAttribute("userId").toString());
+    		params.put("page", (page-1)*pageSize);params.put("pageSize", pageSize);
+    		
+    		List<Map<String,Object>> bidLogsList = resumeDao.getBidLogs(params);
+    		int total = resumeDao.getBidLogsTotal(params);
+    		json.put("bidLogs",bidLogsList);
+    		json.put("page", page);
+    		json.put("pageSize", pageSize);
+    		if(total%pageSize==0){
+    			json.put("totalPage", total/pageSize);
+    		}else{
+    			json.put("totalPage", (total/pageSize)+1);
+    		}
+    		json.put("code", 200);
+            json.put("message", "获取成功");
+        } catch (Exception e) { 
+        	e.printStackTrace();
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        } 
+       return json.toString();
+	}
+	
+	@Override
+	public String wechatBidLogs(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		int page = 1;
+		int pageSize = 20;
+        try {  
+        	Map<String, Object> params = new HashMap<String, Object>();
+    		if(Util.isVerify(request.getParameter("page"), 0, 0, "[1-9][0-9]{0,10}")){
+    			page = Integer.parseInt(request.getParameter("page"));
+    		}
+    		if(Util.isVerify(request.getParameter("pageSize"), 0, 0, "[1-9][0-9]{0,1}")){
+    			pageSize = Integer.parseInt(request.getParameter("pageSize"));
+    		}
+    		if(Util.isVerify(request.getParameter("reply"), 0, 0, "[0-3]")){
+    			params.put("isReply", request.getParameter("reply"));
+    		}
+    		params.put("userId", request.getSession().getAttribute("userId").toString());
+    		params.put("page", (page-1)*pageSize);params.put("pageSize", pageSize);
+    		
+    		List<Map<String,Object>> bidLogsList = resumeDao.getBidLogs(params);
+    		int total = resumeDao.wechatBidLogsTotal(params);
+        	if(bidLogsList!=null){
+            	for(int i=0;i<bidLogsList.size(); i++){ //算天数
+            		Map<String, Object> map = bidLogsList.get(i);
+            		String bidStr = map.get("bidTime").toString();
+            		bidLogsList.get(i).put("bidTime",bidStr.substring(0,bidStr.lastIndexOf(":")));
+            	}
+            	json.put("bidLogs",bidLogsList);
+        	}
+        	
+    		json.put("page", page);
+    		json.put("pageSize", pageSize);
+    		if(total%pageSize==0){
+    			json.put("totalPage", total/pageSize);
+    		}else{
+    			json.put("totalPage", (total/pageSize)+1);
+    		}
+    		json.put("code", 200);
+            json.put("message", "获取成功");
+        } catch (Exception e) { 
+        	e.printStackTrace();
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        } 
+       return json.toString();
+	}
+	
+	@Override
+	public String getBidLogsInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+        try {  
+    		if(Util.isVerify(request.getParameter("companyId"), 0, 0, "[1-9][0-9]{0,10}")){
+    			String userId = request.getSession().getAttribute("userId").toString();
+    			Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("userId", userId);
+				paramMap.put("companyId", request.getParameter("companyId"));
+				if(Util.isVerify(request.getParameter("reply"), 0, 0, "[0-3]")){
+					paramMap.put("isReply", request.getParameter("reply"));
+				}
+	    		List<Map<String,Object>> bidLogsList = resumeDao.getBidlogList(paramMap);
+	        	if(bidLogsList!=null && bidLogsList.size()>0){
+	        		for(int i=0;i<bidLogsList.size();i++){
+	        			if(bidLogsList.get(i).get("isReply").toString().equals("3")){
+	        				if(bidLogsList.get(i).get("toEmail")==null || bidLogsList.get(i).get("toEmail").toString().equals("")){
+	        					bidLogsList.get(i).put("toEmail", bidLogsList.get(i).get("email"));
+		        				bidLogsList.get(i).put("toPhone", bidLogsList.get(i).get("telephone"));
+	        				}
+	        			}else{
+	        				bidLogsList.get(i).put("toEmail", null);
+	        				bidLogsList.get(i).put("toPhone", null);
+	        				bidLogsList.get(i).put("name", null);
+	        			}
+	        			bidLogsList.get(i).remove("email");
+        				bidLogsList.get(i).remove("telephone");
+	        		}
+	            	json.put("bidLogs",bidLogsList);
+	            	Map<String, Object> comp = resumeDao.getCompanyInfo(request.getParameter("companyId"));
+	            	resumeDao.updateReadStatus(userId, request.getParameter("companyId"));
+	            	json.put("companyInfo",comp);
+	            	json.put("code", 200);
+		            json.put("message", "获取成功！");
+	        	}else{
+	        		json.put("code", 301);
+		            json.put("message", "获取失败！");
+	        	}
+    		}else{
+    			json.put("code", 301);
+	            json.put("message", "获取失败！");
+    		}
+        } catch (Exception e) { 
+        	e.printStackTrace();
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        } 
+       return json.toString();
+	}
+
+	@Override
+	public String updateJobInfo(final HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+        try {  
+        	
+        	Map<String, Object> params = new HashMap<String, Object>();
+        	params.put("i_userId",request.getSession().getAttribute("userId").toString());
+        	if((Util.isVerify(request.getParameter("expectedSalary"),0,0,"[1-9][0-9]{0,1}"))){
+        		params.put("i_expectedSalary",Integer.parseInt(request.getParameter("expectedSalary")));
+        	}
+        	if(Util.isVerify(request.getParameter("destination"),1,15,null)){
+        		params.put("i_destination",request.getParameter("destination"));
+        	}
+        	if(Util.isVerify(request.getParameter("content"),2,100,null)){
+        		params.put("i_content",request.getParameter("content"));
+        	}
+        	
+        	if(params!=null && params.size()>0){
+        		resumeDao.user_update_itent(params);
+        		if(params.get("resultNumber")!=null && params.get("resultNumber").toString().equals("1")){
+        			 json.put("code", 200);
+                     json.put("message", "更新成功！");
+        		}else{
+        			json.put("code", 302);
+                    json.put("message", "更新失败！");
+        		}
+            }else{
+            	 json.put("code", 301);
+                 json.put("message", "请输入更新信息！");
+            }
+        } catch (Exception e) {
+        	e.printStackTrace();
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        } 
+       return json.toString();
+	}
+	
+	@Override
+	public String resubmitCheck(final HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+        try {  
+        	
+        	Map<String, Object> params = new HashMap<String, Object>();
+        	params.put("i_userId",request.getSession().getAttribute("userId").toString());
+        	if(Util.isVerify(request.getParameter("expectedSalary"),0,0,"[1-9][0-9]{0,1}")){
+        		params.put("i_expectedSalary",Integer.parseInt(request.getParameter("expectedSalary")));
+        	}else{
+        		params.put("i_expectedSalary",null);
+        	}
+        	if(Util.isVerify(request.getParameter("destination"),1,15,null)){
+        		params.put("i_destination",request.getParameter("destination"));
+        	}else{
+        		params.put("i_destination",null);
+        	}
+        	if(Util.isVerify(request.getParameter("jobTitle"),1,15,null)){
+        		params.put("i_jobTitle",request.getParameter("jobTitle"));
+        	}else{
+        		params.put("i_jobTitle",null);
+        	}
+        	if(Util.isVerify(request.getParameter("skills"),1,25,null)){
+        		params.put("i_skills",request.getParameter("skills"));
+        	}else{
+        		params.put("i_skills",null);
+        	}
+        	if(Util.isVerify(request.getParameter("content"),2,100,null)){
+        		params.put("i_content",request.getParameter("content"));
+        	}else{
+        		params.put("i_content",null);
+        	}
+        	
+    		resumeDao.user_resubmit_check(params);
+    		if(params.get("resultNumber")!=null && params.get("resultNumber").toString().equals("1")){
+    			 json.put("code", 200);
+                 json.put("message", "更新成功！");
+    		}else{
+    			json.put("code", 301);
+                json.put("message", "更新失败！");
+    		}
+        } catch (Exception e) {
+        	e.printStackTrace();
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        } 
+       return json.toString();
+	}
+
+	@Override
+	public String userReply(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{1,20}") && 
+					Util.isVerify(request.getParameter("isReply"), 0, 0, "[1-2]") && 
+					Util.isVerify(request.getParameter("companyId"), 0, 0, "[0-9]{1,20}")){
+				String id = request.getParameter("id");
+				String isReply = request.getParameter("isReply");
+				String userId = request.getSession().getAttribute("userId").toString();
+				
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+				Map<String,Object> params = new HashMap<String, Object>();
+				params.put("isCompanyRead", "0");
+				params.put("isReply", isReply);
+	    		if(Util.isVerify(request.getParameter("rejectReason"), 1, 100, null)){
+	    			params.put("rejectReason", request.getParameter("rejectReason"));
+	    		}
+	    		params.put("replyTime", df.format(new Date()));
+	    		params.put("id", id);
+	    		params.put("userId", userId);
+	    		int num = resumeDao.userReply(params);
+				
+				if(num>0){
+					final Map<String, Object> wechatMap = resumeDao.getWechatInfo(id);
+					String isOption=null;
+					if(wechatMap!=null && wechatMap.size()>0 && wechatMap.get("email")!=null){
+						if(wechatMap.get("isOption")!=null && wechatMap.get("email").equals("1")){
+							isOption="是";
+						}else{
+							isOption="否";
+						}
+						if("1".equals(isReply)){
+							//给公司发邮件
+	                        String substitution_vars = "{\"to\": [\""+wechatMap.get("email").toString()+"\"], "
+	                        		+ "\"sub\" : { "
+	                        		+ "\"%compNick%\" : [\""+wechatMap.get("nickName").toString()+"\"],"
+	                        		+ "\"%talentUrl%\" : [\""+SysConfig.getValue("SERVICE_URL")+"/base/placebid?userId="+userId+"\"], "
+	                        		+ "\"%talentNumber%\" : [\""+wechatMap.get("code")+"\"], "
+	                        		+ "\"%jobTitle%\" : [\""+wechatMap.get("jobTitle").toString()+"\"], "
+	                        		+ "\"%experience%\" : [\""+wechatMap.get("jobYear")+"\"], "
+	                        		+ "\"%skills%\" : [\""+wechatMap.get("skills")+"\"], "
+	                        		+ "\"%salaryRange%\" : [\""+wechatMap.get("minBidPrice")+"K~"+wechatMap.get("minBidPrice")+"K\"], "
+	                        		+ "\"%isOption%\" : [\""+isOption+"\"], "
+	                        		+ "\"%message%\" : [\""+wechatMap.get("workTitle")+"\"], "
+	                        		+ "\"%loginUrl%\" : [\""+SysConfig.getValue("SERVICE_URL")+"/companyform/compbidlist\"]}}";
+	                        new Thread(new SendCloudThread("new_accept_Interview", substitution_vars, "候选人答应了您的面试邀请",false)).start();
+						}else if("2".equals(isReply)){ //候选人拒绝面试邀请
+							//给公司发邮件
+							String substitution_vars = "{\"to\": [\""+wechatMap.get("email").toString()+"\"], "
+									+ "\"sub\" : { "
+	                        		+ "\"%compNick%\" : [\""+wechatMap.get("nickName").toString()+"\"],"
+	                        		+ "\"%talentUrl%\" : [\""+SysConfig.getValue("SERVICE_URL")+"/base/placebid?userId="+userId+"\"], "
+	                        		+ "\"%talentNumber%\" : [\""+wechatMap.get("code")+"\"], "
+	                        		+ "\"%jobTitle%\" : [\""+wechatMap.get("jobTitle").toString()+"\"], "
+	                        		+ "\"%experience%\" : [\""+wechatMap.get("jobYear")+"\"], "
+	                        		+ "\"%skills%\" : [\""+wechatMap.get("skills")+"\"], "
+	                        		+ "\"%rejectReason%\" : [\""+wechatMap.get("rejectReason")+"\"], "
+	                        		+ "\"%salaryRange%\" : [\""+wechatMap.get("minBidPrice")+"K~"+wechatMap.get("maxBidPrice")+"K\"], "
+	                        		+ "\"%isOption%\" : [\""+isOption+"\"], "
+	                        		+ "\"%message%\" : [\""+wechatMap.get("workTitle")+"\"], "
+	                        		+ "\"%loginUrl%\" : [\""+SysConfig.getValue("SERVICE_URL")+"/base/placebid?userId="+userId+"\"]}}";
+		                    new Thread(new SendCloudThread("new_reject", substitution_vars, "候选人拒绝了您的面试邀请",false)).start();
+						}
+					}
+					
+					//微信消息推送
+					if(wechatMap.get("openId")!=null && !"".equals(wechatMap.get("openId").toString().trim())){
+						if("1".equals(isReply)){//答应面试邀请
+							try {
+								WxTemplate t = new WxTemplate();  
+						        //t.setUrl("http://www.shilipai.net/views/appcvdetail.html?userId="+list.get(0).get("userId").toString());  
+								t.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+SysConfig.getValue("WECHAT_APPID").toString()+"&redirect_uri="+SysConfig.getValue("SERVICE_URL").toString()+"/wechat/wechatRoute&response_type=code&scope=snsapi_base&state=compbidlist#wechat_redirect");
+								t.setTouser(wechatMap.get("openId").toString());  
+						        t.setTopcolor("#000000");  
+						        t.setTemplate_id("7lxvWRUYoleWV4zquMTF9ZN1jO7QTv0D35hmWwHA5g4");  
+						       
+						        Map<String,TemplateData> m = new HashMap<String,TemplateData>();  
+						        TemplateData first = new TemplateData();  
+						        first.setColor("#272B5A");  
+						        first.setValue(wechatMap.get("email").toString()+"您好，候选人接受了您的面试邀请。详情如下：");  
+						        m.put("first", first);  //标题
+						      
+						        TemplateData keyword1 = new TemplateData();  
+						        keyword1.setColor("#272B5A");  
+						        keyword1.setValue(wechatMap.get("jobTitle").toString());  
+						        m.put("keyword1", keyword1);  //期望职位
+						       
+						        TemplateData keyword2 = new TemplateData();  
+						        keyword2.setColor("#272B5A");  
+						        keyword2.setValue(wechatMap.get("destination").toString());  
+						        m.put("keyword2", keyword2); //城市
+						        
+						        TemplateData keyword3 = new TemplateData();  
+						        keyword3.setColor("#272B5A");  
+						        keyword3.setValue(wechatMap.get("minBidPrice").toString()+"k ~ "+wechatMap.get("maxBidPrice").toString()+"K");  
+						        m.put("keyword3", keyword3); //初定薪资
+						        
+						        TemplateData keyword4 = new TemplateData();  
+						        keyword4.setColor("#272B5A"); 
+						        keyword4.setValue(isOption);
+						        m.put("keyword4", keyword4); //是否提供期权
+						        
+						        TemplateData remark = new TemplateData();  
+						        remark.setColor("#272B5A");  
+						        remark.setValue("请点击获取TA的姓名和联系方式，以便安排面试，谢谢。");  
+						        m.put("remark", remark);  
+						        t.setData(m);
+						        
+						        String json1 = JSONObject.fromObject(t).toString();
+						        String accessToken = Util.getAccessToken(request);
+						        JSONObject jsonObject = CommonUtil.httpsRequest("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+accessToken, "POST", json1);
+						        System.out.print(jsonObject);
+							}catch (Exception e) {
+								e.printStackTrace();
+							}
+						}else if("2".equals(isReply)){ //候选人拒绝面试邀请
+							try {
+								WxTemplate t = new WxTemplate();  
+						        //t.setUrl("http://www.shilipai.net/views/appcvdetail.html?userId="+list.get(0).get("userId").toString());  
+								t.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+SysConfig.getValue("WECHAT_APPID").toString()+"&redirect_uri="+SysConfig.getValue("SERVICE_URL").toString()+"/wechat/wechatRoute&response_type=code&scope=snsapi_base&state=compbidlist#wechat_redirect");
+								t.setTouser(wechatMap.get("openId").toString());  
+						        t.setTopcolor("#000000");  
+						        t.setTemplate_id("QyO7mRF9yAYfDol_59tp4qX0O6r03x4j4j0TObPoJgM");  
+						       
+						        Map<String,TemplateData> m = new HashMap<String,TemplateData>();  
+						        TemplateData first = new TemplateData();  
+						     
+						        first.setColor("#272B5A");  
+						        first.setValue("您发送的面试邀请被候选人拒绝了。");  
+						        m.put("first", first);  //标题
+						      
+						        TemplateData keyword1 = new TemplateData();  
+						        keyword1.setColor("#272B5A");  
+						        keyword1.setValue(wechatMap.get("userId").toString());  
+						        m.put("keyword1", keyword1);  
+						       
+						        TemplateData keyword2 = new TemplateData();  
+						        keyword2.setColor("#272B5A");  
+						        keyword2.setValue(wechatMap.get("rejectReason").toString());  
+						        m.put("keyword2", keyword2); //拒绝理由
+						        
+						        TemplateData remark = new TemplateData();  
+						        remark.setColor("#272B5A");  
+						        remark.setValue("点击这里查看该候选人的详细信息，您也可以联系我们的客服询问具体情况。");  
+						        m.put("remark", remark);  
+						        t.setData(m);
+						        
+						        String json1 = JSONObject.fromObject(t).toString();
+						        String accessToken = Util.getAccessToken(request);
+						        JSONObject jsonObject = CommonUtil.httpsRequest("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+accessToken, "POST", json1);
+						        System.out.print(jsonObject);
+							}catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+				
+		    	json.put("code", 200);
+	    		json.put("message", "回复成功！");
+	    		
+			}else{
+				json.put("code", 301);
+	    		json.put("message", "回复失败！");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String resumeDirectBid(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			String userId = request.getSession().getAttribute("userId").toString();
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("i_userId", userId);
+			resumeDao.resume_direct_Bid(params);
+			if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+				json.put("code", 200);
+	            json.put("message", "更新成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "更新失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getAutomatic(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			String userId = request.getSession().getAttribute("userId").toString();
+			int num = resumeDao.getAutomaticCount(userId);
+			json.put("num", num);
+			json.put("code", 200);
+            json.put("message", "获取成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String resumeOffShelves(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			paramsMap.put("i_userId", request.getSession().getAttribute("userId").toString());
+			paramsMap.put("i_openId", request.getSession().getAttribute("userId").toString());
+			resumeDao.resumeOffShelves(paramsMap);
+			if(paramsMap.get("resultNumber")!=null && "1".equals(paramsMap.get("resultNumber").toString())){
+				json.put("code", 200);
+	            json.put("message", "下架成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "下架失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getSurplusTime(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			int day =0;
+			int isNextBide = 0;
+			String userId = request.getSession().getAttribute("userId").toString();
+			Map<String, Object> userMap = resumeDao.getSurplusTime(userId);
+			if(userMap!=null && userMap.size()>0){
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				if(userMap.get("bidTime")!=null && userMap.get("duration")!=null && userMap.get("bidStatus")!=null && !"0".equals(userMap.get("bidStatus").toString())){
+					long nowTime = System.currentTimeMillis();
+					long bidTime = df.parse(userMap.get("bidTime").toString()).getTime();
+					long surplusTime = Integer.parseInt(userMap.get("duration").toString())*24*60*60*1000-(nowTime-bidTime);
+					if(surplusTime<3*24*60*60*1000){
+						day =(int)Math.floor(surplusTime/(24*60*60*1000))+1;
+					}
+				}
+				isNextBide = Integer.parseInt(userMap.get("isNextBide").toString());
+			}
+			json.put("isNextBide", isNextBide);
+			json.put("day", day);
+			json.put("code", 200);
+            json.put("message", "获取成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+
+	@Override
+	public String continueBid(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			String userId = request.getSession().getAttribute("userId").toString();
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("i_userId", userId);
+			resumeDao.continueBid(params);
+			if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+				json.put("code", 200);
+	            json.put("message", "更新成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "更新失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getUserMessage(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			String userId = request.getSession().getAttribute("userId").toString();
+			int message = resumeDao.getUserMessage(userId);
+			json.put("count", message);
+			json.put("code", 200);
+            json.put("message", "获取成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getUserResume(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+    		String userId = null;
+    		String companyId = null;
+    		Map<String, Object> resumeParams = new HashMap<String, Object>();
+    		if(request.getSession().getAttribute("companyId")!=null && request.getParameter("userId")!=null && !"".equals(request.getParameter("userId"))){
+    			userId = request.getParameter("userId"); //简历
+    			companyId = request.getSession().getAttribute("companyId").toString();
+    			resumeParams.put("companyId", companyId);
+    		}
+    		if((userId==null || "".equals(userId)) && request.getSession().getAttribute("userId")!=null){
+    			userId= request.getSession().getAttribute("userId").toString();
+    		}
+    		resumeParams.put("userId", userId);
+	        HashMap<String, Object> resumeMap = resumeDao.getResumDetailByUserId(resumeParams);
+	        if(resumeMap!=null && resumeMap.size()>0){
+	        	if(companyId!=null){
+	        		Map<String, Object> readParams = new HashMap<String, Object>();
+	        		readParams.put("i_userId", userId);
+	        		readParams.put("i_companyId", companyId);
+	        		resumeDao.addReadLogs(readParams);
+	        	}
+        		//判断是否本人查看简历
+	        	if(request.getSession().getAttribute("userId")== null|| (request.getSession().getAttribute("userId")!=null && !userId.equals(request.getSession().getAttribute("userId").toString()))){ 
+		        	if(resumeMap.get("phone")!=null){
+		        		String strPhone =resumeMap.get("phone").toString(); 
+		        		String telephone = strPhone.substring(0,3)+"*******"+strPhone.substring(strPhone.length()-1);
+		        		resumeMap.put("phone", telephone);
+		        	}
+		        	if(resumeMap.get("email")!=null){
+		        		String strEmail = resumeMap.get("email").toString();
+		        		String email = strEmail.substring(0,3)+"******"+strEmail.substring(strEmail.indexOf("@"));
+		        		resumeMap.put("email", email);
+		        	}
+	        	}
+	        	json.put("resume", resumeMap);
+	        	
+	        	Map<String, Object> params = new HashMap<String, Object>();
+	        	params.put("resumeId", resumeMap.get("resumeId").toString());
+	        	params.put("tableName", "educations");
+	            List<Map<String, Object>> educationList = resumeDao.getEducationsAll(params);//教育经历
+	            if(educationList!=null && educationList.size()>0){
+	            	json.put("educations", educationList);
+	            }else{
+	            	json.put("educations", "null");
+	            }
+	            //项目经验表
+        		params.put("tableName", "projects");
+	            json.put("projects", resumeDao.getProjectsAll(params));
+	            
+	            //工作经验表
+	            params.put("tableName", "work_experiences");
+	            json.put("work_experiences", resumeDao.getWorkExpAll(params));
+	            json.put("code", 200);
+	            json.put("message", "简历获取成功");
+	        }else{
+	        	json.put("code", 301);
+	            json.put("message", "没有简历信息");
+	        }
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 501);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+}

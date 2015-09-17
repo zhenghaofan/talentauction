@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/placepool.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<script src="../js/mobile/uiservice.js"></script>
+	<script src="../js/mobile/placepool.js"></script>
+</head>
+<body>
+	<div class="viewport">
+  		<div class="body2-box">
+			<div class="top-bar">
+				<i class="top-bar-query" id="query_btn"><img class="top-bar-ico back" src="/img/app_back.png"/></i>
+				<span id="spec_title">专场详情</span>
+				<i class="top-bar-spec" id="menu_btn"><img class="top-bar-ico" src="/img/app_spec_ico.png"/></i>
+				<div class="clear"></div>
+			</div>
+				
+ 			<div class="body2" id="body2">	
+				<div class="content" id="main_content">
+					<div class="cycle">
+						<span class="text l">上期拍卖</span>
+						<span class="text slt">本期拍卖</span>
+					</div>
+									
+					<div class="spec-detial-title">
+						<span class="spec-det-time">距离结束</span>
+						<i class="spec-det-clock" id="time_day">0</i>:<i class="spec-det-clock" id="time_hour">0</i>:<i class="spec-det-clock" id="time_min">0</i>:<i class="spec-det-clock" id="time_sec">0</i>
+					</div>
+					
+					<div class="spec-detial-list" id="spec_det_l">
+						<ul class="spec-det-ul" id="spec_det_ul"></ul>
+					</div>
+				</div>
+			</div> 
+			
+  			<div class="sidebar-r" id="sidebar_r">
+				<div class="side-r-con">
+					<div class="side-r-item">
+						<div class="side-r-item-title">经验分类-<span class="query-s-c" id="exp_t">不限</span><img class="side-r-item-ico-d" src="/img/app_auction_q_d.png" /></div>
+						<ul class="side-r-item-ul">
+							<li class="side-r-item-li side-exp b-t0 side-r-item-s" data-id="0">不限<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-exp" data-id="1">3年<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-exp" data-id="2">3-5年<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-exp" data-id="3">大于5年<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+						</ul>
+					</div>
+					
+					<div class="side-r-item">
+						<div class="side-r-item-title">城市分类-<span class="query-s-c" id="city_t">不限</span><img class="side-r-item-ico-d" src="/img/app_auction_q_d.png" /></div>
+						<ul class="side-r-item-ul">
+							<li class="side-r-item-li side-city b-t0 side-r-item-s" data-id="0">不限<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-city" data-id="110100">北京<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-city" data-id="310100">上海<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-city" data-id="440100">广州<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-city" data-id="440300">深圳<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-city" data-id="330100">杭州<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+						</ul>
+					</div>
+					
+					<div class="side-r-item">
+						<div class="side-r-item-title">学历分类-<span class="query-s-c" id="edu_t">不限</span><img class="side-r-item-ico-d" src="/img/app_auction_q_d.png" /></div>
+						<ul class="side-r-item-ul">
+							<li class="side-r-item-li side-edu b-t0 side-r-item-s" data-id="0">不限<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-edu" data-id="1">大专<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-edu" data-id="2">本科<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-edu" data-id="3">硕士<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+							<li class="side-r-item-li side-edu" data-id="4">博士<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+						</ul>
+					</div>
+					
+					<div class="side-r-item b-b-e0">
+						<div class="side-r-item-title">技能分类-<span class="query-s-c" id="skill_t">不限</span><img class="side-r-item-ico-d" src="/img/app_auction_q_d.png" /></div>
+						<ul class="side-r-item-ul" id="side_skill">
+							<li class="side-r-item-li side-skill b-t0 side-r-item-s" data-id="0">不限<img class="side-r-item-s-ico" src="/img/app_auction_r.png"/></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

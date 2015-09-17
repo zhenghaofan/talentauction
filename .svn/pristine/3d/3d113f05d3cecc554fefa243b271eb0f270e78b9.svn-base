@@ -1,0 +1,138 @@
+
+
+.fc-1 {
+	  color: #4281c6;
+}
+.fz-1 {
+	font-size: 16px;
+}
+.fz-2 {
+	font-size: 18px;
+}
+
+
+.pwd-wrap {
+	width: 650px;
+	color: #6B7485;
+	border-radius: 3px;  
+	margin: 130px auto 100px;
+	background-color: #fff;
+}
+.pwd-wrap input {
+	color: #3B3B3B;
+	text-indent: 12px;
+	border-radius: 3px;
+	background-color: #eceef1;
+}
+.pwd-wrap .item-title {
+	height: 70px;
+	font-size: 20px;
+	line-height: 70px;
+	padding-left: 40px;
+	border-bottom: 1px solid #eceef1;
+}
+.pwd-wrap .btn {
+	color: #fff;
+	font-size: 16px;
+	text-align: center;
+	vertical-align: top;
+	border-radius: 3px;
+	background-color: #70a7df;
+	display: inline-block;
+	cursor: pointer;
+}
+.pwd-wrap .btn:hover {
+	background-color: #4182c6;
+}
+
+.step-1 {
+	width: 500px;
+	height: 150px;
+	padding-top: 85px;
+	margin: 0 auto;
+	text-align: center;
+}
+.step-1 input {
+	width: 250px;
+	height: 42px;
+}
+.step-1 .btn {
+	width: 80px;
+	height: 43px;
+	line-height: 43px;	
+}
+
+.checked {
+	min-height: 25px;
+	text-align: left;
+}
+label, .checked label {
+	height: 25px;
+	line-height: 25px;
+	width: 260px;
+	color: #FF1414;
+	text-indent: 20px;
+	padding-left: 18px;
+	margin-left: 81px;
+	display: none;
+}
+label.invalid, .checked label.invalid {
+	background: url(../img/icon-error.png) no-repeat transparent;
+	background-position: 0 45%;
+}
+label.valid {
+	color: #22C837;
+	background: url(../img/icon-prompt-green.png) no-repeat transparent;
+	background-position: 0 46%;
+}
+
+.step-2 {
+	width: 500px;
+	text-align: center;
+	padding-top: 50px;
+	margin: 0 auto;
+}
+.step-2 .con-item {
+	margin-bottom: 10px;
+}
+.step-2 .btn {
+	width: 120px;
+	height: 43px;
+	line-height: 43px;
+	margin: 30px 0;
+}
+.step-2 .btn-dis {
+	font-size: 16px;
+	text-align: center;
+	vertical-align: middle;
+	padding: 10px 16px;
+	border-radius: 3px;
+	border: 1px solid #eceef1;
+	margin: 30px 0;
+	display: inline-block;
+}
+
+.step-3 {
+	width: 500px;
+	text-align: center;
+	padding-top: 50px;
+	margin: 0 auto;	
+}
+.step-3 .con-item {
+	margin-bottom: 20px;
+}
+.step-3 .con-item:first-child {
+	text-align: left;
+	padding-left: 93px;
+}
+.step-3 input {
+	width: 310px;
+	height: 42px;
+}
+.step-3 .btn {
+	width: 120px;
+	height: 43px;
+	line-height: 43px;
+	margin: 30px 0;	
+}
+

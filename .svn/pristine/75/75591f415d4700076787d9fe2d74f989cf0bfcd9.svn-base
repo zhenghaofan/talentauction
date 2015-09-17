@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>实力拍-互联网人才拍卖|专场人才拍卖</title>
+	<meta name="keywords" content="实力拍, 互联网人才拍卖, 中高端人才">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/about.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/about.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/about" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/dist/about-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div> 
+		<div id="main" ng-controller="aboutCtrl">
+			<div class="about-wrap">
+	  			<div class="content" id="top_content">
+	  			</div>
+								
+				<div class="text-con">
+					<p class="text">
+						<div>实力拍由深圳市红领巾网络科技有限公司经营的项目，团队由海内外精英组成，成员来自IBM、Sony、腾讯等世界知名企业，</div>
+						<div>具有帝国理工、伦敦大学等专业学术背景。我们的目标非常清晰，就是为古老的招聘行业注入年轻的、更有活</div>
+						<div>力的元素，帮助人才和企业最迅速找到最适合的工作和人才。</div>
+					</p>
+				</div>
+			
+				<div class="normal-con">
+					<div class="team">
+						<div class="team-title">
+							<span>团队成员</span>
+						</div>
+	
+						<div class="team-list">
+							<div class="team-item m-r35 avt1">
+								<div class="team-tab">
+									<span class="team-name">Patrick</span> <span class="team-job">CEO</span>
+								</div>
+							</div>
+	
+							<div class="team-item m-r35 avt2">
+								<div class="team-tab">
+									<span class="team-name ">Jack</span> <span class="team-job">CTO</span>
+								</div>
+							</div>
+	
+							<div class="team-item m-r35 avt3">
+								<div class="team-tab">
+									<span class="team-name ">Guo</span> <span class="team-job">Backend</span>
+								</div>
+							</div>
+	
+							<div class="team-item avt4">
+								<div class="team-tab">
+									<span class="team-name ">Hao</span> <span class="team-job">Frontend</span>
+								</div>
+							</div>
+	
+							<div class="team-item m-r35 avt5">
+								<div class="team-tab">
+									<span class="team-name ">Bin</span> <span class="team-job">Designer</span>
+								</div>
+							</div>
+	
+							<div class="team-item m-r35 avt6">
+								<div class="team-tab">
+									<span class="team-name ">Tomorrow</span> <span class="team-job">Career Advisor</span>
+								</div>
+							</div>
+	
+							<div class="team-item m-r35 avt7">
+								<div class="team-tab">
+									<span class="team-name ">Mei</span> <span class="team-job">Career Advisor</span>
+								</div>
+							</div>
+							
+							<div class="team-item avt8">
+								<div class="team-tab">
+									<span class="team-name ">Fourteen</span> <span class="team-job">Analyst</span>
+								</div>
+							</div>
+							
+							<div class="team-item m-r35 avt9">
+								<div class="team-tab">
+									<span class="team-name ">Liu</span> <span class="team-job">Career Advisor</span>
+								</div>
+							</div>
+							
+							<div class="team-item m-r35 avt10">
+								<div class="team-tab">
+									<span class="team-name ">Ocean</span> <span class="team-job">Backend</span>
+								</div>
+							</div>
+							
+							<div class="team-item m-r35 avt11">
+								<div class="team-tab">
+									<span class="team-name ">Emma</span> <span class="team-job">Marketing</span>
+								</div>
+							</div>
+							<div class="team-item avt12">
+								<div class="team-tab">
+									<span class="team-name ">You</span> <span class="team-job">...</span>
+								</div>
+							</div>
+						</div>
+	
+					</div>
+				</div>				
+				
+				<div class="contact">
+					<div class="contact-box">
+						<div class="contact-title">
+							<span>联系我们</span>
+						</div>
+	
+						<div class="contact-text">
+							<div>
+								<span>商务合作：business@shilipai.net</span>
+							</div>
+							<div>
+								<span>意见反馈：tellus@shilipai.net</span>
+							</div>
+							<div>
+								<span>服务热线：0755-66619152</span>
+							</div>
+							<div>
+								<span>地址：深圳市南山区松坪山路一号源兴科技大厦东座负一层</span>
+							</div>
+						</div>
+	
+						<!-- <div class="contact-map"></div> -->
+					</div>
+				</div>
+			</div>			
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

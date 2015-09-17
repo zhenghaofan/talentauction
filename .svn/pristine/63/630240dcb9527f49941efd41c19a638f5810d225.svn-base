@@ -1,0 +1,46 @@
+package com.auction.resume.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.auction.resume.model.Resume;
+
+
+public interface ResumeDao {
+	
+	/**
+	 * @param 添加简历信息
+	 * @param resume 
+	 * @return
+	 */
+	public int add_resume(Resume resume); 
+	
+	/**
+	 * @param 获取简历详情
+	 * @param userId 
+	 * @return
+	 */
+	public Map<String, Object> getResumDetailByUserId(String userId); 
+	
+	/**
+	 * @param 获取教育经历
+	 * @param trem 
+	 * @return
+	 */
+	public List<Map<String, Object>> getEducationsAll(String resumeId);
+	
+	/**
+	 * @param 获取工作经历
+	 * @param trem 
+	 * @return
+	 */
+	public List<Map<String, Object>> getWorkExpAll(String resumeId);
+	
+	/**
+	 * @param 获取项目经历
+	 * @param trem 
+	 * @return
+	 */
+	public List<Map<String, Object>> getProjectsAll(String resumeId); 
+	
+}

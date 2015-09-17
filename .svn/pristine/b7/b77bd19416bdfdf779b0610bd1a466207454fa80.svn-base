@@ -1,0 +1,43 @@
+package com.auction.common.util;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+public class CopyImgThread implements Runnable{
+
+	private String inputUrl;
+	private String outUrl;
+	
+	/**
+	 * 图片copy
+	 */
+	public CopyImgThread(String inputUrl,String outUrl) {
+		this.inputUrl = inputUrl;
+		this.outUrl = outUrl;
+	}
+	
+	@Override
+	public void run() {
+		try {
+			File inputFile = new File(inputUrl);//源文件
+			File outFile = new File(outUrl);
+			if(inputFile!=null && inputFile.isFile()){
+				FileUtils.copyFile(inputFile,outFile);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}

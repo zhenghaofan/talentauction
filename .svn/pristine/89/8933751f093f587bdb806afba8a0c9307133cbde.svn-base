@@ -1,0 +1,48 @@
+package com.auction.common.service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/** 
+ * @author tobber
+ * @version 2015年4月15日
+ */
+
+public interface CommonService {  
+	
+	/**
+     * 获取城市列表
+     * @param request
+     * @return
+     */
+    public String getCityList(HttpServletRequest request); 
+    
+    /**
+     * 获取行业领域列表
+     * @param request
+     * @return
+     */
+    public String getAreasList(HttpServletRequest request); 
+    
+    /**
+     * 获取行业领域列表
+     * @param request
+     * @return
+     */
+    public String talentRoute(HttpServletRequest request); 
+    
+    /**
+     * 用户注销
+     * @param request
+     * @return
+     */
+    public String userCancel(HttpServletRequest request,HttpServletResponse response); 
+    
+    /**
+     * 候选人查看简历
+     * @param request
+     * @return
+     */
+    public String getUserResume(HttpServletRequest request);
+    
+}

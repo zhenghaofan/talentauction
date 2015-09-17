@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.common.dao.BidmeDao">  
+    <!-- 获取专场 
+    *bidSum候选人数
+	*bidCount发生拍卖次数
+	*applySum 申请人数
+	*throughSum 通过人数-->
+    <select id="getSpecialList" resultType="java.util.HashMap">
+        select a.*,b.bidSum,c.bidCount,d.applySum,e.throughSum from (select id,name,status,specialCount,favourNum,bidTime,collectTime from special order by id asc,id asc ) a 
+        left join (select count(*) bidSum,special,specialCount,cvBidStatus from resume where cvBidstatus='1' group by special,cvBidStatus) b on a.id=b.special and a.specialCount=b.specialCount 
+        left join (select count(*) bidCount,special,specialCount from bid_logs group by special,specialCount) c on a.id=c.special and a.specialCount=c.specialCount 
+        left join (select count(*) applySum,special,specialCount from resume group by special,specialCount) d on a.id=d.special and a.specialCount=d.specialCount 
+        left join (select count(*) throughSum,special,specialCount,cvBidStatus from resume where cvBidstatus='3' group by special,cvBidStatus) e on a.id=e.special and a.specialCount=e.specialCount
+    </select>
+    
+    <select id="getBidSpecial" resultType="java.util.HashMap">
+    	select a.*,b.bidSum from (select id,name,specialCount,bidTime from special where status=1 order by id asc ) a 
+        left join (select count(*) bidSum,special,specialCount,cvBidStatus from resume where cvBidstatus=1 group by special) b on a.id=b.special 
+    </select>
+    
+    <!--获取简历池信息-->
+    <select id="getBidPools" parameterType="map" resultType="java.util.HashMap">
+        select c.*,
+			d.userId indexUser,
+			ifnull(e.weight,0) weight,
+			h.content,
+			f.status readStatus 
+			<if test="searches != null and searches != ''">
+				,( MATCH(d.jobTitle) AGAINST (#{searches})*0.5 + MATCH(d.skills) AGAINST(#{searches})*0.3+MATCH(d.details) AGAINST (#{searches})*0.2) matchWeight  
+	        </if>
+		from (
+			select a.resumeId,
+				a.userId,
+				a.code,
+				a.skills,
+				a.isShelves,
+				a.sex,
+				a.education,
+				a.jobTitle,
+				a.jobYear,
+				a.expectedSalary,
+				a.destination,
+				a.readCount,
+				a.special,
+				a.specialCount,
+				a.summary,
+				a.previous,
+				a.checkTime 
+			from resume a 
+			where a.cvBidStatus=1  
+			<if test="special != null and special != ''">
+				and a.special=#{special} 
+	        </if>
+	        <if test="previous != null and previous != ''">
+				and a.previous=#{previous} 
+	        </if>
+			<if test="education != null and education != ''">
+				and a.education=#{education} 
+	        </if>
+	        <if test="destination != null and destination != ''">
+				and a.destination like '%${destination}%' 
+	        </if>
+	        <if test="minYear != null and maxYear != null">
+				and a.jobYear between #{minYear} and #{maxYear}  
+	        </if>
+	        <if test="minYear != null and maxYear == null">
+				and a.jobYear > #{minYear} 
+	        </if>
+		) c 
+		left join resume_index d on c.resumeId=d.resumeId 
+		left join (select i.resumeId,i.weight from match_talent i where i.companyId=#{companyId} group by i.resumeId) e on c.resumeId=e.resumeId 
+		left join (select userId,status from read_logs where companyId=#{companyId}) f on c.userId=f.userId 
+		left join (select g.userId,g.content from shield_logs g where g.content like '%${emailStr}%') h on c.userId=h.userId 
+		where h.content is null 
+		<if test="searches != null and searches != ''">
+			and MATCH(d.skills,d.jobTitle,d.details) AGAINST(#{searches}) 
+	    </if>
+	    <if test="searches != null and searches != ''">
+			order by matchWeight desc 
+	    </if>
+	    <if test="searches == null or searches == ''">
+			order by e.weight desc,c.checkTime desc 
+	    </if>
+	    limit #{page},#{pageSize} 
+	</select>
+	
+    <!--
+    <select id="getBidPools" parameterType="map" resultType="java.util.HashMap">
+        select b.*,
+        	<if test="companyId != null and companyId != ''">
+				f.status readStatus,
+				h.content,
+	        </if>
+	        ifnull(j.num,0) num 
+        from (
+			select a.resumeId,
+	        	a.userId,
+	        	a.code,
+	        	a.skills,
+	        	a.isOxcoder,
+	        	a.isShelves,
+	        	a.sex,
+	        	a.education,
+	        	a.jobTitle,
+	        	a.jobYear,
+	        	a.expectedSalary,
+	        	a.destination,
+	        	a.readCount,
+	        	a.special,
+	        	a.specialCount,
+	        	a.summary 
+			from resume a 
+			<if test="searchType != null and searchType == 2 and searches != null and searches !='' "> 
+				,(
+					select resumeId from work_experiences where companyName like '%${searches}%' or jobTitle like '%${searches}%' or workContent like '%${searches}%'
+				) c 
+	        </if>
+	        <if test="searchType != null and searchType == 3 and searches != null and searches !='' "> 
+				,(
+					select resumeId from projects where name like '%${searches}%' or projectDetails like '%${searches}%' 
+				) c 
+	        </if>
+			where 
+			<if test="searchType != null and searchType == 2 or searchType == 3 and searches != null and searches !='' ">
+			    a.resumeId=c.resumeId and   
+	        </if>
+			a.cvBidStatus='1' 
+			<if test="special != null and special != ''">
+				and a.special=#{special} 
+	        </if>
+	        <if test="previous != null and previous != ''">
+				and a.previous=#{previous} 
+	        </if>
+			<if test="education != null and education != ''">
+				and a.education=#{education} 
+	        </if>
+	        <if test="destination != null and destination != ''">
+				and a.destination like '%${destination}%' 
+	        </if>
+	        <if test="minYear != null and minYear != '' and maxYear != null and maxYear != ''">
+				and a.jobYear between #{minYear} and #{maxYear}  
+	        </if>
+	        <if test="minYear != null and minYear != '' and maxYear == null">
+				and a.jobYear > #{minYear} 
+	        </if>
+	        <if test="searchType != null and searchType == 1 and searches != null and searches !='' "> 
+				and (a.jobTitle like '%${searches}%' or a.skills like '%${searches}%') 
+	        </if>
+		) b 
+        <if test="companyId != null and companyId != ''">
+			left join (
+				select * from read_logs where companyId=#{companyId}
+			) f on f.userId=b.userId 
+			left join (
+				select g.userId,
+					g.content 
+				from shield_logs g 
+				where g.content like '%${emailStr}%'
+			) h on h.userId=b.userId 
+	    </if>
+	    <if test="special != null and special!='' and specialCount != null and specialCount!=''">
+			left join (
+				select count(userId) num,
+					i.userId 
+				from bid_logs i 
+				where i.special=#{special} and i.specialCount=#{specialCount} group by i.userId
+		    ) j on j.userId=b.userId 
+	    </if>
+	    <if test="special == null or special==''">
+			left join (
+				select count(*) num,
+					i.userId,
+					special,
+					specialCount 
+				from bid_logs i group by i.userId,i.special,i.specialCount 
+		    ) j on j.userId=b.userId and j.special=b.special and j.specialCount=b.specialCount 
+	    </if>
+	    <if test="companyId != null and companyId != ''">
+			where h.content is null 	
+			<if test="readState != null and readState == 2">
+				and f.status is null 
+			</if> 
+			<if test="readState != null and readState != 2">
+				and f.status =#{readState} 
+			</if>       
+	    </if>
+		order by ${sort} limit #{page},#{pageSize} 
+	</select>
+	-->
+	
+    <!--获取简历池信息总数-->
+    <select id="getBidPoolsTotal" parameterType="map" resultType="Integer">
+			select count(*) total  
+		from (
+			select a.resumeId,
+				a.userId,
+				a.skills,
+				a.education,
+				a.jobTitle,
+				a.jobYear,
+				a.destination,
+				a.special,
+				a.previous 
+			from resume a 
+			where a.cvBidStatus=1  
+			<if test="special != null and special != ''">
+				and a.special=#{special} 
+	        </if>
+	        <if test="previous != null and previous != ''">
+				and a.previous=#{previous} 
+	        </if>
+			<if test="education != null and education != ''">
+				and a.education=#{education} 
+	        </if>
+	        <if test="destination != null and destination != ''">
+				and a.destination like '%${destination}%' 
+	        </if>
+	        <if test="minYear != null and minYear != '' and maxYear != null and maxYear != ''">
+				and a.jobYear between #{minYear} and #{maxYear}  
+	        </if>
+	        <if test="minYear != null and minYear != '' and maxYear == null">
+				and a.jobYear > #{minYear} 
+	        </if>
+		) c 
+		left join resume_index d on c.resumeId=d.resumeId 
+		left join (select i.resumeId,i.weight from match_talent i where i.companyId=#{companyId} ) e on c.resumeId=e.resumeId 
+		left join (select g.userId,g.content from shield_logs g where g.content like '%${emailStr}%') h on c.userId=h.userId 
+		where h.content is null 
+		<if test="searches != null and searches != ''">
+			and MATCH(d.skills,d.jobTitle,d.details) AGAINST(#{searches})>0 
+	    </if>
+	</select>
+	
+    <!-- 获取拍卖价格 -->
+    <!-- 
+    <select id="getBidPricieLogs" parameterType="String" resultType="map">
+        select bidPrice from bid_logs where userId=#{0} and companyId=#{1} order by bidPrice desc limit 0,1;
+    </select>
+    -->
+    
+    <!-- 获取阅读记录 -->
+    <select id="getReadLog" parameterType="String" resultType="map">
+        select status from read_logs where userId=#{0} and companyId=#{1};
+    </select>
+    
+    <!-- 添加阅读记录 -->
+    <insert id="addReadLog" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+    	insert into read_logs (userId,companyId,readTime,status) values (#{userId},#{companyId},#{readTime},#{status})
+    </insert>
+    
+    <!-- 添加拍卖记录 -->
+    <insert id="addBidLog" useGeneratedKeys="true" keyProperty="id" parameterType="com.auction.common.model.BidLogs">
+    	insert into bid_logs (
+    		userId,companyId,minBidPrice,maxBidPrice,isOption,workTitle,bidTime,isReply,bidCount,special,specialCount,isDelete
+    	) values (
+    		#{userId},#{companyId},#{minBidPrice},#{maxBidPrice},#{isOption},#{workTitle},#{bidTime},0,#{bidCount},#{special},#{specialCount},0
+    	)
+    </insert>
+    
+    <!-- 获取公司竞拍 邮件信息-->
+    <select id="getCompanyAuctionEmailInfo" parameterType="String" resultType="map">
+        select a.*,b.nickName,b.progress,b.size,c.name cityName,d.email,d.openId,e.name from (
+        	select userId,companyId from bid_logs where userId=#{0} and companyId=#{1} limit 0,1
+        ) a 
+        left join company b on a.companyId=b.companyId 
+        left join cities c on b.city=c.id 
+        left join rigistration d on a.userId=d.userId 
+        left join resume e on e.userId=a.userId 
+    </select>
+    
+    <select id="getResumDynamic" parameterType="map" resultType="java.util.HashMap">
+        select a.*,
+        	b.progress 
+        from (
+        	select userId,
+        		companyId,
+        		bidTime,
+        		minBidPrice,
+        		maxBidPrice 
+        	from bid_logs 
+        	where userId=#{userId} and special=(select special from resume where userId=#{userId}) and specialCount=(select specialCount from resume where userId=#{userId}) order by id desc 
+        	limit #{page},#{pageSize}
+        ) a left join company b on a.companyId=b.companyId
+    </select>
+    
+    <select id="getResumDynamicTotal" parameterType="map" resultType="Integer">
+        	select 
+        		count(*)  
+        	from bid_logs 
+        	where userId=#{userId} and special=(select special from resume where userId=#{userId}) and specialCount=(select specialCount from resume where userId=#{userId}) 
+    </select>
+    
+    <select id="getCountdown" parameterType="map" resultType="String">
+        select 
+        	date_add(str_to_date(a.bidTime,'%Y-%m-%d %T'),interval a.duration day) endTime 
+        from special_logs a 
+        where bidStatus!=0 
+        <if test="special != null and special != ''">
+            and special=#{special} 
+        </if>
+        <if test="specialCount != null and specialCount != ''">
+            and specialCount=#{specialCount} 
+        </if>
+        order by endTime desc limit 1
+    </select>
+    
+    <select id="getPrevious" parameterType="map" resultType="String">
+        select 
+        	count(*) num 
+        from special_logs  
+        where bidStatus!=0 
+        <if test="special != null and special != ''">
+            and special=#{special} 
+        </if>
+        group by special order by num desc limit 1
+    </select>
+    
+</mapper> 

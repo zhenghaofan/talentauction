@@ -1,0 +1,55 @@
+$(function($) {
+	$('.sign-wrap').show();
+	
+	$("#submit").on('click', function(){
+		var param = {
+				userName: $("#email").val(),
+			    password: $("#password").val()
+		};
+		
+		if(!_check(param)) return;
+		
+		$.post('/wechat/userWechatBind ', param, function(res){
+			  res = $.parseJSON(res);
+			  if( res.code == 200 ) {
+				  $(".sign-wrap").hide();
+				  $(".success").show();
+				  var time = 5;
+				  var handle = setInterval(function() {
+					  if( time > 0 ) {
+						  time --;
+						  $("#time_text").text(time);
+					  } else {
+						  clearInterval(handle);
+						  WeixinJSBridge.call('closeWindow');
+					  }
+				  }, 1000);
+				  
+			  } else {
+				  T.alert(res.message);
+			  }
+		});
+	});
+	
+	$("#close_btn").on('click', function() {
+		 WeixinJSBridge.call('closeWindow');
+	});
+	
+	function _check(data) {
+		if( !data.userName ) {
+			$('#email').focus();
+			T.alert('请输入邮箱');
+			return false;
+		} else if( data.userName.indexOf('@') == -1 ) {
+			$('#email').focus();
+			T.alert('邮箱格式不对');
+			return false;
+		} else if( !data.password ) {
+			$('#password').focus();
+			T.alert('请输入密码');
+			return false;
+		}
+		
+		return true;
+	}
+});

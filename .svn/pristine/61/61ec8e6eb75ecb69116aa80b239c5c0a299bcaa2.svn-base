@@ -1,0 +1,70 @@
+if (typeof define !== 'function') {
+	var define = require('amdefine')(module);
+}
+
+define(['$','angular','app'], function($, angular, app) {
+	app.factory('uiservice', ['$http', '$q',
+	   function($http, $q) {
+		   
+		  var exports = {};
+		  
+		  exports.alert = function(text, _callback) {
+			  _init();
+			  
+			  $('#bidModal').show();
+			  $('#bidModal .modal-body span').text(text);
+			  $('#bidModal .cancel').hide();
+			  
+			  $('.modal-footer button, .modal-header button').click(function() {
+				  $('#bidModal').remove();
+				  var text = $(this).text();
+				  if(typeof _callback === 'function' && angular.equals(text, '确定')) {
+					  _callback();
+				  }
+			  });			  
+		  };
+		  
+		  exports.confirm = function(text, _callback) {
+			  _init();
+			  
+			  $('#bidModal').show();
+			  $('#bidModal .modal-body span').text(text);
+			  
+			  $('.modal-footer button, .modal-header button').click(function() {
+				  $('#bidModal').remove();
+				  var text = $(this).text();
+				  if(typeof _callback === 'function' && angular.equals(text, '确定')) {
+					  _callback();
+				  }
+			  });			  
+		  };
+		  
+		  
+		  function _init() {
+			  $('body').append(  
+				'<div id="bidModal" class="bid-modal modal">'+
+					'<div class="modal-backdrop in"></div>'+
+					'<div class="modal-dialog">'+
+						'<div class="modal-content">'+
+							'<div class="modal-header">'+
+								'<button class="close">x</button>'+
+							'</div>'+
+							'<div class="modal-body">'+
+								'<div class="popt-resume-warp">'+
+									'<span >你确定要提交审核吗？</span>'+
+								'</div>'+
+							'</div>'+
+							'<div class="modal-footer">'+
+								'<div>'+
+									'<button class="btn btn-primary">确定</button>'+
+									'<button class="btn btn-primary cancel">取消</button>'+
+								'</div>'+
+							'</div>'+		
+						'</div>'+
+					'</div>'+
+				'</div>');
+		  }
+		  
+		  return exports;
+	}]);
+});

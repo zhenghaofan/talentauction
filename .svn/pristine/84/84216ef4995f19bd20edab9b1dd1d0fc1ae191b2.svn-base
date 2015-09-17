@@ -1,0 +1,144 @@
+
+
+body {
+	background-color: #E2E2E2;
+}
+
+
+/* 我要竞拍*/
+.bid-wrap {
+	padding-bottom: 15px;
+}
+.bid-wrap .c_b {
+	color: #3988CD;
+}
+.bid-wrap .c_r {
+	color: #E6775C;
+}
+.bid-wrap .f_b {
+	font-weight: bold;
+}
+.bid-wrap .top-bar {
+	height: 50px;
+	line-height: 50px;
+	color: #fff;
+	font-size: 1.3em;
+	text-align: center;
+	background-color: #2d4e7b;
+}
+.bid-wrap .top-bar span {
+	margin-left: -40px;
+}
+.bid-wrap .top-bar-ico {
+	width: 15px;
+	padding: 12px 10px 0 15px;	
+}
+.bid-wrap .top-bar-spec {
+	float: left;
+	height: 50px;
+}
+.bid-wrap .button {
+	height: 45px;
+	line-height: 45px;
+	color: #fff;
+	font-size: 18px;
+	text-align: center;
+	border-radius: 3px;
+	margin: 0 10px;
+	background-color: #3A89CE ;
+}
+.bid-wrap .button:active {
+	background-color: #337BBA;
+}
+.bid-wrap .title {
+	height: 55x;
+	font-size: 16px;
+	line-height: 55px;
+	padding: 0 10px;
+	font-weight: bold;
+}
+.info-status-warp {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	padding: 0 4px;
+	margin: 10px 10px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.info-status-warp .title {
+	border-bottom: 1px solid #ccc;
+}
+.info-status-warp .title input {
+	height: 35px;
+	width: 40px;
+	border: none;
+	border-radius: 3px;
+	background-color: #E3E3E3;
+}
+.info-status-warp .title .price_a {
+	position: relative;
+	top: 2px;
+	height: 30px;
+	line-height: 30px;
+	margin-left: 5px;
+	display: inline-block;
+}
+.info-status-warp .title .radio {
+	height: 30px;
+	width: 30px;
+	vertical-align: middle;
+	border-radius: 3px;
+	background: #3A89CE url(../img/app_draw_w.png) no-repeat;
+	background-position: 50%;
+	display: inline-block;
+}
+.info-status-warp .title .disabled {
+	background: #E3E3E3;
+	background-position: 50%;
+}
+.info-status-warp .context {
+	padding: 10px 10px;
+}
+.info-status-warp .context span {
+	height: 40px;
+	line-height: 30px;
+	font-size: 16px;
+	display: inline-block;
+}
+.info-status-warp textarea {
+	height: 130px;
+	width: 100%;
+	border: none;
+	border-radius: 3px;
+	padding: 10px 0;
+	background-color: #E3E3E3;
+}
+
+
+/* 我要竞拍*/
+.success {
+	padding-bottom: 15px;
+	display: none;
+}
+.success .c_b {
+	color: #3988CD;
+}
+.success .c_r {
+	color: #E6775C;
+}
+.success .f_b {
+	font-weight: bold;
+}
+.success .tips {
+	font-size: 1.2em;
+	text-align: center;
+	margin-top: 120px;
+}
+.success .tips a {
+	color: #3A89CE;
+}
+.success .tips span {
+	height: 40px;
+	line-height: 40px;
+	display: block;
+}

@@ -1,0 +1,409 @@
+package com.auction.common.service.impl;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.stereotype.Service;
+
+import com.auction.common.dao.BaseDao;
+import com.auction.common.dao.UserDao;
+import com.auction.common.model.User;
+import com.auction.common.service.UserService;
+import com.auction.common.util.MD5Util;
+import com.auction.common.util.SendCloudThread;
+import com.auction.common.util.SysConfig;
+import com.auction.common.util.Util;
+import com.auction.resume.model.Resume;
+
+/** 
+ * @author tobber
+ * @version 2015年4月15日
+ */
+
+@Service
+public class UserServiceLmpl implements UserService{
+
+	@Resource  
+    private UserDao userDao;
+	@Resource  
+    private BaseDao baseDao;
+
+	@Override
+	public String userRegister(HttpServletRequest request,HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		int resultCode = 0;
+		try {
+			if(request.getSession().getAttribute("sms")!=null && !"".equals(request.getSession().getAttribute("sms"))){
+				String[] smsStr = request.getSession().getAttribute("sms").toString().split("_");
+				
+				if("1".equals(smsStr[3])){ //判断短信验证是否成功
+					
+					Boolean flag = true;
+		        	User newuser = new User();
+		        	
+		        	if(Util.isVerify(request.getParameter("email"), 0, 0, "^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")){
+		        		newuser.setEmail(request.getParameter("email"));
+		        		int userCount = userDao.getUserCountByEmail(request.getParameter("email"));
+		        		if(userCount>0){
+		        			resultCode = 308;json.put("message", "邮箱已被注册！"); //邮箱已被注册
+		        		}
+		        	}else{
+		        		resultCode = 301;json.put("message", "邮箱输入有误！");//邮箱输入有误
+		        		flag = false;
+		        	}
+		        	
+		        	if(Util.isVerify(request.getParameter("password"),0,0,"[0-9A-Za-z_]{6,16}")){
+		        		newuser.setPassword(MD5Util.encode2hex(request.getParameter("password")));
+		        	}else{
+		        		resultCode = 302; json.put("message", "密码输入有误！");//密码输入有误
+		        		flag = false;
+		        	}
+		        	
+	        		if("1".equals(request.getParameter("status"))){
+	        			if(Util.isVerify(request.getParameter("jobTitle"),1,25,null)){
+	        				newuser.setJobTitle(request.getParameter("jobTitle"));
+			        	}else{
+			        		resultCode = 303; json.put("message", "职位输入有误！");//职位输入有误，长度为2~20
+			        		flag = false;
+			        	}
+	        			
+	        			if(Util.isVerify(request.getParameter("name"),1,25,null)){
+	        				newuser.setName(request.getParameter("name"));
+			        	}else{
+			        		resultCode = 304; json.put("message", "姓名输入有误！");//姓名输入有误，长度为2~15
+			        		flag = false;
+			        	}
+	        			newuser.setStatus(1);
+	        		}else{
+	        			if(request.getParameter("skills")==null || request.getParameter("skills").length()>26 || request.getParameter("skills").length()<2){
+			        		resultCode = 306; json.put("message", "技能输入有误！");//技能输入有误，长度为2~26位
+			        		flag = false;
+			        	}
+			        	
+			        	if(request.getParameter("destination")==null || request.getParameter("destination").length()>26 || request.getParameter("destination").length()<2){
+			        		resultCode = 307;json.put("message", "目标城市输入有误！"); //技能输入有误，长度为2~26位
+			        		flag = false;
+			        	}
+	        			newuser.setStatus(0);
+	        		}
+	        		
+		        	if(Util.isVerify(request.getParameter("telephone"), 0, 0,"[0-9]{11}")){
+		        		newuser.setTelephone(request.getParameter("telephone"));
+		        	}else{
+		        		resultCode = 305;json.put("message", "号码输入有误，号码必须11位！"); //号码输入有误，长度为11位
+		        		flag = false;
+		        	}
+		        	
+		        	if(flag){
+		        		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		        		String activaCode = MD5Util.encode2hex(request.getParameter("email"))+"_"+df.parse(df.format(new Date())).getTime();
+	        			newuser.setIsNormal(1);
+	        			newuser.setType(0);
+	        			newuser.setRigistraTime(df.format(new Date()));
+	        			newuser.setActivaCode(activaCode);
+	        			userDao.user_register(newuser);
+	        			
+	        			if(newuser.getStatus()==0 && newuser.getUserId()>0){ //候选人，初始化简历表
+        					Resume resume = new Resume();
+	        				resume.setUserId(newuser.getUserId());
+	        				resume.setCreatTime(df.format(new Date()));
+	        				resume.setSkills(request.getParameter("skills"));
+	        				resume.setDestination(request.getParameter("destination"));
+	        				userDao.add_resume(resume);
+	        			}
+	        			
+	        			if(newuser.getUserId()>0){
+	        				String _useName = newuser.getEmail().replace("@", "&");
+	                        Cookie c= new Cookie("userEmail",_useName); 
+	                        c.setPath("/");
+	                        response.addCookie(c);
+	                        Cookie s= new Cookie("status",newuser.getStatus()+""); 
+	                        s.setPath("/");
+	                        response.addCookie(s);
+	                         
+	                        //邮件发送
+	                        final String url = SysConfig.getValue("MAIL_URL").toString()+"?code="+activaCode;
+	                        String statusStr=null;
+	                        if(newuser.getStatus()==1){
+	                        	statusStr="企业交流q群：345580895";
+	                        }else{
+	                        	statusStr = "人才交流q群：338403574";
+	                        }
+	                        DateFormat dateDf=new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+	                        String substitution_vars = "{\"to\": [\""+newuser.getEmail()+"\"], \"sub\" : { \"%email%\" : [\""+newuser.getEmail()+"\"], \"%rigistUrl%\" : [\""+url+"\"], \"%url%\" : [\""+url+"\"], \"%date%\" : [\""+dateDf.format(new Date())+"\"], \"%userQQ%\" : [\""+statusStr+"\"]}}";
+	                        new Thread(new SendCloudThread("userActivation", substitution_vars, "实力拍激活邮件")).start();
+	        			}
+	        			json.put("code", 200);
+	        			json.put("message", "注册成功！");
+		        	}else{
+		        		json.put("code", resultCode);
+		        	}
+				}else{
+					json.put("code", 309);
+		            json.put("message", "验证码错误，请重新验证！");
+				}
+			}else{
+				json.put("code", 309);
+	            json.put("message", "验证码已失效！");
+			}
+			
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常！");
+        }
+		return json.toString();
+	}
+
+	@Override
+	public String emailVerify(HttpServletRequest request,HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(request.getParameter("email")!=null && request.getParameter("email").matches("^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")){
+    		int userCount = userDao.getUserCountByEmail(request.getParameter("email"));
+    		if(userCount>0){
+    			json.put("code", 301);
+    			json.put("message", "该邮箱已被注册！");
+    		}else{
+    			json.put("code", 200);
+    			json.put("message", "验证通过！");
+    		}
+    	}
+		return json.toString();
+	}
+
+	@Override
+	public String userLogin(HttpServletRequest request,HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		try {  
+        	if(Util.isVerify(request.getParameter("email"),0,0,"^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$") && 
+        			Util.isVerify(request.getParameter("password"),0,0,"[0-9A-Za-z_]{6,16}")){
+        		
+        		Map<String, Object> userMap = userDao.user_login(request.getParameter("email"), MD5Util.encode2hex(request.getParameter("password")));
+        		
+        		if(userMap!=null && userMap.size()>0){
+        			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+                    Map<String, Object> params = new HashMap<String, Object>();
+                    Map<String, Object> paramsMap = new HashMap<String, Object>();
+                    paramsMap.put("loginTime", df.format(new Date()));
+                    params.put("tableName", "rigistration");
+                    params.put("trem", "userId='"+userMap.get("userId")+"'");
+                    params.put("paramsMap", paramsMap);
+                    baseDao.baseUpdate(params);
+                    
+	    			if(userMap.get("isNormal")!=null && !"".equals(userMap.get("isNormal").toString())){
+	    				request.getSession().setAttribute("email", request.getParameter("email"));
+	                    request.getSession().setAttribute("status", userMap.get("status").toString());
+	                    request.getSession().setAttribute("userId", userMap.get("userId").toString());
+	                    request.getSession().setAttribute("isSuccess", userMap.get("isSuccess").toString());
+	                    request.getSession().setAttribute("isSaveUserInfo",userMap.get("isSaveUserInfo").toString());
+	                    if(userMap.get("companyId")!=null && !"".equals(userMap.get("companyId").toString())){
+	                    	request.getSession().setAttribute("companyId", userMap.get("companyId").toString());
+	                    }
+	                    String _useName = request.getParameter("email").replace("@", "&");
+	                    Cookie c= new Cookie("userEmail",_useName); 
+	                    c.setPath("/");
+	                    response.addCookie(c);
+	                    Cookie s= new Cookie("status",userMap.get("status").toString()); 
+	                    s.setPath("/");
+	                    response.addCookie(s);
+	                    json.put("code", 200);
+	                    json.put("message", "登入成功");
+	                    json.put("user", userMap);
+	    			}else{
+	    				json.put("code", 301);
+	                    json.put("message", "抱歉，您的账号已被管理员拉入黑名单！");
+	    			}
+        		}else{
+        			json.put("code", 302);
+                    json.put("message", "用户名或密码错误！");
+        		}
+        	}else{
+        		json.put("code", 303);
+                json.put("message", "用户名或密码错误！");
+        	}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", "500");
+            json.put("message", "服务器异常");
+        }  
+		return json.toString();
+	} 
+	
+	@Override
+	public String editEmail(HttpServletRequest request,HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		try {  
+        	if(Util.isVerify(request.getParameter("email"),0,0,"^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")){
+                    Map<String, Object> params = new HashMap<String, Object>();
+                    Map<String, Object> paramsMap = new HashMap<String, Object>();
+                    paramsMap.put("email", request.getParameter("email"));
+                    params.put("tableName", "rigistration");
+                    params.put("trem", "userId='"+request.getSession().getAttribute("userId")+"'");
+                    params.put("paramsMap", paramsMap);
+                    int num = baseDao.baseUpdate(params);
+                    if(num>0){
+                    	request.getSession().setAttribute("email", request.getParameter("email"));
+                    	String _useName = request.getParameter("email").replace("@", "&");
+	                    Cookie c= new Cookie("userEmail",_useName); 
+	                    c.setPath("/");
+	                    response.addCookie(c);
+	                    
+                    	json.put("code", 200);
+                        json.put("message", "修改成功！");
+                    }else{
+                    	json.put("code", 301);
+                        json.put("message", "修改失败！");
+                    }
+        	}else{
+        		json.put("code", 302);
+                json.put("message", "请输入正确的邮箱！");
+        	}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }  
+		return json.toString();
+	}  
+	
+	@Override
+	public String editPassword(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+			if(Util.isVerify(request.getParameter("newpwd"),0,0,"[0-9A-Za-z_]{6,16}") && Util.isVerify(request.getParameter("oldpwd"),0,0,"[0-9A-Za-z_]{6,16}")){
+        		int num = userDao.getUserInfoByUserId(request.getSession().getAttribute("userId").toString(), MD5Util.encode2hex(request.getParameter("oldpwd"))); 
+        		if(num>0){
+        			Map<String, Object> params = new HashMap<String, Object>();
+        			Map<String, Object> paramsMap = new HashMap<String, Object>();
+        			paramsMap.put("password", MD5Util.encode2hex(request.getParameter("newpwd")));
+        			params.put("tableName", "rigistration");
+        			params.put("trem", "userId='"+request.getSession().getAttribute("userId").toString()+"'");
+        			params.put("paramsMap", paramsMap);
+        			num = baseDao.baseUpdate(params);
+        		}
+				if(num>0){
+					json.put("code", 200);
+				    json.put("message", "修改成功！");
+				}else{
+					json.put("code", 301);
+				    json.put("message", "修改失败！");
+				}
+        	}else{
+        		json.put("code", 302);
+                json.put("message", "密码输入有误！");
+        	}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }  
+		return json.toString();
+	}
+	
+	@Override
+	public String getContacts(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+    		Map<String, Object> resultMap = userDao.getContactsByUserId(request.getSession().getAttribute("userId").toString()); 
+			if(resultMap!=null && resultMap.size()>0){
+				json.put("code", 200);
+				json.put("queryList", resultMap);
+			    json.put("message", "获取成功！");
+			}else{
+				json.put("code", 301);
+			    json.put("message", "获取失败！");
+			}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }  
+		return json.toString();
+	} 
+	
+	@Override
+	public String updateContacts(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try { 
+			int num = 0;
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("jobTitle"),1,25,null)){
+				paramsMap.put("jobTitle",request.getParameter("jobTitle"));
+        	}
+			
+			if(Util.isVerify(request.getParameter("name"),1,25,null)){
+				paramsMap.put("name",request.getParameter("name"));
+        	}
+			if(paramsMap!=null && paramsMap.size()>0){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("tableName", "rigistration");
+				params.put("trem", "userId='"+request.getSession().getAttribute("userId").toString()+"'");
+				params.put("paramsMap", paramsMap);
+				num = baseDao.baseUpdate(params);
+			}
+			if(num>0){
+				json.put("code", 200);
+			    json.put("message", "修改成功！");
+			}else{
+				json.put("code", 301);
+			    json.put("message", "修改失败！");
+			}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }  
+		return json.toString();
+	}
+
+	@Override
+	public String resetPwd(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try { 
+			if(request.getSession().getAttribute("code")!=null && request.getParameter("code")!=null && 
+					request.getSession().getAttribute("code").toString().equals(request.getParameter("code"))){
+				if(Util.isVerify(request.getParameter("newpwd"),0,0,"[0-9A-Za-z_]{6,16}") 
+						&& Util.isVerify(request.getParameter("compwd"),0,0,"[0-9A-Za-z_]{6,16}")){
+					if(request.getParameter("newpwd").equals(request.getParameter("compwd"))){
+						int num =0;
+						int userCount = userDao.getUserCountByActivaCode(request.getSession().getAttribute("code").toString());
+						if(userCount==1){
+							num = userDao.resetpwd(request.getParameter("newpwd"), request.getSession().getAttribute("code").toString());
+						}
+						if(num>0){
+							json.put("code", 200);
+				            json.put("message", "修改成功！");
+						}else{
+							json.put("code", 301);
+				            json.put("message", "修改失败！");
+						}
+					}else{
+						json.put("code", 302);
+			            json.put("message", "确认密码有误！");
+					}
+				}else{
+					json.put("code", 303);
+		            json.put("message", "密码输入有误！");
+				}
+			}else{
+				json.put("code", 304);
+	            json.put("message", "链接已失效！");
+			}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }  
+		return json.toString();
+	}
+}

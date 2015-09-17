@@ -1,0 +1,122 @@
+if (typeof define !== 'function') {
+	var define = require('amdefine')(module);
+}
+
+define(['app', '$'], function(app, $) {
+	app.factory('info', ['$q', '$http', function($q, $http){
+		
+		function getEdus() {
+			return [{
+				id: '0',
+				value: '其他'
+			},{
+				id: '1',
+				value: '大专'
+			},{
+				id: '2',
+				value: '本科'
+			},{
+				id: '3',
+				value: '硕士'
+			},{
+				id: '4',
+				value: '博士'
+			}];			
+		}
+	
+		/* 工作经验*/
+		function getJobYear() {
+			return [{
+				id: '0',
+				value: '不限'
+			},{
+				id: '1',
+				value: '3年以下'
+			},{
+				id: '2',
+				value: '3-5年'
+			},{
+				id: '3',
+				value: '大于5年'
+			}]			
+		}
+	
+		/* 热门城市*/
+		function getHotCitys() {
+			return [{
+				id: '0',
+				value: '不限'
+			},{
+				id: '110100',
+				value: '北京'
+			},{
+				id: '310100',
+				value: '上海'
+			},{
+				id: '440100',
+				value: '广州'
+			},{
+				id: '440300',
+				value: '深圳'
+			},{
+				id: '330100',
+				value: '杭州'
+			}]			
+		}
+	
+		/* 学历*/
+		function getEducation() {
+			return [{
+				id: '0',
+				value: '不限'
+			},{
+				id: '1',
+				value: '大专'
+			},{
+				id: '2',
+				value: '本科'
+			},{
+				id: '3',
+				value: '硕士'
+			},{
+				id: '4',
+				value: '博士'
+			}]	
+			
+		}
+	
+		/* 热门搜索条件*/
+		function getHotWords() {
+			return [{
+				id: '0',
+				value: 'Android,iOS,HTML5,Java,PHP,UI设计,产品经理,运营总监'.split(',')
+			},{
+				id: '1',
+				value: 'HTML5,iOS,Android,Javascript,U3D'.split(',')
+			},{
+				id: '2',
+				value: 'Java,PHP,Python,.Net,C'.split(',')
+			},{
+				id: '3',
+				value: '产品经理,游戏策划,产品设计师,产品总监'.split(',')
+			},{
+				id: '4',
+				value: '网页设计,App设计,UI设计,原画师,设计总监'.split(',')
+			},{
+				id: '5',
+				value: '内容运营,用户运营,新媒体运营,文案策划,运营总监'.split(',')
+			},{
+				id: '6',
+				value: '网络安全,测试开发,硬件测试,游戏测试,运维开发'.split(',')
+			}]
+		}
+
+		return {
+			getEdus : getEdus,
+			getJobYear: getJobYear,
+			getHotCitys: getHotCitys,
+			getEducation: getEducation,
+			getHotWords: getHotWords
+		};
+	}]);
+});

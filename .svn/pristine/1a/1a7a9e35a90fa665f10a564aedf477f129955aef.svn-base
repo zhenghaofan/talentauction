@@ -1,0 +1,359 @@
+
+.viewport {
+    padding-top: 100px;
+    background-color: #ECEEF1;
+    overflow: hidden;
+}
+
+.account-wrap {
+	width: 800px;
+	color: #6B7485;
+	margin: 0 auto 80px;
+}
+.btn {
+	color: #fff;
+	text-align: center;
+	border: 0;
+	display: inline-table;
+	cursor: pointer;
+}
+.btn.btn-danger {
+	width: 100px;
+	height: 35px;
+	line-height: 35px;
+	background-color: #fd7d7d;
+}
+.btn.btn-danger:hover {
+	background-color: #f55a5a;
+}
+.btn.btn-disable {
+	background-color: #cbcfd3;
+}
+
+.fc-1 {
+	color: #3578bc;
+}
+.fc-2 {
+	color: #0c9788;
+}
+.fc-3 {
+	color: #4885c2;
+	font-size: 16px;
+    color: #4e5663;
+}
+.fc-4 {
+	color: #d0d3d8;
+}
+.fc-5 {
+	color: #f25d0f;
+}
+.fc-6 {
+	color: #2aa49a;
+}
+.fz-1 {
+	font-size: 12px;
+}
+.fw-b {
+/* 	font-weight: bold; */
+}
+.title-ico {
+    vertical-align: middle;
+    background: url("../img/bg-ico.png") no-repeat;
+    display: inline-block;
+}
+.plus {
+	position: relative;
+}
+.no-data {
+	width: 180px;
+	height: 280px;
+	text-align: right;
+	font-size: 18px;
+	line-height: 250px;
+	margin: 0 auto;
+	background: url("../img/ico_cry1.png") no-repeat 0 75px;
+}
+.info-box {
+	background-color: #fff;
+	border-bottom: 1px solid #eceef1;
+}
+.info-box .title {
+    height: 75px;
+    font-size: 26px;
+    line-height: 85px;
+    padding-left: 45px;
+    color: #4e5663;
+    border-bottom: 1px solid #eceef1;
+    background-color: #fff;
+}
+.info-box .title-ico {
+    width: 18px;
+    height: 34px;
+    background-position: -3px -55px;
+}
+.info-box .info-con {
+	padding: 25px 35px;
+}
+.info-box .info-con .mgn-1 {
+	margin-right: 15px;
+	font-size: 16px;
+    color: #4e5663;
+}
+.info-box .btn-open {
+	color: #3578bc;
+	font-size: 14px;
+}
+.info-box .btn-open:hover {
+    color: #72a6dc;
+}
+.info-box .btn-open:hover {
+	background-color: #fff;
+}
+
+
+.record-box {
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	background-color: #fff;
+}
+.record-box .title {
+    height: 80px;
+    line-height: 50px;
+    padding: 0 45px;
+    border-bottom: 1px solid #eceef1;
+}
+.record-box .record-table {
+	position: relative;
+	width: 700px;
+	height: 315px;
+	margin: 15px auto 0;
+}
+.record-box .menu {
+    text-align: center;
+    line-height: 35px;
+    display: inline-block;
+    cursor: pointer;
+    width: 119px;
+    height: 35px;
+    font-size: 16px;
+    color: #4e5663;
+    margin-top: 30px;
+}
+/* .record-box .menu:hover {
+	color: #70a7df;
+} */
+.record-box .menu.slt {
+	background-color: #ececee;
+}
+.record-box .menu:last-child {
+	border: 0;
+}
+.record-box .tr {
+    height: 55px;
+    line-height: 55px;
+    border-bottom: 1px dotted #eceef1;
+}
+.record-box .tr.prenext {
+	position: absolute;
+	right: 0px;
+	bottom: -7px;
+	font-size: 12px;
+	text-align: right;
+	border-bottom: 0;
+}
+.record-box .tr > span {
+	text-align: right;
+	white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+	display: inline-block;
+}
+.record-box .time {
+	width: 160px;
+}
+.record-box .email {
+	width: 250px;
+}
+.record-box .tr .email{
+    text-align: center;
+}
+.record-box .code {
+	width: 275px;
+}
+.record-box .count {
+	width: 130px;
+}
+.record-box .describe {
+	width: 180px
+}
+.record-box .state {
+	width: 120px;
+}
+.record-box .pre,
+.record-box .next {
+	color: #4885c2;
+	cursor: pointer;
+}
+.record-box .pre:hover,
+.record-box .next:hover {
+	color: #70a7df;
+}
+.record-box .num {
+	margin: 0 5px;
+}
+.pay-box {
+	background-color: #fff;
+	display: none;
+}
+.pay-box .title {
+    height: 75px;
+    font-size: 26px;
+    line-height: 85px;
+    padding: 0 45px;
+    color: #4e5663;
+    border-bottom: 1px solid #eceef1;
+    background-color: #fff;
+}
+.pkg-box {
+	margin-bottom: 10px;
+    float: left;
+    margin-left: 30px;
+}
+.pkg-box .pkg-item {
+	position: relative;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    padding: 0 18px;
+    margin-right: 10px;
+    border: 2px solid #fff;
+    border-radius: 0px;
+    background-color: #f7f7f7;
+    display: inline-block;
+    cursor: pointer;
+    margin-bottom: 20px;
+    width: 174px;
+}
+.pkg-box .pkg-item.slt {
+	border: 2px solid #44b9e3;
+}
+.pkg-box .pkg-item.slt:after {
+	content: '';
+	position: absolute;
+	top: 15px;
+	right: -1px;
+	width: 25px;
+	height: 25px;
+	background: url("../img/icon-check-d.png") no-repeat;
+    display: inline-block;
+}
+.info-text > span {
+	height: 35px;
+	line-height: 35px;
+	display: block;
+}
+.btn-group {
+	margin: 20px 0 50px;
+}
+.btn-group .btn-pay {
+    padding: 9.5px 30px;
+    background: url("../img/ico_user_btn.png") no-repeat -26px -175px;
+    border: 1px solid transparent;
+    border-radius: 1px;
+    text-shadow: -1px -1px 0px #3195b9;
+    color: #fff;
+    margin-right: 100px;
+    cursor: pointer;
+}
+.btn-group .btn-pay:hover {
+    background-position: -136px -175px;
+}
+.tip-wrap {
+	color: #a7a7a8;
+	padding-top: 35px;
+	border-top: 1px dashed #eceef1;
+}
+.tip-wrap span {
+	min-height: 22px;
+	line-height: 22px;
+	display: block;
+}
+
+/* 后修改代码 */
+.user-left{
+	float:left;
+	width: 12%;
+    height: 215px;
+    line-height: 115px;
+    font-size: 16px;
+    color: #4e5663;
+    padding-left: 30px;
+    background-color: #f7f7f7;
+}
+.user-right{
+	float:left;
+	padding: 25px 0 15px 65px;
+}
+.user-right p{
+	height: 35px;
+    line-height: 30px;
+}
+.info-box .info-con-user{
+	height: 215px;
+	padding: 0;
+}
+.box-shadow .info-con-account{
+	height: 140px;
+	padding: 0;
+}
+.user-left-account{
+	height: 140px;
+}
+.ico-Enter{
+	padding: 0.5px 7px;
+    background: url("../img/ico_user_btn.png") no-repeat -437px -247px;
+    margin-left: 3px;
+}
+.body{
+	padding: 65px 100px;
+}
+
+.clear{
+	clear: both;
+}
+.info-text-pice{
+	float: right;
+    width: 45%;
+    margin-right: -10px;
+}
+.tip-wrap{
+	font-size: 12px;
+	color: #aaa;
+}
+.close{
+	font-size: 12px;
+    color: #3578bc;
+    float: right;
+    cursor: pointer;
+}
+.close:hover {
+    color: #72a6dc;
+}
+.record-box {
+	display: none;
+}
+.record-box .tr .pice-style{
+	color: #3578bc;
+	width: 95px;
+    text-align: right;
+}
+.pice-close{
+    margin-top: 25px;
+}
+.font-color{
+	color: #4e5663;
+}
+/****** 页尾******/
+#footer {
+    position: absolute;
+}

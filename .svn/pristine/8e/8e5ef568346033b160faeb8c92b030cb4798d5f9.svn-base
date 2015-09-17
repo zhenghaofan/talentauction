@@ -1,0 +1,114 @@
+package com.auction.company.web;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.auction.company.service.CompanyService;
+import com.auction.resume.dao.CvMakeDao;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+
+@Controller
+@RequestMapping(value = "companyform")
+public class CompanyRouteController {
+	@Resource
+	private CompanyService companyService;
+	@Resource
+	private CvMakeDao cvMakeDao;
+	
+	@RequestMapping(value = "compslt")//选择公司
+	public String compslt(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		String viewName = "redirect:/base/signin";
+		if(request.getSession().getAttribute("userId")!=null){
+    		Map<String, Object> userMap = cvMakeDao.getUserInfoByUserId(request.getSession().getAttribute("userId").toString());
+    		if(userMap!=null && userMap.size()>0){
+    			if(userMap.get("isSuccess")!=null && userMap.get("isSuccess").toString().equals("0")){
+    				viewName = "redirect:/base/mailbox";
+        		}else if(userMap.get("status")!=null && userMap.get("status").toString().equals("1")){ //企业路由
+    				if(userMap.get("companyId")==null || userMap.get("companyId").toString().equals("")){
+    					viewName = "views/compslt";//填写公司名称
+    				}else if(userMap.get("companyId")!=null && userMap.get("isSaveUserInfo").toString().equals("0")){
+    					viewName = "redirect:/companyform/compinfo";//填写公司基本信息
+    				}else if(userMap.get("companyId")!=null && userMap.get("isSaveUserInfo").toString().equals("1")){
+    					viewName = "redirect:/companyform/compdefault";//公司主页
+    				}
+        		}
+    		}
+    	}
+		return viewName;
+	}
+	
+	@RequestMapping(value = "compinfo")//填写公司基本信息
+	public String compinfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		String viewName = "redirect:/base/signin";
+		if(request.getSession().getAttribute("userId")!=null){
+    		Map<String, Object> userMap = cvMakeDao.getUserInfoByUserId(request.getSession().getAttribute("userId").toString());
+    		if(userMap!=null && userMap.size()>0){
+    			if(userMap.get("isSuccess")!=null && userMap.get("isSuccess").toString().equals("0")){
+    				viewName = "redirect:/base/mailbox";
+        		}else if(userMap.get("status")!=null && userMap.get("status").toString().equals("1")){ //企业路由
+    				if(userMap.get("companyId")==null || userMap.get("companyId").toString().equals("")){
+    					viewName = "redirect:/companyform/compslt";//填写公司名称
+    				}else if(userMap.get("companyId")!=null && userMap.get("isSaveUserInfo").toString().equals("0")){
+    					viewName = "views/compinfo";//填写公司基本信息
+    				}else if(userMap.get("companyId")!=null && userMap.get("isSaveUserInfo").toString().equals("1")){
+    					viewName = "redirect:/companyform/compdefault";//公司主页
+    				}
+        		}
+    		}
+    	}
+		return viewName;
+	}
+	
+	@RequestMapping(value = "compdefault")//公司主页
+	public String compdefault(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		String viewName = "redirect:/base/signin";
+		if(request.getSession().getAttribute("userId")!=null){
+    		Map<String, Object> userMap = cvMakeDao.getUserInfoByUserId(request.getSession().getAttribute("userId").toString());
+    		if(userMap!=null && userMap.size()>0){
+    			if(userMap.get("isSuccess")!=null && userMap.get("isSuccess").toString().equals("0")){
+    				viewName = "base/mailbox";
+        		}else if(userMap.get("status")!=null && userMap.get("status").toString().equals("1")){ //企业路由
+    				if(userMap.get("companyId")==null || userMap.get("companyId").toString().equals("")){
+    					viewName = "redirect:companyform/compslt";//填写公司名称
+    				}else if(userMap.get("companyId")!=null && userMap.get("isSaveUserInfo").toString().equals("0")){
+    					viewName = "redirect:companyform/compinfo";//填写公司基本信息
+    				}else if(userMap.get("companyId")!=null && userMap.get("isSaveUserInfo").toString().equals("1")){
+    					viewName = "views/compdefault";//公司主页
+    				}
+        		}
+    		}
+    	}
+		return viewName;
+	}
+	
+	@RequestMapping(value = "compbidlist")//公司拍卖记录
+	public String compbidlist(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		if(request.getSession().getAttribute("status")!=null && "1".equals(request.getSession().getAttribute("status").toString())
+				&& request.getSession().getAttribute("isSaveUserInfo")!=null && "1".equals(request.getSession().getAttribute("isSaveUserInfo").toString())){
+			return "views/compbidlist";
+		}else{
+			return "redirect:/common/talentRoute";
+		}
+	}
+	
+	@RequestMapping(value = "compjd")
+	public ModelAndView compjd(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/compjd", null);
+	}
+}

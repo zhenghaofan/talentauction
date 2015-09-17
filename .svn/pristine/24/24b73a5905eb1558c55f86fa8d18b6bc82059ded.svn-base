@@ -1,0 +1,318 @@
+
+
+.fc-1 {
+	color: #4182c4;
+}
+.fc-2 {
+	color: #e4785b;
+}
+.fz-1 {
+	
+}
+.fb {
+	font-weight: bold;
+}
+
+.bid-wrap {
+	width: 1024px;
+	color: #6B7485;
+	margin: 130px auto 100px;
+	overflow: hidden;
+}
+
+.bid-title .tip {
+	height: 100px;
+	color: #fff;
+	font-size: 25px;
+	line-height: 100px;
+	text-align: center;
+	margin-left: 18px;
+	margin-bottom: 20px;
+	background: url(/img/cv_detial_bg.jpg) top left no-repeat transparent;
+	display: inherit;
+}
+
+
+/* 左侧栏*/
+.bid-box-l {
+	float: left;
+	width: 680px;
+	margin-left: 18px;
+	border-radius: 3px;
+	background-color: #fff;
+	display: inline-block;
+}
+.info-item {
+	color: #41464a;
+	border-bottom: 1px dotted #e5e5e5;
+	margin-bottom: 20px;	
+}
+.info-item:last-child {
+	border-bottom: 0;
+}
+.info-item .item-title {
+	height: 30px;
+	font-size: 20px;
+	line-height: 30px;
+	padding-left: 40px;
+}
+.info-item .item-img {
+	width: 20px;
+	margin-bottom: -1px;
+}
+.info-item .item-img.edu {
+	width: 24px;
+}
+.info-item .item-con {
+	font-size: 16px;
+	line-height: 30px;
+	margin: 15px 40px 0;
+	padding-bottom: 20px;
+}
+
+/* 基本信息*/
+.base-info .bid-name {
+	font-size: 20px;
+	color: #4182c4;
+}
+.base-info .bid-state {
+	font-size: 17px;
+	font-weight: bold;
+	margin-top: 5px;
+}
+.base-info .state-item {
+	margin-right: 10px;
+}
+.base-info .state-item i {
+	margin-left: 5px;
+	font-style: normal;
+	font-weight: normal;
+}
+.base-info .line {
+	margin: 0 2px 0 10px;
+}
+
+
+
+
+
+
+
+
+
+/* 右侧栏*/
+.bid-con-r {
+	width: 300px;
+	float: right;
+}
+
+/* 竞拍*/
+.bid-box {
+	color: #fff;
+	padding: 30px;
+	border-radius: 3px;
+	margin-bottom: 20px;
+	background-color: #2d4e7b;
+}
+.bid-box .title {
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+.bid-box .inp-box {
+	margin-bottom: 10px;
+}
+.bid-box .inp-box input {
+	height: 35px;
+	width: 50px;
+	font-size: 16px;
+	text-indent: 6px;
+	border-radius: 3px;
+	border: 0;
+}
+.bid-box .inp-box .bid-unit {
+	vertical-align: bottom;
+	margin-left: 5px;
+	display: inline-block;
+}
+.bid-box .ccl-ico {
+	font-size: 20px;
+	vertical-align: middle;
+	margin: 0 20px 0px 18px;
+}
+.bid-box .check-box {
+	height: 40px;
+	font-size: 16px;
+	text-align: right;
+	line-height: 40px;
+}
+.bid-box .check-box input {
+	margin-right: 5px;
+}
+.bid-box .jobs-box {
+	margin-bottom: 20px;
+}
+.bid-box .jobs-label {
+	display: block;
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+.bid-box .job-text {
+	width: 92%;
+	height: 100px;
+	padding: 10px;
+	resize: none;
+	line-height: 20px;
+}
+.btn-con {
+	text-align: center;
+	padding: 15px 0;
+}
+.bid-btn {
+	width: 230px;
+	color: #fff;
+	font-size: 20px;
+	padding: 13px 0;
+	background-color: #71a8e0;
+	border-radius: 3px;
+	display: inline-block;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* 浮动竞拍*/
+.con-l-bid-tip {
+	height: 65px;
+	line-height: 65px;
+	text-align: center;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	border-radius: 3px;
+	z-index: 999;
+	display: none;
+}
+.bid-tip-btn {
+	display: inline-block;
+	color: #fff;
+	width: 100%;
+	height: 60px;
+	line-height: 60px;
+	background-color: rgba(113,168,224,.85);
+	text-align: center;
+	border-radius: 3px;
+	cursor: pointer;
+	font-size: 20px;
+}
+
+
+/* 拍卖动态*/
+.bid-list {
+	margin-bottom: 30px;
+	background-color: #fff;
+	border-radius: 5px;
+	padding-bottom: 30px;
+}
+.bid-list-title {
+	font-size: 16px;
+	line-height: 60px;
+	height: 60px;
+	padding-left: 30px;
+	border-bottom: 1px solid #eceef1;
+}
+.item-img-h {
+	height: 16px;
+	width: auto;
+}
+.item-img {
+	width: 16px;
+	margin-bottom: -1px;
+}
+.bid-list-box {
+	padding: 10px 30px 0;
+	max-height: 300px;
+	overflow-y: hidden;
+}
+.bid-list-item-n {
+	padding: 10px 0;
+	border-bottom: 1px dotted #e5e5e5;
+	color: #b0b6bd;
+	line-height: 22px;
+}
+.bid-list-item-n i {
+	font-style: normal;
+	color: #5d5d5d;
+}
+.f-s13 {
+	font-size: 13px;
+}
+.bid-list-item-n i {
+	font-style: normal;
+	color: #5d5d5d;
+}
+
+/* 温馨提示*/
+.warm-tip-box {
+	margin-top: 20px;
+	background-color: #fff;
+	border-radius: 3px;
+	color: #656769;
+}
+.warm-tip-con {
+	padding-left: 30px;
+}
+.warm-tip-con {
+	padding: 20px 15px;
+	line-height: 24px;
+}
+.warm-tip-item {
+	text-indent: -15px;
+	padding-left: 15px;
+}
+.warm-tip-title {
+	height: 45px;
+	line-height: 45px;
+	padding-left: 15px;
+	border-bottom: 1px solid #eceef1;
+	color: #4182c5;
+	font-size: 16px;
+}
+.warm-tip-title {
+padding-left: 30px;
+}
+
+
+/* 二维码*/
+.qrcode-box-n {
+	background-color: #fff;
+	padding: 25px 30px;
+	border-radius: 3px;
+	margin: 30px 0;
+}
+.qrcode-box-n {
+	padding: 25px 20px;
+}
+.qrcode-title-n {
+	font-size: 16px;
+	color: #5c6467;
+	text-align: center;
+}
+.qrcode-tip-n {
+	color: #6e7377;
+	text-align: center;
+}
+
+
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

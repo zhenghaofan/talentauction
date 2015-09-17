@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>邀请记录</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/compbidlist.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<script src="../js/mobile/uiservice.js"></script>
+	<script src="../js/mobile/compbidlist.js"></script>
+</head>
+<body>
+	<div class="viewport">
+		<div class="list-wrap" >
+			<div class="query-bar box-shadow">
+				<span class="query-item query-item-s" data-value=""><i>全部</i></span>
+				<span class="query-item" data-value="1"><i>已回复</i></span>
+				<span class="query-item" data-value="2"><i class="b-r0">未回复</i></span>
+			</div>
+			
+			<div class="con">
+				<ul class="con-ul" id="list_content"></ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

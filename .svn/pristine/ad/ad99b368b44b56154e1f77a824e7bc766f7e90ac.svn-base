@@ -1,0 +1,53 @@
+package com.auction.resume.service;
+
+import javax.servlet.http.HttpServletRequest;
+
+/** 
+ * @author tobber
+ * @version 2015年4月17日
+ */
+public interface ResumeService {
+    
+    /**
+     * 等待审核是，简历展示内容接口
+     * @param request
+     * @return
+     */
+    public String getUserBackupResume(HttpServletRequest request);
+    
+    /**
+     * 获取求职意向
+     * @param request
+     * @return
+     */
+    public String getJobInfo(HttpServletRequest request);
+    
+    /**
+     * 获取拍卖纪录
+     * @param request
+     * @return
+     */
+    public String getBidLogs(HttpServletRequest request);
+    
+    /**
+     * 更新求职意向
+     * @param request
+     * @return
+     */
+    public String updateJobInfo(HttpServletRequest request);
+    
+    /**
+     * 用户更新求职意向，不更新简历状态(重新提交审核)
+     * @param request
+     * @return
+     */
+    public String resubmitCheck(HttpServletRequest request);
+    
+    /**
+     * 用户回复（去面试）
+     * @param request
+     * @return
+     */
+    public String userReply(HttpServletRequest request);
+    
+}

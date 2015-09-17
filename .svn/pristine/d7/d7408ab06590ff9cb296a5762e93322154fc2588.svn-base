@@ -1,0 +1,397 @@
+$(function($) {
+	
+	
+	$("#back_btn").on('tap', function(e) {
+		window.history.back();
+	});	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+return;
+
+	var query = {
+			page: 1,
+			pageSize: 10,
+			totalPage: 0,
+			exp: '',
+			city: '',
+			edu: '',
+			spe: '',
+			speCount: ''
+	};
+	
+	var time = {
+			day: 0,
+			hour: 0,
+			min: 0,
+			sec: 0,
+			handle: null
+	};
+	
+	var _spe = _getParam('spe');
+	var _speCount = _getParam('speCount');
+	var specialList;
+	
+	
+	if( !!_spe ) {
+		query.spe = _spe;
+		query.speCount = _speCount;
+		_getDetialData();
+//		_getCountTime();
+	} else {
+		T.alert('请选择专场');
+	}
+
+
+	//获取对应专场数据
+	function _getDetialData() {
+		T.alert('正在加载...');
+		
+		var params = {
+				page : query.page,
+				pageSize : query.pageSize,
+				education: query.edu == '0' ? '' : query.edu,
+				city: query.city == '0' ? '' : query.city,
+				experience: query.exp == '0' ? '' : query.exp,
+				special:  query.spe,
+				specialCount: query.speCount
+		};
+		
+		$.post('/bidme/getBidPools', params, function(res) {
+			res = $.parseJSON(res);
+			if( res.code == 200 ) {
+				var list = res.bidPools;
+				if( list.length > 0 ) {
+					var html = _createDetialHtml(list);
+					query.page = Number(res.page);
+					query.totalPage = Number(res.totalPage);
+				} else {
+					var html = '<li class="spec-det-li no-data">暂无数据</li>';
+					$('#main_content').height($(window).height()-40);
+				}
+				
+				$("#spec_det_ul").empty().append(html);
+				setTimeout(function() {
+					T.alertClose();
+				}, 500);
+			} else {
+				T.alertClose();
+				T.alert(res.message);
+			}
+		});
+		
+	}
+	
+	// 生成专场简历
+	function _createDetialHtml(list) {
+		var html = [];
+		for( var i = 0; i < list.length; i++ ) {
+			var sums = !!list[i].summary ? list[i].summary.split(',') : ['暂无总结'];
+			
+			html.push('<li class="spec-det-li" data-id="'+ list[i].userId +'">');
+				html.push('<div class="spec-det-box">');
+					html.push('<div class="spec-addr m-t7 ">');
+						html.push('<div class="spec-city">'+ list[i].destination.split(',').join(' ') +'</div>');
+						html.push('<div class="spec-no">'+ list[i].code +'号</div>');
+					html.push('</div>');
+					
+				html.push('<div class="spec-introduct">');
+				
+					if( _spe == 5) {
+						html.push('<div><span class="spec-intro-item m-b5 m-t10">'+ list[i].jobYear +'年工作经验</span></div>');
+					} else {
+						if( sums.length > 1 && !!sums[1] ) {
+							html.push('<div><span class="spec-intro-item m-b5">'+ sums[0] +'</span></div>');
+							html.push('<div><span class="spec-intro-item ">'+ sums[1] +'</span></div>');
+						} else {
+							html.push('<div><span class="spec-intro-item m-b5 m-t10">'+ sums[0] +'</span></div>');
+						}
+					}
+					
+				html.push('</div>');
+				
+				html.push('<div class="spec-price">');
+					if( !!list[i].avgPrice ) { 
+						html.push('<div class="t-a-c"><span class="spec-price-text ">'+ list[i].avgPrice +'K</span></div>');
+					} else {
+						html.push('<div class="t-a-c m-t5">暂无</div>');
+					}
+					
+					html.push('<div class="t-a-c">平均月薪</div>');
+				html.push('</div>');
+				
+				html.push('<div class="clear"></div>');
+				html.push('</div>');
+			html.push('</li>');
+		}
+		
+		return html.join('');
+	}
+	
+	function _getCountTime() {
+		var config = {status: 0, id: query.spec};
+		$.post('countdown', config, function( res ) {
+			res = $.parseJSON(res);
+			if( res.code == 200 ) {
+				time.day = res.day;
+				time.hour = res.hours;
+				time.min = res.minute;
+				time.sec = res.second;
+				_countTime();
+			} else {
+				 T.alert(res.message);
+			}
+		});
+	}
+	
+	function _countTime() {
+		if( time.day < 10 ) {
+			$("#time_day").text('0' + time.day);
+		} else {
+			$("#time_day").text(time.day);
+		}
+		
+		if( time.hour < 10 ) {
+			$("#time_hour").text('0' + time.hour);
+		} else {
+			$("#time_hour").text(time.hour);
+		}
+		
+		if( time.min < 10 ) {
+			$("#time_min").text('0' + time.min);
+		} else {
+			$("#time_min").text(time.min);
+		}
+		
+		if( time.sec < 10 ) {
+			$("#time_sec").text('0' + time.sec);
+		} else {
+			$("#time_sec").text(time.sec);
+		}
+		
+		time.handle = setInterval(function() {
+			if( time.sec >= 1 ) {
+				time.sec --;
+				if( time.sec < 10 ) {
+					$("#time_sec").text('0' + time.sec);
+				} else {
+					$("#time_sec").text(time.sec);
+				}
+			}else if( time.min >= 1 ) {
+				time.min --;
+				time.sec = 59;
+				if( time.min < 10 ) {
+					$("#time_min").text('0' + time.min);
+				} else {
+					$("#time_min").text(time.min);
+				}
+				
+				$("#time_sec").text(time.sec);
+			}else if( time.hour >= 1 ) {
+				time.hour --;
+				time.min = 59;
+				time.sec = 59;
+				
+				if( time.hour < 10 ) {
+					$("#time_hour").text('0' + time.hour);
+				} else {
+					$("#time_hour").text(time.hour);
+				}
+				
+				$("#time_min").text(time.min);
+				$("#time_sec").text(time.sec);
+			} else if( time.day >= 1 ) {
+				time.day --;
+				time.hour = 23;
+				time.min = 59;
+				time.sec = 59;
+				
+				if( time.day < 10 ) {
+					$("#time_day").text('0' + time.day);
+				} else {
+					$("#time_day").text(time.day);
+				}
+				
+				$("#time_hour").text(time.hour);
+				$("#time_min").text(time.min);
+				$("#time_sec").text(time.sec);
+			} else {
+				clearInterval(time.handle);
+			}
+			
+		}, 1000);
+		
+	}
+	
+	function bodyClick() {
+		$("#main_content").append('<div class="main-bg"></div>');
+		
+		$(".main-bg").on('tap', function(e) {
+			if( screenState == 1 ) {
+				var body2Dom = $("#body2");
+				var menuDom = $("#menu_btn");
+				screenState = 2;
+				menuDom.attr('state', '0');
+				body2Dom.css({left: '0'});
+			} else if( screenState == 3 ) {
+				var body2Dom = $("#body2");
+				screenState = 2;
+				body2Dom.css({left: '-220px'});
+				query.index = 1;
+				$("#spec_det_ul").html('');
+				_getDetialData();
+			}
+			$(".main-bg").off('tap');
+			$(".main-bg").remove();
+		});
+	}
+	
+	function clearBodyClick() {
+		$("#main_content").off('tap');
+	}
+	
+	_bind();
+	
+	function _bind() {
+		$("#menu_btn").on('tap', function(e) {
+			var body2Dom = $("#body2");
+			var menuDom = $("#menu_btn");
+			var flag = menuDom.attr('state');
+			if( flag == 1 ) {
+				screenState = 2;
+				menuDom.attr('state', '0');
+				body2Dom.css({left: 0});
+				setTimeout(clearBodyClick, 0);
+//				$('body').off('touchmove');	
+			} else {
+				$('#sidebar_r').css({right: 0});
+				screenState = 1;
+				menuDom.attr('state', '1');
+				body2Dom.css({left: '-220px'});
+				e.stopPropagation();
+				setTimeout(bodyClick, 0);
+				
+//				$('body').on('touchmove', function (event) {
+//				    event.preventDefault();
+//				});	
+			}
+			
+			$(".main-bg").off('tap');
+			$(".main-bg").remove();
+		});
+		
+		$("#query_btn").on('tap', function(e) {
+			window.history.back();
+		});
+			
+		$(".side-r-item-title").on('tap', function() {
+			var t_dom = $(this);
+			var img_dom = t_dom.find('img');
+			var list_dom = t_dom.next();
+			var flag = t_dom.attr('state');
+			if( flag == 1 ) {
+				list_dom.hide();
+				img_dom.attr('src', '/img/app_auction_q_d.png');
+				t_dom.attr('state', '0');
+			} else {
+				list_dom.show();
+				img_dom.attr('src', '/img/app_auction_q_p.jpg');
+				t_dom.attr('state', '1');
+			}
+		});
+		
+		$(".side-exp").on('tap', function() {
+			if( $(this).hasClass('side-r-item-s') ) return;
+			var id = $(this).attr('data-id');
+			var text = $(this).text();
+			query.exp = id;
+			$(".side-exp").removeClass('side-r-item-s');
+			$(this).addClass('side-r-item-s');
+			$("#exp_t").text(text);
+			_getDetialData();
+		});
+		
+		$(".side-city").on('tap', function() {
+			if( $(this).hasClass('side-r-item-s') ) return;
+			var text = $(this).text();
+			query.city = text;
+			$(".side-city").removeClass('side-r-item-s');
+			$(this).addClass('side-r-item-s');
+			$("#city_t").text(text);
+			_getDetialData();
+		});
+		
+		$(".side-edu").on('tap', function() {
+			if( $(this).hasClass('side-r-item-s') ) return;
+			var id = $(this).attr('data-id');
+			var text = $(this).text();
+			query.edu = id;
+			$(".side-edu").removeClass('side-r-item-s');
+			$(this).addClass('side-r-item-s');
+			$("#edu_t").text(text);
+			_getDetialData();
+		});
+		
+		$(document).on('touchmove', '#spec_det_l', function() {
+			if($('#main_content').css('left') == '220px') return;
+			if($(window).scrollTop() + $(window).height() + 300 >= $(document).height()) {
+				if( query.index < query.totle ) {
+					query.index ++;
+					_getDetialData();
+				}
+			}
+		});
+	}
+	
+	function _getParam( name ) {
+		var query = window.location.search;
+		if (name) {
+			var r = new RegExp("[?&]" + name + "=([^&]*)");
+			var m = r.exec(query);
+			if (m) {
+				return m[1];
+			} else {
+				return null;
+			}
+		} 
+	}
+	
+	function getScreen() {
+		var h = $(window).height();
+		var w = $(window).width();
+		
+		return {width: w, height: h}
+	}
+});

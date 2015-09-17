@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>实力拍-互联网人才拍卖|专场人才拍卖</title>
+	<meta name="keywords" content="实力拍, 互联网人才拍卖, 中高端人才">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/question.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/question.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/question" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/dist/question-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div> 
+		<div id="main" ng-controller="questionCtrl">
+			<div class="question-wrap">
+				<div class="con-title"><span>常见问题</span></div>
+				<div class="con-select">
+					<span class="con-select-btn " ng-class="{1: 'con-btn-select'}[type]" ng-click="changeType(1)">我是个人</span>
+					<span class="con-select-btn" ng-class="{2: 'con-btn-select'}[type]" ng-click="changeType(2)">我是公司</span>
+				</div>
+			
+				<div class="con-wrap" ng-if="type != 2">
+					<div class="ques-ans-item">
+						<div class="ques"><span>什么是人才拍卖？</span></div>
+						<div class="ans"><span>人才拍卖其实是让企业用开出初步的工资、期权等条件的形式来拍卖面试人才的机会，并不是价高者得，而是根据人才的喜好来选择给哪个公司的。</span><div class="clear"></div></div>
+					</div>
+					
+					<div class="ques-ans-item">
+						<div class="ques"><span>实力拍主要服务哪些城市？</span></div>
+						<div class="ans"><span>我们目前主要进驻的企业集中在深圳和广州，但我们也十分欢迎全国各地的人才和企业们注册使用。</span><div class="clear"></div></div>
+					</div>
+					
+					<div class="ques-ans-item">
+						<div class="ques"><span>实力拍主要服务哪些人群？</span></div>
+						<div class="ans"><span>在人才方面，我们主要服务有3年以上经验的候选者。但是优秀的毕业生或只有1-2年经验的人才我们也会考虑。</span><div class="clear"></div></div>
+					</div>
+					
+					<div class="ques-ans-item">
+						<div class="ques"><span>实力拍和猎头有什么区别？</span></div>
+						<div class="ans"><span>猎头收取昂贵的费用而我们是免费的，而且猎头只会向您推荐几家公司，但我们是一个平台，所有注册企业都能看到你的简历并邀请你面试。</span><div class="clear"></div></div>
+					</div>
+					
+					<div class="ques-ans-item">
+						<div class="ques"><span>实力拍怎么保护候选人的隐私？</span></div>
+						<div class="ans"><span>首先我们承诺绝对不会公开或泄露我们的简历库。而且在拍卖会中，所有候选人都是匿名的，包括联系方式也是隐藏的，只有本人同意才会发送给相应的企业。还有除了企业之外，普通用户是不能看到你的工作经历的。</span><div class="clear"></div></div>
+					</div>
+					
+					<div class="ques-ans-item">
+						<div class="ques"><span>我可以同时参加多个专场拍卖吗？</span></div>
+						<div class="ans"><span>我们会有专业的团队审核你是否符合参加每个专场的条件，如果你的能力没问题，那当然可以参加多个专场。</span><div class="clear"></div></div>
+					</div>
+				</div>
+			
+				<div class="con-wrap" ng-if="type == 2">
+					<div class="ques-ans-item">
+						<div class="ques"><span>作为招聘方，我为什么要用实力拍？</span></div>
+						<div class="ans"><span>实力拍不仅帮您召集人才，还有专业的团队帮您筛选简历。而且可以提早知道人才的求职意向，省去了很多沟通的成本。</span><div class="clear"></div></div>
+					</div>
+					
+					<div class="ques-ans-item">
+						<div class="ques"><span>实力拍收费吗？</span></div>
+						<div class="ans"><span>我们对企业是完全免费的，后期可能会提供收费的增值服务。</span><div class="clear"></div></div>
+					</div>
+					
+					<div class="ques-ans-item">
+						<div class="ques"><span>实力拍提供怎样的候选人？</span></div>
+						<div class="ans"><span>我们推荐至少3年以上经验并且有丰富项目经验的实力人才。</span><div class="clear"></div></div>
+					</div>
+					
+					<div class="ques-ans-item">
+						<div class="ques"><span>我能修改竞拍的内容吗？</span></div>
+						<div class="ans"><span>只要候选人还没拒绝面试，你都可以修改。</span><div class="clear"></div></div>
+					</div>
+					
+					<div class="ques-ans-item">
+						<div class="ques"><span>如果我还有其他问题呢？</span></div>
+						<div class="ans"><span>请点击页面底部的关于我们。</span><div class="clear"></div></div>
+					</div>
+				</div>
+			</div>			
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

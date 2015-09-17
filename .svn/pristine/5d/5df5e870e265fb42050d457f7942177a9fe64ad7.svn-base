@@ -1,0 +1,91 @@
+<div id="notify"  class="notify-wrap">
+	<ul class="notify-con">
+		<li class="notify-item">
+			<div class="notify-msg">
+				<span class="notify-text"></span>
+			</div>
+		</li>
+	</ul>	
+</div>
+
+<div class="red-top">
+	<img src="../css/img/ico_redtop_1.png">
+</div>
+
+<div class="nav">
+	<a class="logo" ng-href="{{user.status? '/base/compindex' : '/base/index'}}">
+		<span class="ico"></span>
+	</a>
+	
+	<div class="column" ng-if="!user.isOnline">
+		<a class="tabs" ng-class="{1:'slt'}[(tabIndex)]" href="/base/index">首页</a>
+		<a class="tabs" ng-class="{2:'slt'}[(tabIndex)]" href="/base/compindex">企业请进</a>
+		<a class="tabs" ng-class="{3:'slt'}[(tabIndex)]" href="/bidme/placepool">拍卖会</a>
+		<a class="tabs" ng-class="{8:'slt'}[(tabIndex)]" href="/base/vip">PLUS</a>
+		<a class="tabs" ng-class="{7:'slt'}[(tabIndex)]" href="/base/jobinvite">推荐
+			<span class="yuan"></span>
+		</a>
+	</div>
+	
+	<div class="column" ng-if="user.isOnline">
+		<div id="count_tip" class="count-wrap" ng-if="msgCount || maticCount">
+			<div class="tip-box">
+				<i class="count-close" ng-click="closeTip()">X</i>
+				<span class="count-text">
+					<span ng-if="msgCount">
+						<span>您有</span>
+						<span class="fc-1" ng-bind="msgCount + '份'"></span>
+						<span>邀请未处理</span>
+					</span>
+					<span ng-if="maticCount">，已拒绝
+						<span class="fc-1" ng-bind="maticCount + '份'"></span> 邀请，如
+						<span class="fc-1">3天</span> 内未回复将自动拒绝。
+					</span>
+				</span>
+			</div>
+			<div class="det-rangle tip-det"></div>
+		</div>
+		
+		<div ng-if="user.status == 0">
+			<a class="tabs"ng-class="{4:'slt'}[(tabIndex)]"  href="/common/talentRoute">简历状态</a>
+			<a class="tabs bid-count"ng-class="{5:'slt'}[(tabIndex)]" href="/talentform/jobbidlist">
+				<span>拍卖记录</span>
+			</a>
+		</div>
+		<div ng-if="user.status == 1">
+			<a class="tabs" ng-class="{3:'slt'}[(tabIndex)]" href="/bidme/placepool">拍卖会</a>
+			<a class="tabs" ng-class="{4:'slt'}[(tabIndex)]" href="/common/talentRoute">公司主页</a>
+			<a class="tabs bid-count"ng-class="{5:'slt'}[(tabIndex)]" href="/companyform/compbidlist">
+				<span>拍卖记录</span>
+				<div class="count-num-tip" ng-if="noReadMessage > 0">
+					<span class="count-tip-n" ng-bind="noReadMessage"></span>
+				</div>
+			</a>
+		</div>
+		<a class="tabs" ng-class="{7:'slt'}[(tabIndex)]" href="/base/jobinvite">推荐
+			<span class="yuan"></span>
+		</a>
+	</div>	
+	
+	<div class="signin" ng-class="{true: 'mgn-1'}[(!user.isOnline)]">
+		<div class="prompt" ng-if="!user.isOnline">
+			<a href="/base/signup">注册</a>
+			<a href="/base/signin">登录</a>
+		</div>
+		
+		<div class="signin-panel" ng-if="user.isOnline">
+			<span id="peo_ico" class="peo-ico"></span>
+			<span class="peo-user" ng-bind="user.email"></span>
+			<div id="det_box" class="det-box" ng-if="user.isOnline">
+				<div class="det-con">
+					<div class="det-tab">
+						<a href="/talentform/usetting">设置</a>
+						<a href="/base/account">账户</a>
+						<a ng-click="signOut()">退出</a>
+					</div>
+					<div class="det-rangle"></div>
+				</div>
+			</div>
+		</div>	
+	</div>
+</div>

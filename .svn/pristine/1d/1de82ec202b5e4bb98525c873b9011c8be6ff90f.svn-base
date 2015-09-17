@@ -1,0 +1,46 @@
+package com.auction.resume.service.Impl;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import com.auction.resume.dao.CvMakeDao;
+import com.auction.resume.service.ResumeRouteService;
+
+/** 
+ * @author tobber
+ * @version 2015年4月17日
+ */
+
+@Service
+public class ResumeRouteServiceImpl implements ResumeRouteService{
+	@Resource
+	private CvMakeDao cvMakeDao;
+
+	@Override
+	public String talentformRoute(HttpServletRequest request) {
+		String viewName = "signin"; //登录页面
+		try {  
+        	if(request.getSession().getAttribute("userId")!=null){
+		        Map<String, Object> resumeStatusMap = cvMakeDao.getResumeStatus(request.getSession().getAttribute("userId").toString());
+		        if(resumeStatusMap!=null && resumeStatusMap.size()>0 ){
+		        	if("0".equals(resumeStatusMap.get("status"))){
+		        		viewName = "jobintent";//填写求职意向页面
+		        	}else if("1".equals(resumeStatusMap.get("status"))){
+		        		viewName = "jobinfo";//简历编辑页面
+		        	}else{
+		        		viewName = "jobresult";//简历状态
+		        	}
+		        }
+        	}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            viewName="404";
+        }  
+		return viewName;
+	}
+
+}

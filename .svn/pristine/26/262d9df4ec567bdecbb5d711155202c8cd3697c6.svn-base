@@ -1,0 +1,110 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'upload'
+], 
+function($, angular, app, cookie, url, upload) {
+	app.controller('jobinfoCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$('.viewport').show();
+		$rootScope.tabIndex = 4;
+		$scope.resumeType = 1;
+		
+		/*选择简历填写方式*/
+		$scope.typeSlt = function(status) {
+			$scope.resumeType = status;
+		};
+		
+		/*选择文件*/
+		$scope.fileSlt = function() {
+			var obj = $('#upload');
+			obj.click();
+			obj.change(function() {
+				$safeApply($scope, function(){
+					$scope.fileName = $('#upload').val();
+					$('#file_tip').text('如果你不是第一次申请，可以使用之前通过审核的简历！').removeClass('ico-invalid');
+				});		
+			});	
+		};
+		
+		/*上传文件*/
+		$scope.fileUpload = function() {
+			var config = {
+					id: 'upload',
+					url: '/upload/resumeUpload'
+			};
+			
+			if(!_checkFile()) return;
+			
+			upload.fileUpload(config, function(result) {
+				var data = result;
+				if(data.code == 200) {
+					window.location.href = '/talentform/jobresult';
+				}else {
+					$('#file_tip').text(data.message).addClass('ico-invalid');
+				}
+			},function(err) {
+				console.error('resumeUpload', err);
+			});	
+		};
+		
+		
+		
+		/* 使用之前的简历*/
+		$scope.oldCv = function() {
+			
+		};
+		
+		
+		/* 验证文件*/
+		function _checkFile () {
+			if(!$scope.fileName) {
+				$('#upload_inp').focus();
+				$('#file_tip').text('请选择文件！').addClass('ico-invalid');
+				return false;
+			}else if(window.attachEvent) {
+	            if ($scope.fileName.indexOf('.doc') == -1 && $scope.fileName.indexOf('.docx') == -1 && 
+	            		$scope.fileName.indexOf('.pdf') == -1) {  
+	            	$('#file_tip').text('非word或pdf类型文件，请重传！').addClass('ico-invalid');
+	                return false;  
+	            }			
+		    }else {
+		    	var files = [];
+		    	var flag = true;
+		    	var e = $('#upload').get(0);
+		    	for(i in e.files) {
+		    		// 限制为6M
+		    		if(typeof e.files[i] == 'object'){
+		    			if( e.files[i].size >= 6 * 1024 *1024 ) {
+		    				$('#file_tip').text('文件过大！').addClass('ico-invalid');
+		    				flag = false;
+		    				return false;
+		    			}
+		    			files.push(e.files[i]);
+		    		} 
+		    	}
+		    	if(files.length == 0 || !flag) {
+		    		$('#file_tip').text('文件过大！').addClass('ico-invalid');
+		    		return false;			    	
+		    	}
+		    }			
+			
+			return true;			
+		}
+		
+		function $safeApply($scope, fn) {
+			var phase = $scope.$$phase;
+			if (phase == '$apply' || phase == '$digest') {
+				$scope.$eval(fn);
+			} else {
+				$scope.$apply(fn);
+			}
+		}		
+		
+ 	}]);
+	
+	app.bootstrap();
+});

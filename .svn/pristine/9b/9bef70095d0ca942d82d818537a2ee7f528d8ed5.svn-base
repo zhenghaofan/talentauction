@@ -1,0 +1,94 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'uiservice'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('accountCtrl', ['$scope', '$rootScope', '$http', '$q', 'uiservice',
+   		function($scope, $rootScope, $http, $q, uiservice) {
+		$('.viewport').show();
+		$scope.pageSize = 5;
+		$scope.pageIndex = 1;
+		$scope.totalPage = 1;
+		$scope.pkgPice = 499;
+		
+		$scope.shoePayPanel = function() {
+			$('.pay-box').fadeToggle(150);
+		};
+		
+		/* 获取账户信息*/
+		$scope.getAccountInfo = function() {
+			var config = {
+					
+			};
+			
+			$q.when($http.post('/bidme/getSpecialList'))
+			.then(function(result) {
+				
+			}, function(err) {
+            	  console.error('getSpecialList', err);
+			});
+		};
+		
+		/* 记录选择*/
+		$scope.sltPayList = function(_event, status) {
+			$(_event.currentTarget).addClass('slt').siblings().removeClass('slt');
+			//$scope.getPayList();
+		};
+		
+		/* 获取支付记录*/
+		$scope.getPayList = function() {
+			var config = {
+					
+			};
+			
+			$q.when($http.post('/bidme/getSpecialList'))
+			.then(function(result) {
+				
+			}, function(err) {
+            	  console.error('getSpecialList', err);
+			});			
+		};
+		
+		/* 套餐选择*/
+		$scope.sltPkg = function(_event, pice) {
+			$(_event.currentTarget).addClass('slt').siblings().removeClass('slt');
+			$scope.pkgPice = pice;
+		};
+		
+		/* 支付跳转*/
+		$scope.jumpPay = function() {
+			
+		};
+		
+		/* 初始化翻页*/
+		function _initPager() {
+			$scope._pageCount = [];
+			var index = Math.ceil($scope.pageIndex / 6);
+			var total = Math.ceil($scope.totalPage / 6);
+			var size = index < total? index * 6 : $scope.totalPage;
+			var i = (index - 1) * 6;
+			
+			for (i; i < size; i++) {
+				$scope._pageCount.push(i + 1);
+			}
+		}		
+		
+		/* 翻页*/
+		$scope.turnPage = function(_event, status) {
+			if(status == '+') {
+				$scope.pageIndex ++;
+			}else if(status == '-') {
+				$scope.pageIndex --;
+			}else {
+				$scope.pageIndex = status;
+			}
+			//$scope.getBidPool();
+		};
+ 	}]);
+	
+	app.bootstrap();
+});

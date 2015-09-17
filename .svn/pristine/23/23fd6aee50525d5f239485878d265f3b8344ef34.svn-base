@@ -1,0 +1,193 @@
+
+body {
+	background-color: #fff;
+}
+html, body, h1, h2, h3, p, ul, li {
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+}
+h1, h2, h3, h4, h5 {
+    font-weight: normal;
+}
+
+
+.plus-wrap {
+	color: #6B7485;
+	margin: 46px 0 50px;
+    overflow: hidden;
+}
+.btn {
+	color: #fff;
+	text-align: center;
+	border: 0;
+	display: inline-table;
+	cursor: pointer;
+}
+.btn.btn-open {
+	width: 200px;
+	height: 50px;
+	font-size: 20px;
+	line-height: 50px;
+	background-color: #48bde7;
+}
+.btn.btn-open:hover {
+	background-color: #71A8E0;
+}
+.btn.btn-danger {
+	width: 100px;
+	height: 35px;
+	line-height: 35px;
+	background-color: #fd7d7d;
+}
+.btn.btn-danger:hover {
+	background-color: #f55a5a;
+}
+.btn.btn-disable {
+	background-color: #cbcfd3;
+}
+
+.fc-1 {
+	color: #71A8E0;
+}
+.fc-2 {
+	color: #0c9788;
+}
+.fc-3 {
+	color: #4182c5;
+}
+.fc-4 {
+	color: #d0d3d8;
+}
+.fz-1 {
+	font-size: 12px;
+}
+.plus {
+	position: relative;
+}
+
+
+.seats {
+    height: 295px;
+    margin: 0 -9999px;
+    background: #f6f4f0 url(../img/banner_sec.jpg) center top no-repeat;
+}
+.seats-dot {
+	height: 295px;
+	background: url(../img/bg_seats_dot.png);
+}
+.seats-con {
+    width: 800px;
+    margin: 0 auto;
+}
+.seats-con .text {
+	position: relative;	
+	color: #0ec198;
+	font-size: 48px;
+    text-align: center;
+    padding-top: 78px;
+    margin-bottom: 50px;
+}
+.seats-con .plus {
+	top: -30px;
+	font-size: 30px;
+}
+.seats-con .btn-group {
+	text-align: center;
+}
+
+.plus-box {
+	width: 800px;
+	margin: 0 auto;
+}
+.plus-box .title {
+	height: 50px;
+	line-height: 50px;
+	font-size: 24px;
+	text-align: center;
+	border-bottom: 1px solid #ccc;
+	margin-top: 60px;
+}
+.plus-box .title .plus {
+	top: -20px;
+	font-size: 20px;
+}
+
+.intro .tip {
+	text-align: center;
+	margin-top: 45px;
+	margin-bottom: 30px;
+}
+.intro .tip .plus {
+	top: -12px;
+	font-size: 12px;
+}
+.intro .tip h3 {
+	margin-bottom: 5px;
+}
+.intro .intro-con {
+	text-align: center;
+}
+.intro .intro-con img {
+	width: 750px;
+	margin-bottom: 30px;
+}
+
+.spulist {
+	text-align: center;
+	padding-top: 50px;
+	margin-bottom: 50px;
+}
+.spu-item {
+	margin-right: 50px;
+	display: inline-block;
+}
+.spu-line {
+	height: 4px;
+	background-color: #70a7df;
+}
+.spu-box {
+	width: 200px;
+	color: #70a7df;
+	text-align: center;
+	border: 1px solid #ccc;
+	border-top: 1px solid #70a7df;
+	padding: 55px 0 30px;
+	background-color: #fff;
+}
+.spu-item:last-child {
+	margin-right: 0;
+}
+.spu-item span {
+	display: block;
+}
+.spu-item .price {
+	font-size: 36px;
+	margin-bottom: 5px;
+}
+.spu-item .count {
+	margin-bottom: 50px;
+}
+.spulist .btn.btn-pay {
+	width: 150px;
+	height: 35px;
+	color: #fff;
+	font-size: 14px;
+	line-height: 35px;
+	background-color: #48bde7;
+}
+
+.contact {
+	text-align: center;
+}
+.contact span {
+	color: rgba(252, 118, 92, .8);
+}
+
+
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

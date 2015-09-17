@@ -1,0 +1,132 @@
+
+
+body {
+	background-color: #e2e2e2;
+}
+
+
+.top-bar {
+	height: 50px;
+	color: #fff;
+	font-size: 1.3em;
+	line-height: 50px;
+	text-align: center;
+	background-color: #2d4e7b;
+}
+.top-bar .bar-back {
+	float: left;
+	height: 50px;
+}
+.top-bar .back-ico {
+	width: 15px;
+	padding: 12px 10px 0 15px;
+}
+.top-bar .bar-title {
+	margin-left: -40px;
+}
+
+/* 用户注册*/
+.sign-wrap {
+	position: relative;
+	display: none;
+}
+.sign-wrap input {
+	float: left;
+	width: 100%;
+	height: 36px;
+	color: #3B3B3B;
+	font-size: 1.2em;
+	padding: 5px 0;
+	border: 0;
+}
+.sign-wrap .sign-form {
+	margin: 20px 0;
+	text-align: center;
+}
+.sign-wrap .inp-item {
+	position: relative;
+	overflow: hidden;
+	padding: 0 15px;
+	border-bottom: 1px solid #e5e5e5;
+	background-color: #fff;
+}
+.sign-wrap .inp-item.job {
+	
+}
+.sign-wrap .inp-item.comp {
+	display: none;
+}
+.sign-wrap .inp-item.mgn-1 {
+	padding-right: 35px;
+}
+.sign-wrap .inp-item.mgn-2 {
+	padding-right: 110px;
+}
+.sign-wrap .angle {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	width: 13px;
+	height: 13px;
+	border-top: 1px solid #666;
+	border-left: 1px solid #666;
+	display: inline-block;
+	transform:rotate(135deg);
+	-ms-transform:rotate(135deg);
+	-moz-transform:rotate(135deg);
+	-webkit-transform:rotate(135deg);
+	-o-transform:rotate(135deg); 
+}
+.sign-wrap .send-btn {
+	position: absolute;
+	top: 7px;
+	right: 16px;
+	width: 85px;
+	height: 32px;
+	color: #fff;
+	line-height: 32px;
+	border-radius: 2px;
+	background-color: #3a89ce;
+	display: inline-block;
+	cursor: pointer;
+}
+.sign-wrap .btn-group {
+	text-align: center;
+}
+.sign-wrap .btn-group .btn {
+	width: 85%;
+	max-width: 300px;
+	padding: 5px 10px;
+	height: 36px;
+	color: #fff;
+	font-size: 1.2em;
+	line-height: 36px;
+	border-radius: 3px;
+	/* background-color: #c9cbcd; */
+	background-color: #3a89ce;
+	display: inline-block;
+	cursor: pointer;
+}
+
+
+/* 注册提示*/
+.tip-wrap {
+	display: none;
+}
+.tip-wrap .text {
+	width: 80%;
+	min-height: 100px;
+	color: #333;
+	font-size: 1.2em;
+	margin: 30px auto 20px;
+	word-wrap:break-word ;"
+}
+.tip-wrap .logo {
+	text-align: center;
+	padding: 0 0 20px;
+}
+.tip-wrap .logo .ico {
+	width: 65%;
+	max-width: 280px;
+}
+

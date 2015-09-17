@@ -1,0 +1,168 @@
+package com.auction.wechat.event;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.auction.common.util.SysConfig;
+import com.auction.wechat.Util.CommonUtil;
+import com.auction.wechat.Util.MenuUtil;
+import com.auction.wechat.model.req.Token;
+import com.auction.wechat.widget.Button;
+import com.auction.wechat.widget.ClickButton;
+import com.auction.wechat.widget.ComplexButton;
+import com.auction.wechat.widget.Menu;
+import com.auction.wechat.widget.ViewButton;
+
+
+
+/**
+ * 菜单管理器类
+* @author tobber
+ * @date 2015-01-10
+ */
+public class MenuManager {
+	private static Logger log = LoggerFactory.getLogger(MenuManager.class);
+
+	/**
+	 * 定义菜单结构
+	 * @return
+	 */
+	private static Menu getMenu() {
+		
+		
+		ClickButton btn11 = new ClickButton();
+		btn11.setName("账号绑定");
+		btn11.setType("click");
+		btn11.setKey("userBind");
+//		http://shilipai.net/loginpage 
+		
+		ViewButton btn12 = new ViewButton();
+		btn12.setName("我的主页");
+		btn12.setType("view");
+		btn12.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+SysConfig.getValue("WECHAT_APPID").toString()+"&redirect_uri=http://www.shilipai.net/wechatRoute&response_type=code&scope=snsapi_base&state=home#wechat_redirect");
+//		http://shilipai.net/cvupload 个人主页
+//		http://shilipai.net/companypreview 公司主页
+		
+		ViewButton btn13 = new ViewButton();
+		btn13.setName("申请拍卖");
+		btn13.setType("view");
+		btn13.setUrl("http://www.shilipai.net/appjbsingle");
+		
+		ViewButton btn21 = new ViewButton();
+		btn21.setName("进入专场");
+		btn21.setType("view");
+		btn21.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+SysConfig.getValue("WECHAT_APPID").toString()+"&redirect_uri=http://www.shilipai.net/wechatRoute&response_type=code&scope=snsapi_base&state=auctionpool#wechat_redirect");
+//		http://shilipai.net/auctionpool 专场
+		
+		ViewButton btn22 = new ViewButton();
+		btn22.setName("我的拍卖纪录");
+		btn22.setType("view");
+		btn22.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+SysConfig.getValue("WECHAT_APPID").toString()+"&redirect_uri=http://www.shilipai.net/wechatRoute&response_type=code&scope=snsapi_base&state=bidlog#wechat_redirect");
+//		http://shilipai.net/userbidstate 个人
+//		http://shilipai.net/companybidstate 企业
+	
+		ViewButton btn31 = new ViewButton();
+		btn31.setName("大挑战");
+		btn31.setType("view");
+		btn31.setUrl("http://www.shilipai.net:8080/startupfighter/");
+
+		ClickButton btn32 = new ClickButton();
+		btn32.setName("联系我们");
+		btn32.setType("click");
+		btn32.setKey("aboutUs");
+		
+		ViewButton btn33 = new ViewButton();
+		btn33.setName("看看同行");
+		btn33.setType("view");
+		btn33.setUrl("http://bbs.shilipai.net/Forum/route/findout.action");
+		
+		ViewButton btn34 = new ViewButton();
+		btn34.setName("官网");
+		btn34.setType("view");
+		btn34.setUrl("http://www.shilipai.net");
+		
+		ComplexButton mainBtn1 = new ComplexButton();
+		mainBtn1.setName("拍卖自己");
+		mainBtn1.setSub_button(new Button[] { btn13,btn11, btn12});
+		
+		ComplexButton mainBtn2 = new ComplexButton();
+		mainBtn2.setName("拍卖会");
+		mainBtn2.setSub_button(new Button[] { btn21, btn22});
+		
+		ComplexButton mainBtn3 = new ComplexButton();
+		mainBtn3.setName("实力拍");
+		mainBtn3.setSub_button(new Button[] { btn32,btn34 });
+		
+		Menu menu = new Menu();
+		menu.setButton(new Button[] { mainBtn1, mainBtn2, mainBtn3 });
+
+		return menu;
+	}
+
+	public static void main(String[] args) {
+		// 第三方用户唯一凭证
+		String appId = SysConfig.getValue("WECHAT_APPID").toString();
+		// 第三方用户唯一凭证密钥
+		String appSecret = SysConfig.getValue("WECHAT_APPSECRET").toString();
+		/**
+		
+	//	JSONObject tokenObject = CommonUtil.httpsRequest("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appId+"&secret="+appSecret, "GET", null);
+
+		String string="{\"articles\": [{\"thumb_media_id\":\"P_57y7AADIbivKX0L8-XT4M7TYiqvNK6mKbcePHWQujCoUEFCv6rEG3hNgMdCbgH\",\"autho\":\"xxx\",\"title\":\"Happy Day\",\"content_source_url\":\"www.shilipai.net/appjb\",\"content\":\"content\",\"digest\":\"digest\"}]}";
+	//	JSONObject ticketObject = CommonUtil.httpsRequest("https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token=qI-FZnPC6V4yBYtv_nKnLP16yH6fC9afrvVkyp0OQcwQnfy2wskdgKtGikFu2NGkD_vrTNBBhA7XB38mlYTK_Ovckvi2R72i_Rlro9nAcJc", "POST", string);
+		
+		String imgStr = "{\"touser\":[\"oy0P_svmHCBDAH3tWJgRcFsu3w-Y\" ],\"image\":{\"media_id\":\"BlPkE3JzwsnR5BqsfMh3hiY3c91LeCzMk5mgVzLsjHeXtun7S51bsUppknzHcGBj\"},\"msgtype\":\"image\"}";
+		
+		JSONObject ticObject = CommonUtil.httpsRequest("https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=79zDFlpOgHg0upQFgX18KNJxsnQvBwze3Dl1gSMlPdGvKfUM4zqc5CXHqClCYpMmnGY_vAlUEe2EeUHVxL4qJZht3b72uV_w2GTD7Ntnu4w", "POST", imgStr);
+		System.out.println(ticObject);
+		*/
+		// 调用接口获取凭证
+		Token token = CommonUtil.getToken(appId, appSecret);
+
+		if (null != token) {
+			// 创建菜单
+			boolean result = MenuUtil.createMenu(getMenu(), token.getAccessToken());
+
+			// 判断菜单创建结果
+			if (result)
+				log.info("菜单创建成功！");
+			else
+				log.info("菜单创建失败！");
+		}
+		
+		/**
+		WxTemplate t = new WxTemplate();  
+        t.setUrl("http://www.baidu.com");  
+        t.setTouser("oy0P_ss-8KPhDTLvJoxRsVgJaJsU");  
+        t.setTopcolor("#000000");  
+        t.setTemplate_id("QyO7mRF9yAYfDol_59tp4qX0O6r03x4j4j0TObPoJgM");  
+        Map<String,TemplateData> m = new HashMap<String,TemplateData>();  
+       
+        TemplateData first = new TemplateData();  
+        first.setColor("#000000");  
+        first.setValue("您发送的面试邀请被候选人拒绝了。");  
+        m.put("first", first);  
+        TemplateData keyword1 = new TemplateData();  
+        keyword1.setColor("#000000");  
+        keyword1.setValue("20140821");  
+        m.put("keyword1", keyword1);  
+        TemplateData keyword2 = new TemplateData();  
+        keyword2.setColor("#000000");  
+        keyword2.setValue("薪酬不满足预期");  
+        m.put("keyword2", keyword2); 
+        TemplateData remark = new TemplateData();  
+        remark.setColor("#000000");  
+        remark.setValue("点击这里查看该候选人的详细信息，您也可以联系我们的客服询问具体情况。");  
+        m.put("remark", remark);  
+        t.setData(m);
+        
+        // 将菜单对象转换成json字符串
+		String jsonMenu = JSONObject.fromObject(t).toString();
+		System.out.println(jsonMenu);
+		// 发起POST请求创建菜单
+		JSONObject jsonObject = CommonUtil.httpsRequest("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+token.getAccessToken(), "POST", jsonMenu);
+		System.out.print(jsonObject);
+		**/
+		
+	}
+}

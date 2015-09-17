@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/signin.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<!-- <script src="../js/common/app_common.js"></script> -->
+	<script src="../js/mobile/signin.js"></script>
+</head>
+<body>
+	<div class="viewport">
+		<div class="sign-wrap">
+			<div class="logo">
+				<img class="ico" src="/img/applogo.png"/>
+			</div>
+			<div class="sign-form">
+				<div class="inp-item">
+					<input type="text" class="email" id="email" placeholder="邮箱"/>
+				</div>
+				<div class="inp-item">
+					<input type="password" class="pwd" id="password" placeholder="密码"/>
+				</div>
+				<div class="inp-item">
+					<span class="btn mgn" id="submit">登录</span>
+				</div>
+			</div>
+		</div> 
+		
+		<div class="success">
+			<div class="msg">绑定成功</div>
+			<div class="text">你的实力拍账号已经和微信绑定</div>
+			<div class="time-con">
+				<span id="time_text">5</span>秒后返回公众号，
+				<span id="close_btn" class="close" >点击直接返回</span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

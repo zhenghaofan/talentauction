@@ -1,0 +1,45 @@
+package com.auction.common.web;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import com.auction.common.service.CommonService;
+import com.auction.common.util.Util;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+@Controller
+@RequestMapping(value = "common")
+public class CommonController {
+	@Resource
+	private CommonService commonService;
+
+	@RequestMapping(value = "getCityList")//获取城市列表
+	public void getCityList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.commonService.getCityList(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getAreasList")//获取行业领域列表
+	public void getAreasList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.commonService.getAreasList(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "talentRoute")//登录路由控制
+	public String talentRoute(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String viewName = commonService.talentRoute(request);
+		response.setContentType("text/html;charset=UTF-8");
+		return "redirect:/"+viewName;
+	}
+	
+	@RequestMapping(value = "userCancel")//用注销
+	public void userCancel(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.commonService.userCancel(request,response);
+        new Util().responesWriter(response,result);
+	}
+}

@@ -1,0 +1,8 @@
+
+body {
+	background-color: #fff;
+}
+
+.pay-wrap {
+	color: #6B7485;
+}

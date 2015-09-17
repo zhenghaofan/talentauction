@@ -1,0 +1,107 @@
+package com.auction.company.service;
+
+import javax.servlet.http.HttpServletRequest;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+public interface CompanyService {
+	/**
+     * 添加公司
+     * @param request
+     * @return
+     */
+    public String addCompany(HttpServletRequest request); 
+    
+    /**
+     * 使用已有公司
+     * @param request
+     * @return
+     */
+    public String useExistCompany(HttpServletRequest request); 
+    
+    /**
+     * 获取同邮箱后缀公司列表
+     * @param request
+     * @return
+     */
+    public String getSameCompanyList(HttpServletRequest request);
+    
+    /**
+     * 获取公司基本信息
+     * @param request
+     * @return
+     */
+    public String getCompanyInfo(HttpServletRequest request);
+    
+    /**
+     * 保存公司基本信息
+     * @param request
+     * @return
+     */
+    public String saveCompanyInfo(HttpServletRequest request);
+    
+    /**
+     * 更新公司基本信息
+     * @param request
+     * @return
+     */
+    public String updateCompanyInfo(HttpServletRequest request);
+    
+    /**
+     * 添加、更新公司产品信息
+     * @param request
+     * @return
+     */
+    public String updateProducts(HttpServletRequest request);
+    
+    /**
+     * 删除公司产品信息
+     * @param request
+     * @return
+     */
+    public String delProducts(HttpServletRequest request);
+    
+    /**
+     * 添加、更新公司创始团队信息
+     * @param request
+     * @return
+     */
+    public String updateFounder(HttpServletRequest request);
+    
+    /**
+     * 删除公司创始团队信息
+     * @param request
+     * @return
+     */
+    public String delFounder(HttpServletRequest request);
+    
+    /**
+     * 添加、更新公司人才招聘需求
+     * @param request
+     * @return
+     */
+    public String updateTalentDemand(HttpServletRequest request);
+    
+    /**
+     * 删除公司人才招聘需求
+     * @param request
+     * @return
+     */
+    public String delTalentDemand(HttpServletRequest request);
+    
+    /**
+     * 获取拍卖纪录
+     * @param request
+     * @return
+     */
+    public String companyBidLogs(HttpServletRequest request);
+    
+    /**
+     * 公司出价竞拍
+     * @param request
+     * @return
+     */
+    public String companyAuction(HttpServletRequest request); 
+}

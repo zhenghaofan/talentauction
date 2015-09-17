@@ -1,0 +1,7 @@
+$(function($) {
+	$('.slt-wrap').show();
+	
+	$("#close_btn").on('click', function() {
+		 WeixinJSBridge.call('closeWindow');
+	});
+});

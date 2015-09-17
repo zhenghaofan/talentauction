@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/placemeeting.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/placemeeting.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/placemeeting" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/placemeeting-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl"></div> 
+		<div id="main" ng-controller="meetingCtrl">
+			<div class="meeting-wrap">
+				<ul class="meeting-con">
+					<li class="meeting-item">
+						<div class="list-box bg-1">
+							<a class="box-link" href="">
+								<img class="ico-pay" src="/img/index_spec_go_bid.png">
+							</a>
+							
+							<div class="box-vote" ng-if="false">
+								<div class="hand-box">
+									<img class="ico-hand" data-id="{{item.id}}" data-type="0" data-index="{{$index}}" src="/img/index_spec_hand_l.png">
+									<i class="i-hand">+1</i>
+								</div>
+							</div>							
+							
+							<div class="box-tip">
+								<span>拍卖中</span>
+								<span ng-if="item.status == 2 || item.status == 3">征集中</span>
+							</div>
+						</div>
+						<div class="list-footer">
+							<div class="li-detial-title" ng-bind="item.name"></div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

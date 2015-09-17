@@ -1,0 +1,47 @@
+
+
+.result-wrap {
+	width: 1024px;
+	margin: 130px auto 100px;
+  	color: #6B7485;
+}
+
+.result-title {
+	text-align: center;
+	padding: 25px 40px;
+	border-radius: 3px;
+	background: #fff;
+}
+.result-title span {
+  font-size: 20px !important;
+  line-height: 36px;
+}
+
+
+
+
+
+.result-body {
+	margin-top: 30px;
+}
+.result-body .box-l {
+	float: left;
+	width: 720px;
+	border-radius: 5px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	overflow: hidden;
+}
+
+
+
+
+
+
+
+.result-body .box-r {
+	float: right;
+	width: 275px;
+	color: #6B7485;
+	margin-right: 2px;
+}

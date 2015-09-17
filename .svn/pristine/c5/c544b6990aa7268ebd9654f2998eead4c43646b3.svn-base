@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.resume.dao.ResumeDao">
+   
+	<resultMap type="com.auction.resume.model.Educations" id="educationsResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="school" column="school"/>
+        <result property="specialty " column="specialty "/>
+    </resultMap>
+    
+	<resultMap type="com.auction.resume.model.Projects" id="projectResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="name" column="name"/>
+        <result property="projectDetails " column="projectDetails "/>
+    </resultMap>
+    
+    <resultMap type="com.auction.resume.model.WorkExperiences" id="workExpResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="jobTitle" column="jobTitle"/>
+        <result property="companyName " column="companyName "/>
+        <result property="workContent" column="workContent"/>
+    </resultMap>
+    
+    <resultMap type="com.auction.common.model.BidLogs" id="bidLogsResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="userId" column="userId"/>
+        <result property="companyId" column="companyId"/> 
+        <result property="bidPrice" column="bidPrice"/> 
+        <result property="monthCount" column="monthCount"/>
+        <result property="workTitle" column="workTitle"/>
+        <result property="bidTime" column="bidTime"/>
+        <result property="isReply" column="isReply"/>
+        <result property="replyTime" column="replyTime"/>
+    </resultMap>
+    
+    <insert id="add_resume" useGeneratedKeys="true" keyProperty="resumeId" parameterType="com.auction.resume.model.Resume">
+    	insert into resume (userId,jobYear,creatTime,surplusTime,cvBidStatus,cvCheckResult,cvCheckStatus,bidCount,sex,education,skills,destination) values (
+    	#{userId},0,#{creatTime},0,0,0,0,0,0,0,#{skills},#{destination})
+    </insert>
+    
+    <!-- 获取简历详细信息 -->
+    <select id="getResumDetailByUserId" resultType="map" parameterType="String">
+        select  r.*,b.name specialName,a.email,a.telephone phone from (
+        	select resumeId,
+        	userId,
+        	destination,
+        	expectedSalary,
+        	jobTitle,
+        	jobYear,
+        	skills,
+        	surplusTime,
+        	cvBidStatus,
+        	cvCheckStatus,
+        	cvCheckResult,
+        	bidCount,
+        	name,
+        	sex,
+        	age,
+        	education,
+        	rejectReason,
+        	summary,
+        	details,
+        	code,
+        	special,
+        	specialCount 
+        	from resume where userId=#{0} 
+        ) r 
+        left join rigistration a on r.userId=a.userId 
+        left join special b on b.id=r.special
+    </select>
+    
+    <!-- 获取简历详细信息 -->
+    <select id="getBackupResumDetail" resultType="map" parameterType="String">
+        select  r.*,a.email,a.telephone phone from (
+        	select * from b_resume where userId=#{0}) r 
+        left join rigistration a on r.userId=a.userId 
+    </select>
+    
+    <!-- 获取教育经历 -->
+    <select id="getEducationsAll" parameterType="map" resultMap="educationsResult">
+        select id,resumeId,startTime,endTime,school,specialty from ${tableName} where resumeId=#{resumeId}
+    </select>
+    
+    <!-- 获取项目经验 -->
+    <select id="getProjectsAll" parameterType="map" resultMap="projectResult">
+        select id,resumeId,startTime,endTime,name,projectDetails from ${tableName} where resumeId=#{resumeId}
+    </select>
+    
+    <!-- 获取工作经历 -->
+    <select id="getWorkExpAll" parameterType="map" resultMap="workExpResult">
+        select id,resumeId,startTime,endTime,jobTitle,companyName,workContent from ${tableName} where resumeId=#{resumeId}
+    </select>
+    
+    <!-- 获取求职意向 -->
+    <select id="getJobInfo" parameterType="String" resultType="map">
+    	select a.*,b.content from (select userId,jobTitle,expectedSalary,destination,skills from resume where userId=#{0}) a left join shield_logs b on a.userId=b.userId limit 1
+    </select>
+    
+    <!-- 获取拍卖纪录 -->
+    <select id="getBidLogs" parameterType="map" resultMap="bidLogsResult">
+        select b.*,
+        	c.nickName,
+        	e.name cityName 
+        from (
+        	select userId,
+        		companyId,
+        		bidPrice,
+        		monthCount,
+        		isOption,
+        		workTitle,
+        		bidTime,
+        		isReply,
+        		replyTime
+        	from bid_logs 
+        	where isDelete='1' and userId=#{userId}
+        ) b 
+        left join company c on b.companyId=c.companyId 
+        left join cities e on c.city=e.id 
+        <if test="trem != null and trem != ''">
+            where ${trem} 
+		</if> 
+		order by ${sort} ${sortMethod} limit ${page},${pageSize}
+    </select>
+    
+    <!-- 获取拍卖纪录 -->
+    <select id="getBidLogsTotal" parameterType="map" resultType="Integer">
+        	select count(*) Total
+        	from bid_logs 
+        	where isDelete='1' and userId=#{userId} 
+        <if test="trem != null and trem != ''">
+            and ${trem}
+		</if> 
+    </select>
+    
+    <!-- 用户更新求职意向，不更新简历状态 -->
+    <select id="user_update_itent" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call user_update_itent (
+		   		#{i_expectedSalary,mode=IN,jdbcType=VARCHAR},
+		   		#{i_destination,mode=IN,jdbcType=VARCHAR},
+		   		#{i_content,mode=IN,jdbcType=VARCHAR},
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select> 
+	
+    <!-- 用户更新求职意向，不更新简历状态(重新提交审核) -->
+    <select id="user_resubmit_check" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call user_resubmit_check (
+		   		#{i_expectedSalary,mode=IN,jdbcType=VARCHAR},
+		   		#{i_destination,mode=IN,jdbcType=VARCHAR},
+		   		#{i_jobTitle,mode=IN,jdbcType=VARCHAR},
+		   		#{i_skills,mode=IN,jdbcType=VARCHAR},
+		   		#{i_content,mode=IN,jdbcType=VARCHAR},
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select> 
+	
+</mapper> 

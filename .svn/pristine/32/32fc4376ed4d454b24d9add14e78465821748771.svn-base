@@ -1,0 +1,263 @@
+$(function($) {
+//	var config = {userId: 389};
+	var config = {};
+	if(_getParams('userId')) config.userId = _getParams('userId');
+	
+	//$('#step_4').show();
+//	$('.job-wrap').show();
+//	$('#bid-text-1').show();
+	
+	/* 基本信息*/
+	var getResume = function(data) {
+		var _obj = $('.info-base-warp .context');
+		$('.info-base-warp .title span').text(data.jobTitle);
+		_obj.find('.ico_sex').text(data.sex);
+		_obj.find('.ico_clock').text(data.age + '岁');
+		_obj.find('.ico_book').text(data.education);
+		_obj.find('.ico_year').text(data.jobYear + '年');
+		_obj.find('.ico_msg').text(data.email);
+		_obj.find('.ico_phone').text(data.phone);
+	};
+	
+	/* 求职意向*/
+	var getStatus = function(data) {
+		var _obj = $('.info-status-warp .context');
+		_obj.find('.avgPrice').text(data.skills? data.skills : '');
+		_obj.find('.companyNum').text(data.expectedSalary? data.expectedSalary + 'k' : 0 + 'k');
+		_obj.find('.readCount').text(data.specialName? data.specialName : '');
+		_obj.find('.destination').text(data.destination? data.destination : '');	
+	};
+	
+	/* 教育经历*/
+	var getEdu = function(data) {
+		var _obj = $('.info-detail-warp .edu');
+		for (var i in data) {
+			var dom = '<div>'+
+			   '<span>' + data[i].startTime + '-' + data[i].endTime +'&nbsp;</span>'+
+			   '<span>' + data[i].school +'</span>'+
+			   '<span>&nbsp;| ' + data[i].specialty +'</span>'+
+		   '</div>';			
+			_obj.append(dom);
+		}
+	};
+	
+	/* 工作经历*/
+	var getWork = function(data) {
+		var _obj = $('.info-detail-warp .work');
+		
+		if(!data) {
+			_obj.hide().prev('.title').hide();
+			return;
+		}
+		
+		for(var i in data) {
+			var dom = '<div class="f_b">'+
+				'<span>' + data[i].companyName +'</span>' +		
+			'</div>'+
+			'<div class="f_b">'+
+				'<span>' + data[i].startTime + '-' + data[i].endTime +'</span>'+
+				'<span>&nbsp;|&nbsp;' + data[i].jobTitle +'</span>'+		
+			'</div>'+
+			'<div class="mg_b16">'+
+				'<p>' + data[i].workContent +'</p>'+
+			'</div>'
+			_obj.append(dom);
+		}
+	};
+	
+	/* 项目经验*/
+	var getProject = function(data) {
+		var _obj = $('.info-detail-warp .project');
+		
+		if(!data) {
+			_obj.hide().prev('.title').hide();
+			return;
+		}
+		
+		for(var i in data) {
+			var dom = '<div class="f_b">'+
+			'<span>' + data[i].name +'&nbsp;</span>'+
+			'<span>' + data[i].startTime + '-' + data[i].endTime +'&nbsp;</span>'+			
+		'</div>'+
+		'<div class="f_b">'+
+			'<span>项目描述</span>'+		
+		'</div>'+
+		'<div class="mg_b16">'+
+			'<p>' + data[i].responsibilities +'</p>'+
+		'</div>'	
+			_obj.append(dom);
+		}
+	};
+	
+	/* 个人总结*/
+	var getSummary = function(data) {
+		var _obj = $('.info-detail-warp .summary');
+		_obj.find('p').text(data.details);
+	};
+	
+	/* 获取简历信息*/
+	var queryResumeAll = function() {
+		_doPost('/common/getUserResume ', config, function(result) {
+			console.log(result);
+			var resume = _formatResume(result.resume);
+			var education = result.educations;
+			var project = result.projects;
+			var work = result.work_experiences;
+			getResume(resume);
+			getStatus(resume);
+			getEdu(education);
+			getWork(work);
+			getProject(project);
+			getSummary(resume);
+		}, function(err) {
+			console.log('queryResumeAll', err);
+		});		
+	}
+	
+	_doGet('/cvmake/getResumeStatus', function(result) {
+		var resume = result.resumeStatusMap;
+		resume.cvCheckResult = 1;
+		
+		if(resume.isSuccess == 0) { //未激活
+			$('title').text('简历状态');
+			$('#step_1').show();
+		}else if(resume.isSuccess == 1) {
+			if(resume.status == 0 || resume.status == 2) { //未上传、填写
+				$('title').text('简历状态');
+				$('#step_2').show();
+			}else if(resume.cvCheckResult == 0) {//审核中
+				$('title').text('简历状态');
+				$('.tips-warp #step_3').show();
+			}else if(resume.cvCheckResult == 1) {//审核失败
+				$('title').text('简历状态');
+				$('.tips-warp #step_4').show();
+			} else if(resume.cvCheckResult == 2) {//审核成功
+				$('title').text('我的Offer');
+				$('.job-wrap').show();
+				queryResumeAll();
+				if(resume.cvBidStatus == 0) {//准备
+					$('#bid-text-1').show();
+				}else if(resume.cvBidStatus == 1) {//上架
+					$('#bid-text-2').show();
+				}if(resume.cvBidStatus == 2) {//下架
+					$('#bid-text-3').show();
+				}
+			}
+		}	
+	}, function(err) {
+		console.error('getResumeStatus', err);
+	});
+});
+
+function _getParams(name) {
+	var query = window.location.search;
+	if (name) {
+		var r = new RegExp("[?&]" + name + "=([^&]*)");
+		var m = r.exec(query);
+		if (m) {
+			return m[1];
+		} else {
+			return null;
+		}
+	} else {
+		return this.parseQueryString(query);
+	}	
+}
+
+function _doPost(url, params, callback, error) {
+	_ajax(url, 'post',callback, error, params);
+}
+
+function _doGet(url, callback, error) {
+	_ajax(url, 'get', callback, error);
+}
+
+function _ajax(_url, _type, _callback, _error, _params) {
+	$.ajax({
+		url: _url,
+		type: _type,
+		dataType: 'json',
+		data: _params,
+		success: function(result) {
+			_callback(result);
+		},
+		error: function(err) {
+			_error(err);
+		}
+	});
+}
+
+/* 基本信息格式*/
+function _formatResume (item) {
+	if(!item) return item;
+	var education = item.education;
+	var sex = item.sex;
+	if (!education) {
+		item.education = '不限';
+	} else if (education == 1) {
+		item.education = '大专';
+	} else if (education == 2) {
+		item.education = '本科';
+	} else if (education == 3) {
+		item.education = '硕士';
+	} else if (education == 4) {
+		item.education = '博士';
+	} else {
+		item.education = '不限';
+	}
+	if (!sex) {
+		item.sex = '男';
+	} else {
+		item.sex = '女';
+	}
+	return item;
+}
+
+/* 公司出价表格式*/
+function _formatBidLogs(bidLogs) {
+	
+	if(bidLogs.bidTime == '0') {
+		bidLogs.bidTime = '今天';
+	}else if(bidLogs.bidTime == '1') {
+		bidLogs.bidTime = '昨天';
+	}else {
+		bidLogs.bidTime = bidLogs.bidTime + '天前';
+	}
+	
+	if(!bidLogs.isOption) {
+		bidLogs.isOption = 'X';
+	}else {
+		bidLogs.isOption = '提供';
+	}	
+	
+	switch (bidLogs.progress) {
+	case 0:
+		bidLogs.progress = "未融资";
+		break;
+	case 1:
+		bidLogs.progress = "天使轮";
+		break;
+	case 2:
+		bidLogs.progress = "A轮";
+		break;
+	case 3:
+		bidLogs.progress = "B轮";
+		break;
+	case 4:
+		bidLogs.progress = "C轮";
+		break;
+	case 5:
+		bidLogs.progress = "D轮";
+		break;
+	case 6:
+		bidLogs.progress = "上市公司";
+		break;
+	case 7:
+		bidLogs.progress = "不需要融资";
+		break;
+	default:
+		bidLogs.progress = "未融资";
+		break;
+	}
+	return bidLogs;
+}

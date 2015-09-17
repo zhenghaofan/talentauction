@@ -1,0 +1,71 @@
+
+
+body {
+	background-color: #E2E2E2;
+}
+
+/* 专场列表*/
+.list-wrap .top-bar {
+	height: 40px;
+	color: #fff;
+	font-size: 1.2em;
+	line-height: 40px;
+	text-align: center;
+	background-color: #2d4e7b;
+}
+.list-wrap #spec_list {
+	display: none;
+}
+.list-wrap .box-list {
+	padding-bottom: 10px;
+	overflow-y: scroll;
+}
+.list-wrap  .spec-item {
+	width: 90%;
+	padding: 16px 6px;
+	border-radius: 3px;
+	margin: 15px auto;
+	background-color: #fff;
+}
+.list-wrap .spec-l {
+	width: 90%;
+	display: inline-block;
+}
+.list-wrap .spec-title {
+	color: #333;
+	font-size: 1.5em;
+	padding-left: 5px;
+	padding-bottom: 10px;
+}
+.list-wrap .spec-con {
+	color: #727272;
+	font-size: 1.2em;
+	padding-left: 5px;
+}
+.list-wrap .spec-r {
+	float: right;
+	margin-top: 20px;
+	margin-right: 8px;
+	display: inline-block;
+}
+.list-wrap .direct-ico {
+	height: 18px;
+}
+.list-wrap .c-b {
+	color: #3a8acf;
+}
+.list-wrap .split {
+	margin: 0 5px;
+	display: inline-block;
+}
+
+
+/* 暂无记录*/
+.nodata {
+	text-align: center;
+	padding-top: 35%;
+	display: none;
+}
+.nodata span {
+	font-size: 1.4em;
+}

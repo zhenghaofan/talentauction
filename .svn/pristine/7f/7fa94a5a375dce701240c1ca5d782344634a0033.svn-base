@@ -1,0 +1,98 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('jdCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$rootScope.tabIndex = 4;
+		$scope.jdInfo = {};
+		
+		/* 清除提示*/
+		$scope._clearTip = function() {
+			$('.err-wrap label').text('').hide();
+		};
+		
+		/* 获取jd*/
+		$scope.getTalentDemand = function() {
+            $q.when($http.post('/company/getTalentDemand'))
+            .then(function(result) {
+            	var data = result.data;
+					$scope.talentList = data.talentList;
+					$('.viewport').show();
+            }, function(err) {
+            	console.error('getTalentDemand', err);
+            });				
+		};
+		
+		/* 添加jd*/
+		$scope.addTalentDemand = function() {
+			var config = {
+					skills: $scope.jdInfo.skills,
+					website: $scope.jdInfo.website
+			};
+
+			if(!_checkJd(config)) return;
+			
+			if(config.website.indexOf('http') == -1) config.website = 'http://' + config.website;
+			
+            $q.when($http.post('/company/updateTalentDemand', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+				if(data.code == 200) {
+					console.log(data);
+					$scope.jdInfo = {};
+					$scope.getTalentDemand();
+				}else {
+					$('#comp_info_tip').show().text(data.message);
+				}   	
+            }, function(err) {
+            	console.error('updateTalentDemand', err);
+            });			
+		};
+		
+		/* 删除jd*/
+		$scope.delTalentDemand = function(id) {
+			var config = {
+					id: id
+			};
+			
+            $q.when($http.post('/company/delTalentDemand', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+				if(data.code == 200) {
+					$scope.getTalentDemand();
+				}  	
+            }, function(err) {
+            	console.error('delTalentDemand', err);
+            });				
+		};
+		
+		/* 下一步*/
+		$scope.next = function() {
+			window.location.href = '/companyform/compdefault';
+		};
+		
+		
+		/* 验证公司信息*/
+		function _checkJd(data) {
+			$scope._clearTip();
+			if(!data.skills) {
+				$('#jdInfo_name').focus();
+				$('#jdInfo_name_tip').show().text('职位输入有误！');
+				return false;
+			}else if(!data.website) {
+				$('#jdInfo_url').focus();
+				$('#jdInfo_url_tip').show().text('职位链接输入有误！');
+				return false;				
+			}
+			
+			return true;			
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

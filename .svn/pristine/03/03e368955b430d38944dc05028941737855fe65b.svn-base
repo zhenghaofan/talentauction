@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/placebid.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/placebid.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/placebid" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/placebid-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl"></div> 
+		<div id="main" ng-controller="bidCtrl">
+			<div class="bid-wrap" ng-init="getResume()">
+				<div class="bid-title">
+					<a class="tip" ng-if="!isLoad" href="/registerpage?c=1" target="_blank"></a>
+				</div>
+				<div class="bid-body">
+					<div class="bid-box-l box-shadow">
+						<div class="info-item">
+							<div class="item-con base-info">
+								<ul>
+									<li class="bid-name" ng-bind="userInfo.resume.name">IOS开发</li>
+									<li class="bid-state">
+										<span class="state-item">目标城市<i class="fc-1" ng-bind="userInfo.resume.destination"></i></span>
+										<span class="state-item">平均出价<i class="fc-2" ng-bind="userInfo.resume.expectedSalary + 'k'"></i></span>
+										<span class="state-item">被拍<i class="fc-1" ng-bind="userInfo.resume.bidCount + '次'"></i></span>
+										<span class="state-item">浏览<i class="fc-2" ng-bind="userInfo.resume.bidCount + '次'">91次</i></span>
+									</li>
+									<li>
+										{{userInfo.resume.sex? '女' : '男'}}<span class="line">/</span>
+										{{userInfo.resume.educationStr}}<span class="line">/</span>
+										{{userInfo.resume.jobYear}}年工作经验<span class="line">/</span>
+										{{userInfo.resume.email}}<span class="line">/</span>
+										{{userInfo.resume.phone}}
+									</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="info-item">
+							<div class="item-title">
+								<img class="item-img edu" src="/img/edu_ico_1.png">
+								<span>教育经历</span>
+							</div>
+							<div class="item-con">
+								<ul class="resuem-ul" ng-repeat="item in userInfo.educations">
+									<li>
+										<span  ng-bind="item.startTime"></span> — 
+										<span ng-bind="item.endTime"></span>
+										<span ng-bind="item.school"></span> |
+										<span ng-bind="item.specialty"></span>
+									</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="info-item">
+							<div class="item-title">
+								<img class="item-img" src="/img/web_ico_l.png "/>
+								<span>作品链接</span>
+							</div>
+							<div class="item-con">
+								<ul>
+									<li ng-repeat="item in userInfo.productUrl">
+										<a target="_blank" ng-href="http://www.baidu.com" ng-bind="item"></a>
+									</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="info-item">
+							<div class="item-title">
+								<img class="item-img" src="/img/ui_show_ico.png "/>
+								作品展示
+							</div>
+							<div class="item-con">
+								<ul>
+									<li ng-repeat="item in userInfo.productImg">
+										<div class="resume-box">
+											<img class="resume-img" ng-src="/upload/user/compression/{{item}}"/>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="info-item">
+							<div class="item-title">
+								<img class="item-img" src="/img/exp_ico.png">
+								<span>工作经历</span>
+							</div>
+							<div class="item-con">
+								<ul ng-repeat="item in userInfo.work_experiences">
+									<li class="fb" ng-bind-template="{{item.companyName}}">荣浪信息科技(上海)有限公司 (1年5个月)</li>
+									<li class="fb" ng-bind-template="{{item.startTime}}--{{item.endTime}} | {{item.jobTitle}}"></li>
+									<li><pre ng-bind="item.workContent"></pre></li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="info-item">
+							<div class="item-title">
+								<img class="item-img" src="/img/pro_ico.png">
+								<span>项目经验</span>
+							</div>
+							<div class="item-con">
+								<ul ng-repeat="item in userInfo.projects">
+									<li class="fb" ng-bind-template="{{item.name}}&nbsp;&nbsp;{{item.startTime}} — {{item.endTime}}"></li>
+									<li><pre ng-bind="item.projectDetails">项目职务：IOS所在公司：</pre></li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="info-item">
+							<div class="item-title">
+								<img class="item-img" src="/img/tec_ico.png ">
+								<span>个人总结</span>
+							</div>
+							<div class="item-con">
+								<ul>
+									<li><pre ng-bind="userInfo.resume.details"></pre></li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="info-item">
+							<div class="item-title">
+								<img class="item-img item-img-h" src="/img/jobname_ico.png ">
+								<span>求职意向</span>
+							</div>
+							<div class="item-con">
+								<ul>
+									<li ng-bind-template="期望薪资&nbsp;:&nbsp; {{userInfo.resume.expectedSalary}}k/月"></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					
+					<div class="bid-con-r">
+						<div class="bid-box">
+						 	<div class="title">输入初步的薪资，邀TA面试</div>
+							<div class="bid-con">
+								<div class="inp-box">
+									<input type="text" ng-model="bidPrice" id="bid_price" maxlength="4" onkeyup="value=value.replace(/[^\d.]/g,'')"><span class="bid-unit">K/月</span>
+									<span class="ccl-ico">X</span>
+									<input type="text" ng-model="monthCount" maxlength="2" onkeyup="value=value.replace(/[^\d]/g,'')"><span class="bid-unit">月/年</span>
+								</div>
+								
+								<div class="check-box"> 
+									<input type="checkbox" ng-model="isOption" class="bid-checked-btn ng-pristine ng-valid" id="bid_checked_btn" ng-change="changeOpt()"><label for="bid_checked_btn">是否提供期权</label>
+								</div>
+								
+								<div class="jobs-box">
+									<label class="jobs-label">邀请短筏</label>
+									<div><textarea class="job-text" ng-model="workTitle" placeholder="例如：你希望他担任什么职位 （35字以内）"></textarea></div>
+								</div>
+								
+							</div>
+							<div class="btn-con">
+								<span class="bid-btn" ng-click="auction()" >邀请面试</span>
+							</div>
+						</div>
+						
+						<div class="float-bid" id="com_bid_tip_btn" ng-if="status == 1">
+							<div class="bid-btn" ng-click="goBid()">邀请面试</div>
+						</div>		
+						
+						<div class="bid-list box-shadow" id="com_bid_price">
+							<div class="list-title">
+								<img class="item-img h" src="/img/com_bid_list.png ">
+								TA的拍卖动态
+							</div>
+							<div class="list-box" id="bid_list_box">
+								<ul class="list-ul" id="bid_list_ul">
+									<li class="item-con">
+										<div><i>TA</i>&nbsp;&nbsp;<span class="fz-1">7天前</span></div>
+										<div>被一家&nbsp;<i>不需要融资</i>&nbsp;的公司以&nbsp;<i class="ng-binding">15k x 13月</i>&nbsp;竞拍</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="warm-box box-shadow">
+							<div class="warm-title">温馨提示</div>
+							<div class="warm-con">
+								<span >
+									<div class="warm-item">1.&nbsp;您的出价可以低于平均月薪。</div>
+									<div class="warm-item">2.&nbsp;出价的同时等于发送了面试邀请。</div>
+									<div class="warm-item">3.&nbsp;公司出价表是匿名的。</div>
+									<div class="warm-item">4.&nbsp;公司可以重复出价，但月薪不能低于上一次出价。</div>
+									<div class="warm-item">5.&nbsp;请开出力所能及的初步薪资，不要胡乱抬价。</div>
+								</span>
+							</div>
+						</div>						
+						
+						<div class="qrcode-box-n box-shadow">
+							<div class="qrcode-title-n">官方微信</div>
+							<div><img class="qrcode-img-n" src="/img/qrcode.jpg"></div>
+							<div class="qrcode-tip-n">绑定账号随时获取候选人回复</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

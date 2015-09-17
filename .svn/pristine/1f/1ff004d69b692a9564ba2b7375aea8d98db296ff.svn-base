@@ -1,0 +1,120 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'info',
+ 'uiservice'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('bidlistCtrl', ['$scope', '$rootScope', '$http', '$q', 'info', 'uiservice',
+   		function($scope, $rootScope, $http, $q, info, uiservice) {
+		$scope.edus = info.getEducation();
+		$rootScope.tabIndex = 5;
+		$scope.replayState = 2;
+		$scope.pageIndex = 1;
+		$scope.pageSize = 30;
+		var _index = 0;
+		
+		/* 选择排序方法*/
+		$scope.sltSort = function(status) {
+			$scope.pageIndex = 1;
+			$scope.replayState = status;
+			$scope.getBidLogs('sort');
+			_index = 0;
+		};
+		
+		/* 获取联系*/
+		$scope.getReplay = function(item) {
+			var config = {
+					id: item.id
+			};
+			
+			uiservice.confirm('确定获取联系方式吗？', function() {
+	            $q.when($http.post('/company/getContacts', $.param(config)))
+	            .then(function(result) {
+	            	var data = result.data;
+					if(data.code == 200) $scope.getBidLogs();          	
+	            }, function(err) {
+	            	console.error('getContacts', err);
+	            });
+			});
+		};
+		
+		/* 获取拍卖记录*/
+		$scope.getBidLogs = function(str) {
+			var config = {
+					pageSize: $scope.pageSize,
+					page: $scope.pageIndex,
+					reply: $scope.replayState == 2? '' : $scope.replayState
+			};
+			
+            $q.when($http.post('/company/companyBidLogs', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	
+            	if(data.code == 200) {
+            		$scope.listData = data.bidLogs;
+            		$scope.getBidInfo($scope.listData[_index], str);
+            	}else {
+            		$scope.listData = [];
+            		$scope._initPage();
+            	}
+            }, function(err) {
+            	console.error('companyBidLogs', err);
+            });
+		};
+		
+		/*获取拍卖详情*/
+		$scope.getBidInfo = function(item, _event, _index) {
+			var config = {
+					userId: item.userId
+			};
+			
+			_index = _index;
+				
+			if(_event && typeof _event != 'string') {
+				$(_event.currentTarget).addClass('slt').siblings().removeClass('slt');
+			}
+			
+			$q.when($http.post('/company/readDetail', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.bidInfo = _fomartResume(data.resume);
+            	$scope.bidList = data.bidLogs;
+            	
+            	if(_event == 'sort') $('.list-box .list-item:first').addClass('slt');
+            	$scope._initPage();
+            }, function(err) {
+            	console.error('readDetail', err);
+            });
+		};
+		
+		/* 页面初始化*/
+		$scope._initPage = function() {
+			if($('.viewport').css('display') == 'none') {
+        		setTimeout(function() {
+        			$('.viewport').show(0, function() {
+        				$('body').css({'background-color': '#2C2F37'});
+        			});
+        		});
+    		}
+		};
+		
+		/* 格式化简历信息*/
+		function _fomartResume(data) {
+			
+			data.sexStr = data.sex? '女' : '男';
+			
+        	for(var i in $scope.edus) {
+        		if($scope.edus[i].id == data.education)
+        			data.educationStr = $scope.edus[i].value;
+        	}
+        	
+			return data;
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

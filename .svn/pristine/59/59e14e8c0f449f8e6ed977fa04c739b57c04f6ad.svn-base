@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/vippool.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/vippool.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/vippool" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/dist/vippool-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="poolCtrl">
+			<div class="pool-wrap" ng-init="getSpecialList()">
+				<div class="side-l">
+					<div class="pay-wrap box-shadow">
+						<a class="open-btn" href="/bidme/placepool">
+							<i class="price-ico"></i>
+							<span>立即充值</span>
+						</a>
+						<div class="prog-title"><span>您还剩 <i class="fc-1">10次</i> 人才面试邀约哟！</span></div>
+					</div>
+					<div class="warm-box box-shadow">
+  						<div class="warm-title">温馨提示</div>
+  						<div class="warm-con">
+							<ul>
+								<li>成功与候选人勾搭上才为有效邀约，候选人未回应或者拒绝的实力邀约将呗视为无效邀约，并回收。</li>
+							</ul>
+  						</div>
+	  				</div>
+	  				<div class="qrcode-box box-shadow">
+  						<div class="qrcode-title">官方微信</div>
+  						<div><img class="qrcode-img" src="/img/qrcode.jpg"></div>
+  						<div class="qrcode-tip ng-scope" ng-if="status != 1">绑定账号随时获取面试邀请</div>
+	  				</div>
+	  				<div class="hr-qq-box box-shadow">
+  						<div>加入实力拍HR交流QQ群</div>
+  						<div>和同行聊聊</div>
+  						<div class="qq-text">345580895</div>
+	  				</div>
+				</div>
+				<div class="side-r">
+					<div class="search-warp">
+  						<form ng-submit="search()">
+  							<div class="tab-box">
+  								<span class="tab-item" ng-repeat="item in searchType" ng-class="{true: 'slt'}[item.seleted]" 
+	  									ng-click="sltExe(item, $event, 'type')" ng-bind="item.value">项目经验</span>
+  							</div>
+	  						<div class="search-item inp-box box-shadow">
+		  						<input type="text" id="search_inp" ng-model="searches" ng-change="search(true)" maxlength="25" placeholder="请输入关键字"><button class="search-btn">搜&nbsp;&nbsp;索</button>
+	  						</div>
+	  						<div class="search-item">
+  								<span>热门职位：</span>
+  								<span class="words" ng-repeat="item in wordsList" ng-click="hotSearch(item)" ng-bind="item"></span>
+	  						</div>
+  						</form>
+	  				</div>
+	  				
+					<div class="list-wrap box-shadow">
+						<div class="list-title">
+							<span class="title-ico"></span>
+							<span>人才分类</span>
+						</div>
+						
+						<div class="screen-box">
+							<div class="tr">
+								<span>Hi，为您找到 <i class="fc-1" ng-bind="total"></i> 位适合的人才简历。</span>
+							</div>
+							<div class="tr">
+								<span>专场：</span>
+								<ul class="text-box">
+									<li class="text-item" ng-if="item.status != 2" ng-repeat="item in skillsList" ng-class="{true: 'slt'}[item.seleted]" 
+	  									ng-click="sltExe(item, $event, 'special')" ng-bind="item.name"></li>
+								</ul>
+							</div>
+							<div class="tr">
+								<span>经验：</span>
+								<ul class="text-box">
+	  								<li class="text-item" ng-repeat="item in jobYear" ng-class="{true: 'slt'}[item.seleted]" 
+	  									ng-click="sltExe(item, $event, 'exp')" ng-bind="item.value"></li>
+								</ul>
+							</div>
+							<div class="tr">
+								<span>城市：</span>
+								<ul class="text-box">
+									<li class="text-item" ng-repeat="item in hotCity" ng-class="{true: 'slt'}[item.seleted]"
+	  									 ng-click="sltExe(item, $event, 'city')" ng-bind="item.value"></li>
+								</ul>
+							</div>
+							<div class="tr">
+								<span>学历：</span>
+								<ul class="text-box">
+									<li class="text-item" ng-repeat="item in education" ng-class="{true: 'slt'}[item.seleted]"
+	  									 ng-click="sltExe(item, $event, 'edu')" ng-bind="item.value"></li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="list-box">
+							<div class="list-con">
+								<a class="bid-item" ng-href="/talentform/placebid?sd={{item.userId}}" target="_Parent" ng-repeat="item in queryBidPools.bidPools">
+									<span class="status-tip">
+										<span class="bid" ng-if="item.readStatus == 1">已拍</span>
+										<span class="look" ng-if="item.readStatus == 0">已看</span>
+									</span>
+									
+	                  				<span class="title-l">
+	                  					<span class="fc-1 ellipsis" ng-bind="item.jobTitle"></span>&nbsp;
+	                  					<span class="fz-1" ng-bind-template="[{{item.destination}}]"></span>
+	                  				</span>
+	                  				
+	                  				<span class="title-r"> 
+	                  					<span ng-bind-template="#{{item.code}}"></span>
+	                  				</span>
+	                  				
+	                  				<span class="info-l">
+	                  					<span>经验：</span><span class="fc-1" ng-bind-template="{{item.jobYear}}年"></span>&nbsp&nbsp
+	                  					<span>学历：</span><span class="fc-1" ng-bind-template="{{item.education}}"></span>
+	                  					<br>
+	                  					<span class="ring-tag" ng-if="!!item.summary[0]" ng-bind="item.summary[0]"></span>
+	                  					<span class="ring-tag f-b jack-text jack-sum" ng-if="!!item.summary[1]" ng-bind="item.summary[1]"></span>
+	                  				</span>
+	                  				
+	                  				<span class="info-r">
+	                  					<span>擅长：</span><span class="fc-1" ng-bind="item.skills"></span><br>
+	                  					<span>期望月薪：</span>
+	                  					<span class="fc-1" ng-bind-template="{{item.expectedSalary > 1? item.expectedSalary + 'k': '面议'}}"></span>
+	                  				</span>
+	   							</a>
+	   							<div class="no-data" ng-if="!queryBidPools.bidPools || queryBidPools.bidPools.length == 0">
+     								<h1>人才正在路上，请耐心等候..</h1>
+     							</div>
+							</div>
+							<div id="page-warp" ng-if="queryBidPools.bidPools.length">
+    							<div class="list-pager">
+    								<span class="list-pager-btn" ng-if="pageIndex > 1" ng-click="turnPage($event, '-')">上一页</span>
+    								<a class="list-pager-btn" ng-class="{true: 'slt'}[(pageIndex == item)]" ng-repeat="item in _pageCount" ng-bind="item" ng-click="turnPage($event, item)"></a>
+    								<span class="list-pager-btn" ng-if="(pageIndex < totalPage) && totalPage" ng-click="turnPage($event, '+')">下一页</span>
+    							</div>
+    						</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<div id="guide_modal" class="modal guide-modal">
+					<div class="modal-backdrop in"></div>
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="pay-box box-shadow">
+								<div class="title">
+									<span>充值实力拍<i class="">+</i>，享受更多特权</span>
+								</div>
+								<div class="pkg-box">
+									<span class="pkg-item">499元500金币10次邀约</span>
+									<span class="pkg-item">950元1000金币20次邀约</span>
+									<span class="pkg-item">2250元2000金币50次邀约</span>
+								</div>
+								<div class="info-text">
+									<span>开通账号：wubin@redscar.info</span>
+									<span>支付方式：支付宝</span>
+									<span>应付金额：449元</span>
+								</div>
+								<div class="btn-group">
+									<button class="btn btn-pay">确定支付</button>
+								</div>
+								<div class="tip-wrap">
+									<span>温馨提示：</span>
+									<span>若当前网络不稳定，建议您稍后在次尝试支付，仍不能成功，您可以发邮件至wubin@redscarf.info，表明实力拍+遇到问题，我们会在3个小时内联系您并帮您解决问题。</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

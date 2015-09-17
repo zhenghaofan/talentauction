@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.common.dao.UserDao">  
+    <resultMap type="com.auction.common.model.User" id="userResult" autoMapping="true">  
+        <id property="userId" column="userId"/>  
+        <result property="email" column="email"/>  
+        <result property="status" column="status"/>
+        <result property="isSuccess" column="isSuccess"/>
+        <result property="companyId" column="companyId"/>
+        <result property="isSaveUserInfo" column="isSaveUserInfo"/>
+        <result property="isNormal" column="isNormal"/>
+    </resultMap> 
+    
+    <!-- 验证邮箱是否已注册 -->
+    <select id="getUserCountByEmail" resultType="java.lang.Integer" parameterType="String">  
+        select count(*) userCount from rigistration where email=#{0} 
+    </select> 
+    
+    <insert id="user_register" useGeneratedKeys="true" keyProperty="userId" parameterType="com.auction.common.model.User">
+        insert into rigistration (email,password,status,jobTitle,name,telephone,isNormal,type,rigistraTime) 
+        values (#{email},#{password},#{status},#{jobTitle},#{name},#{telephone},#{isNormal},#{type},#{rigistraTime});
+    </insert>
+    
+    <select id="getUserInfoByEmail" resultType="map" parameterType="String">  
+        select userId,status,isSuccess,companyId,isSaveUserInfo,isNormal from rigistration where email=#{0} 
+    </select>
+    
+    <select id="user_login" resultType="map" parameterType="String">  
+        select userId,status,isSuccess,companyId,isSaveUserInfo,isNormal from rigistration where email=#{0} and password=#{1} 
+    </select> 
+    
+    <insert id="add_resume" useGeneratedKeys="true" keyProperty="resumeId" parameterType="com.auction.resume.model.Resume">
+    	insert into resume (userId,jobYear,creatTime,surplusTime,cvBidStatus,cvCheckResult,cvCheckStatus,bidCount,sex,education,skills,destination) values (
+    	#{userId},0,#{creatTime},0,0,0,0,0,0,0,#{skills},#{destination})
+    </insert>
+   <!--
+    <select id="user_register" parameterType="map" statementType="CALLABLE" resultType="java.lang.Integer">  
+        {
+        	call user_register(
+        		#{i_email,mode=IN,jdbcType=VARCHAR},
+        		#{i_pwd,mode=IN,jdbcType=VARCHAR},
+        		#{i_status,mode=IN,jdbcType=INTEGER},
+        		#{i_telephone,mode=IN,jdbcType=VARCHAR},
+        		#{i_name,mode=IN,jdbcType=VARCHAR},
+        		#{i_jobTitle,mode=IN,jdbcType=VARCHAR},
+        		#{i_skills,mode=IN,jdbcType=VARCHAR},
+        		#{i_destination,mode=IN,jdbcType=VARCHAR},
+        		#{resultNumber,mode=OUT,jdbcType=INTEGER}
+        	)
+        } 
+    </select> 
+    -->
+</mapper> 

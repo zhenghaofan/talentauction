@@ -1,0 +1,90 @@
+package com.auction.resume.service.Impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import net.sf.json.JSONObject;
+
+import com.auction.common.dao.BaseDao;
+import com.auction.resume.dao.ResumeDao;
+import com.auction.resume.service.ResumeService;
+
+/** 
+ * @author tobber
+ * @version 2015年4月17日
+ */
+
+@Service
+public class ResumeServiceImpl implements ResumeService{
+	@Resource
+	private ResumeDao resumeDao;
+	@Resource
+	private BaseDao baseDao;
+	
+	@Override
+	public String getUserResume(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+        	Boolean flag = false;	
+    		String userId = request.getParameter("userId"); //简历
+    		if((userId==null || "".equals(userId)) && request.getSession().getAttribute("userId")!=null){
+    			userId= request.getSession().getAttribute("userId").toString();
+    			flag = true;
+    		}
+    		
+	        Map<String, Object> resumeMap = resumeDao.getResumDetailByUserId(userId);
+	        if(resumeMap!=null && resumeMap.size()>0){
+	        	
+        		//判断是否本人查看简历
+	        	if(request.getSession().getAttribute("userId")== null|| (request.getSession().getAttribute("userId")!=null && !userId.equals(request.getSession().getAttribute("userId").toString()))){ 
+		        	if(resumeMap.get("phone")!=null){
+		        		String strPhone =resumeMap.get("phone").toString(); 
+		        		String telephone = strPhone.substring(0,3)+"*******"+strPhone.substring(strPhone.length()-1);
+		        		resumeMap.put("phone", telephone);
+		        	}
+		        	if(resumeMap.get("email")!=null){
+		        		String strEmail = resumeMap.get("email").toString();
+		        		String email = strEmail.substring(0,3)+"******"+strEmail.substring(strEmail.indexOf("@"));
+		        		resumeMap.put("email", email);
+		        	}
+	        	}
+	        	json.put("resume", resumeMap);
+	        	
+	            List<Map<String, Object>> educationList = resumeDao.getEducationsAll(resumeMap.get("resumeId").toString());//教育经历
+	            if(educationList!=null && educationList.size()>0){
+	            	json.put("educations", educationList);
+	            }else{
+	            	json.put("educations", "null");
+	            }
+	           
+	        	if(flag || (request.getSession().getAttribute("userId")!=null && request.getSession().getAttribute("status").toString().equals("1"))){
+		            //项目经验表
+		            json.put("projects", resumeDao.getProjectsAll(resumeMap.get("resumeId").toString()));
+		            //工作经验表
+		            json.put("work_experiences", resumeDao.getWorkExpAll(resumeMap.get("resumeId").toString()));
+	        	}else{
+	        		json.put("projects", "null");
+	        		json.put("work_experiences", "null");
+	        	}
+	        	
+	            json.put("code", 200);
+	            json.put("message", "简历获取成功");
+	            
+	        }else{
+	        	json.put("code", 301);
+	            json.put("message", "没有简历信息");
+	        }
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 501);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+
+}

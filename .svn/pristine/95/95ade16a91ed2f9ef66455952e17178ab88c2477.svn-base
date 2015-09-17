@@ -1,0 +1,895 @@
+package com.auction.company.service.impl;
+
+import java.io.File;
+import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONObject;
+
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.springframework.stereotype.Service;
+
+import com.auction.common.dao.BaseDao;
+import com.auction.common.dao.BidmeDao;
+import com.auction.util.IKSynonymsAnalyzer;
+import com.auction.util.SysConfig;
+import com.auction.util.Util;
+import com.auction.company.dao.CompanyDao;
+import com.auction.company.service.CompanyService;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+@Service
+public class CompanyServiceImpl implements CompanyService{
+	
+	@Resource
+	private CompanyDao companyDao;
+	@Resource
+	private BaseDao baseDao;
+	@Resource
+	private BidmeDao bidmeDao;
+
+	@Override
+	public String addCompany(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(Util.isVerify(request.getParameter("companyName"), 1, 100, null)){
+				String userId = request.getSession().getAttribute("userId").toString();
+				Map<String,Object> params = new HashMap<String, Object>();
+				params.put("i_userId", Integer.parseInt(userId));
+				params.put("i_name", request.getParameter("companyName"));
+	    		companyDao.addCompany(params);
+	    		if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+	    			request.getSession().setAttribute("companyId", userId);
+	    			json.put("code", 200);
+		            json.put("message", "添加成功！");
+	    		}else{
+	    			json.put("code", 301);
+		            json.put("message", "添加失败！");
+	    		}
+			}else{
+				json.put("code", 302);
+	            json.put("message", "请输入公司名称！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+			json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String useExistCompany(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(Util.isVerify(request.getParameter("companyId"), 0, 0, "[0-9]{1,20}")){
+				String userId = request.getSession().getAttribute("userId").toString();
+    			Map<String, Object> params = new HashMap<String, Object>();
+                Map<String, Object> paramsMap = new HashMap<String, Object>();
+                paramsMap.put("companyId", request.getParameter("companyId"));
+                paramsMap.put("isSaveUserInfo", 1);
+                params.put("tableName", "rigistration");
+                params.put("trem", "userId='"+userId+"'");
+                params.put("paramsMap", paramsMap);
+                baseDao.baseUpdate(params);
+                request.getSession().setAttribute("companyId", request.getParameter("companyId"));
+    			request.getSession().setAttribute("isSaveUserInfo", 1);
+    			json.put("code", 200);
+	            json.put("message", "添加成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "请选择使用公司！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+			json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getSameCompanyList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(request.getSession().getAttribute("email")!=null){
+				int num = request.getSession().getAttribute("email").toString().indexOf("@");
+				if(num>0){
+					//截取邮箱后缀
+					String emailSuffixes = request.getSession().getAttribute("email").toString().substring(num+1, request.getSession().getAttribute("email").toString().length());
+					List<Map<String, Object>> queryList = companyDao.getSameCompanyList(emailSuffixes);
+					json.put("queryList", queryList);
+					json.put("code", 200);
+		            json.put("message", "获取成功！");
+				}else{
+					json.put("code", 301);
+		            json.put("message", "邮箱无效！");
+				}
+			}else{
+				json.put("code", 302);
+	            json.put("message", "请重新登陆！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+			json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getCompanyInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		
+		String companyId = request.getParameter("companyId");
+		if((companyId==null || "".equals(companyId.trim())) && request.getSession().getAttribute("companyId")!=null){
+			companyId = request.getSession().getAttribute("companyId").toString();
+		}
+		try {
+			if(companyId!=null){
+				Map<String, Object> companyInfo = companyDao.getCompanyInfo(companyId);
+				if(companyInfo!=null && companyInfo.size()>0){
+					json.put("companyInfo", companyInfo);
+				}else{
+					json.put("companyInfo", "");
+				}
+				json.put("code",200);
+	            json.put("message", "获取成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "获取失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String saveCompanyInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			
+    		String companyId = request.getSession().getAttribute("companyId").toString();
+    		String userId = request.getSession().getAttribute("userId").toString();
+    		
+    		Map<String, Object> paramsMap = new HashMap<String, Object>();
+    		if(Util.isVerify(request.getParameter("name"), 1, 50, null)){
+    			paramsMap.put("name", request.getParameter("name"));
+    		}
+    		if(Util.isVerify(request.getParameter("nickName"), 1, 50, null)){
+    			paramsMap.put("nickName", request.getParameter("nickName"));
+    		}
+    		if(Util.isVerify(request.getParameter("province"), 0, 0, "[0-9]{0,9}")){
+    			paramsMap.put("province", request.getParameter("province"));
+    		}
+    		if(Util.isVerify(request.getParameter("city"), 0, 0, "[0-9]{0,9}")){
+    			paramsMap.put("city", request.getParameter("city"));
+    		}
+    		if(Util.isVerify(request.getParameter("area"), 0, 0, "[0-9]{0,6}")){
+    			paramsMap.put("area", request.getParameter("area"));
+    		}
+    		if(Util.isVerify(request.getParameter("size"), 0, 0, "[0-9]")){
+    			paramsMap.put("size", request.getParameter("size"));
+    		}
+    		if(Util.isVerify(request.getParameter("progress"), 0, 0, "[0-9]")){
+    			paramsMap.put("progress", request.getParameter("progress"));
+    		}
+    		
+			if(paramsMap!=null && paramsMap.size()==7){
+				paramsMap.put("companyId", companyId);
+				int num = companyDao.updateCompBasicInfo(paramsMap);
+				if(num>0){
+					companyDao.isSaveUserInfo(userId);
+					request.getSession().setAttribute("isSaveUserInfo", 1);
+				}
+				json.put("code", 200);
+	            json.put("message", "更新成功");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "请填写完整信息！");
+			}
+        }catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+
+	@Override
+	public String updateCompanyInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+    		String companyId = request.getSession().getAttribute("companyId").toString();
+    		String imgName = null;
+    		Map<String, Object> paramsMap = new HashMap<String, Object>();
+    		if(Util.isVerify(request.getParameter("name"), 1, 50, null)){
+    			paramsMap.put("name", request.getParameter("name"));
+    		}
+    		if(Util.isVerify(request.getParameter("nickName"), 1, 50, null)){
+    			paramsMap.put("nickName", request.getParameter("nickName"));
+    		}
+    		if(Util.isVerify(request.getParameter("province"), 0, 0, "[0-9]{0,9}")){
+    			paramsMap.put("province", request.getParameter("province"));
+    		}
+    		if(Util.isVerify(request.getParameter("city"), 0, 0, "[0-9]{0,9}")){
+    			paramsMap.put("city", request.getParameter("city"));
+    		}
+    		if(Util.isVerify(request.getParameter("area"), 0, 0, "[0-9]{0,6}")){
+    			paramsMap.put("area", request.getParameter("area"));
+    		}
+    		if(Util.isVerify(request.getParameter("size"), 0, 0, "[0-9]")){
+    			paramsMap.put("size", request.getParameter("size"));
+    		}
+    		if(Util.isVerify(request.getParameter("progress"), 0, 0, "[0-9]")){
+    			paramsMap.put("progress", Integer.parseInt(request.getParameter("progress")));
+    		}
+    		if(Util.isVerify(request.getParameter("website"),0,0,"^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:.;]*[-a-zA-Z0-9+&@#/%=~_|]")){
+    			paramsMap.put("website", request.getParameter("website"));
+    		}
+    		if(Util.isVerify(request.getParameter("addr"), 1, 150, null)){
+    			paramsMap.put("addr", request.getParameter("addr"));
+    		}
+    		if(Util.isVerify(request.getParameter("welfare"), 1, 30, null)){
+    			paramsMap.put("welfare", request.getParameter("welfare"));
+    		}
+    		if(Util.isVerify(request.getParameter("companyIntro"), 1, 500, null)){
+    			paramsMap.put("companyIntro", request.getParameter("companyIntro"));
+    		}
+    		if(Util.isVerify(request.getParameter("logoName"), 0, 0, "[0-9]{13}_[0-9]{0,10}.[a-zA-Z]{3}")){
+    			paramsMap.put("logoName", request.getParameter("logoName"));
+    			imgName = request.getParameter("logoName");
+    		}
+    		
+			if(paramsMap!=null && paramsMap.size()>0){
+				paramsMap.put("companyId", Integer.parseInt(companyId));
+				int num = companyDao.updateCompBasicInfo(paramsMap);
+				if(num>0){
+		            if(imgName!=null){
+		            	SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		            	String date = df.format(Long.parseLong(imgName.split("_")[0]));
+		            	Util.imgCopy(SysConfig.getValue("UPLOAD_TEMPORARY_URL")+date+"/"+imgName,
+		            			SysConfig.getValue("UPLOAD_COMPANY_LOGO_URL")+imgName);
+		    		}
+		            json.put("code", 200);
+		            json.put("message", "更新成功！");
+				}else{
+					json.put("code", 301);
+		            json.put("message", "更新失败！");
+				}
+			}else{
+				json.put("code", 302);
+	            json.put("message", "请填写更新信息！");
+			}
+        }catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+
+	@Override
+	public String updateProducts(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			boolean flag = true;
+			String companyId = request.getSession().getAttribute("companyId").toString();
+			String id = null;
+			String imgName = null;
+			
+			Map<String, Object> params = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{0,9}")){
+				params.put("id", request.getParameter("id"));
+				id = request.getParameter("id");
+			}
+			if(Util.isVerify(request.getParameter("imgName"), 0, 0, "[0-9]{13}_[0-9]{0,10}.[a-zA-Z]{3}")){
+				params.put("imgName", request.getParameter("imgName"));
+				imgName = request.getParameter("imgName");
+			}
+			if(Util.isVerify(request.getParameter("progress"), 0, 0, "[0-2]")){
+				params.put("progress", request.getParameter("progress"));
+			}else{
+				flag = false;
+			}
+			if(Util.isVerify(request.getParameter("productName"), 1, 100, null)){
+				params.put("productName", request.getParameter("productName"));
+			}else{
+				flag = false;
+			}
+			if(Util.isVerify(request.getParameter("website"), 0, 0, "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:.;]*[-a-zA-Z0-9+&@#/%=~_|]")){
+				params.put("website", request.getParameter("website"));
+			}
+			if(Util.isVerify(request.getParameter("brief"), 1, 800, null)){
+				params.put("brief", request.getParameter("brief"));
+			}else{
+				flag = false;
+			}
+			params.put("companyId", companyId);
+			
+			int num = 0;
+			if(id!=null && params.size()>=3){
+				num = companyDao.updateProducts(params);
+			}else if(id==null && flag){
+				num = companyDao.addProducts(params);
+			}
+			if(num>0){
+				json.put("code", 200);
+	            json.put("message", "保存成功！");
+	            if(imgName!=null){
+	            	SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+	            	String date = df.format(Long.parseLong(imgName.split("_")[0]));
+	            	Util.imgCopy(SysConfig.getValue("UPLOAD_TEMPORARY_URL")+date+"/"+imgName,
+	            			SysConfig.getValue("UPLOAD_PRODUCTS_LOGO_URL")+imgName);
+	            }
+			}else{
+				json.put("code", 301);
+	            json.put("message", "保存失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String delProducts(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			int num = 0;
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{1,20}")){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("tableName", "products");
+				params.put("trem", "id="+request.getParameter("id")+" and companyId="+request.getSession().getAttribute("companyId"));
+				num = baseDao.baseDelete(params);
+			}
+			if(num>0){
+				json.put("code", 200);
+	            json.put("message", "删除成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "删除失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String updateFounder(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			boolean flag = true;
+			String companyId = request.getSession().getAttribute("companyId").toString();
+			String id = null;
+			String imgName = null;
+			
+			Map<String, Object> params = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{0,9}")){
+				params.put("id", request.getParameter("id"));
+				id = request.getParameter("id");
+			}
+			if(Util.isVerify(request.getParameter("imgName"), 0, 0, "[0-9]{13}_[0-9]{0,10}.[a-zA-Z]{3}")){
+				params.put("imgName", request.getParameter("imgName"));
+				imgName = request.getParameter("imgName");
+			}
+			if(Util.isVerify(request.getParameter("jobName"), 1, 50, null)){
+				params.put("jobName", request.getParameter("jobName"));
+			}else{
+				flag = false;
+			}
+			if(Util.isVerify(request.getParameter("name"), 1, 50, null)){
+				params.put("name", request.getParameter("name"));
+			}else{
+				flag = false;
+			}
+			if(Util.isVerify(request.getParameter("website"), 0, 0, "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:.;]*[-a-zA-Z0-9+&@#/%=~_|]")){
+				params.put("website", request.getParameter("website"));
+			}
+			if(Util.isVerify(request.getParameter("brief"), 1, 1600, null)){
+				params.put("brief", request.getParameter("brief"));
+			}
+			params.put("companyId", companyId);
+			
+			int num = 0;
+			if(id!=null && params.size()>=3){
+				num = companyDao.updateFounder(params);
+			}else if(id==null && flag){
+				num = companyDao.addFounder(params);
+			}
+			if(num>0){
+				json.put("code", 200);
+	            json.put("message", "保存成功！");
+	            if(imgName!=null){
+	            	SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+	            	String date = df.format(Long.parseLong(imgName.split("_")[0]));
+	            	Util.imgCopy(SysConfig.getValue("UPLOAD_TEMPORARY_URL")+date+"/"+imgName,
+	            			SysConfig.getValue("UPLOAD_FOUNDER_LOGO_URL")+imgName);
+	            }
+			}else{
+				json.put("code", 301);
+	            json.put("message", "保存失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String delFounder(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			int num = 0;
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{1,20}")){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("tableName", "founder");
+				params.put("trem", "id="+request.getParameter("id")+" and companyId="+request.getSession().getAttribute("companyId"));
+				num = baseDao.baseDelete(params);
+			}
+			if(num>0){
+				json.put("code", 200);
+	            json.put("message", "删除成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "删除失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String updateTalentDemand(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			boolean flag = true;
+			String id = null;
+			
+			Map<String, Object> params = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{0,9}")){
+				params.put("id", request.getParameter("id"));
+				id = request.getParameter("id");
+			}
+			
+			if(Util.isVerify(request.getParameter("minJobYear"), 0, 0, "[0-9][1-9]")){
+				params.put("minJobYear", request.getParameter("minJobYear"));
+			}
+			if(Util.isVerify(request.getParameter("maxJobYear"), 0, 0, "[0-9][1-9]")){
+				params.put("maxJobYear", request.getParameter("maxJobYear"));
+			}
+			
+			if(Util.isVerify(request.getParameter("skills"), 1, 50, null)){
+				params.put("skills", request.getParameter("skills"));
+			}else{
+				flag = false;
+			}
+			if(Util.isVerify(request.getParameter("website"), 0, 0, "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:.;]*[-a-zA-Z0-9+&@#/%=~_|]")){
+				params.put("website", request.getParameter("website"));
+			}
+			params.put("userId", request.getSession().getAttribute("userId").toString());
+			params.put("companyId", request.getSession().getAttribute("companyId").toString());
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			params.put("updateTime", df.format(new Date()));
+			
+			//IK切词
+			@SuppressWarnings("resource")
+			IKSynonymsAnalyzer analyzer=new IKSynonymsAnalyzer();  
+			String queryInfo = "";
+			//切词内容
+			TokenStream ts=analyzer.tokenStream("synonyms", new StringReader(request.getParameter("skills")));  
+			CharTermAttribute term=ts.addAttribute(CharTermAttribute.class);  
+			ts.reset();//重置做准备  
+			while(ts.incrementToken()){  
+				queryInfo += term.toString()+" ";  
+			}  
+			ts.end();//               
+			ts.close();//关闭流
+			
+			int num = 0;
+			if(id!=null && params.size()>=3){
+				num = companyDao.updateTalentDemand(params);
+			}else if(id==null && flag){
+				num = companyDao.addTalentDemand(params);
+			}
+			if(num>0){
+				json.put("code", 200);
+	            json.put("message", "保存成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "保存失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String delTalentDemand(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			int num = 0;
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{1,20}")){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("tableName", "talent_demand");
+				params.put("trem", "id="+request.getParameter("id")+" and companyId="+request.getSession().getAttribute("companyId"));
+				num = baseDao.baseDelete(params);
+			}
+			if(num>0){
+				json.put("code", 200);
+	            json.put("message", "删除成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "删除失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getTalentDemand(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			List<Map<String, Object>> talentList = companyDao.getTalentDemand(request.getSession().getAttribute("companyId").toString());
+			json.put("talentList", talentList);
+			json.put("code", 200);
+            json.put("message", "获取成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String companyBidLogs(HttpServletRequest request) {
+		int page = 1;
+		int pageSize = 20;
+		JSONObject json = new JSONObject();
+		try {
+	    	if(request.getSession().getAttribute("companyId")!=null && request.getSession().getAttribute("status")!=null){
+	    		if(request.getSession().getAttribute("status").toString().equals("1")){
+	    			
+	    			Map<String, Object> params = new HashMap<String, Object>();
+	    			params.put("companyId", request.getSession().getAttribute("companyId").toString());
+	    			if(Util.isVerify(request.getParameter("page"), 0, 0, "[0-9]{0,9}")){
+	        			page = Integer.parseInt(request.getParameter("page"));
+	        		}
+	        		if(Util.isVerify(request.getParameter("pageSize"), 0, 0, "[0-9]{0,9}")){
+	        			pageSize = Integer.parseInt(request.getParameter("pageSize"));
+	        		}
+	        		if(Util.isVerify(request.getParameter("reply"), 0, 0, "[0-9]")){
+	        			params.put("reply",request.getParameter("reply"));
+	        		}
+	        		if(Util.isVerify(request.getParameter("status"), 0, 0, "[0-9]")){
+	        			params.put("status",request.getParameter("status"));
+	        		}
+	        		params.put("page",(page-1)*pageSize);
+	        		params.put("pageSize",pageSize);
+	        		
+	        		List<Map<String,Object>> bidLogs = companyDao.companyBidLogs(params);
+	        		int rowCount = companyDao.companyBidLogsTotal(params);
+	        		
+	        		if(rowCount%pageSize==0){
+	        			json.put("totalPage", rowCount/pageSize);
+	        		}else{
+	        			json.put("totalPage", (rowCount/pageSize)+1);
+	        		}
+	        		
+	    			if(bidLogs!=null && bidLogs.size()>0){
+    					
+    					for(int i=0;i<bidLogs.size();i++){
+    						if(!"3".equals(bidLogs.get(i).get("isReply").toString())){
+    							bidLogs.get(i).put("telephone", null);
+    							bidLogs.get(i).put("userEmail", null);
+    							bidLogs.get(i).put("name", null);
+    						}
+    						Map<String, Object> map = bidLogs.get(i);
+    						String bidStr = map.get("bidTime").toString();
+    						bidLogs.get(i).put("bidTime",bidStr.substring(0, bidStr.lastIndexOf(":")));
+    		        		
+    		        		//回复时间
+    		        		if(map.get("replyTime")!=null && !"null".equals(map.get("replyTime"))){
+    		        			String replyStr = map.get("replyTime").toString();
+    		        			bidLogs.get(i).put("replyTime",replyStr.substring(0, replyStr.lastIndexOf(":")));
+    		        		}
+    					}
+	    			}
+	    			json.put("page", page);
+	    			json.put("pageSize", pageSize);
+	    	    	json.put("bidLogs", bidLogs);
+		    		json.put("code", 200);
+	                json.put("message", "获取成功！");
+	    		}else{
+	    	    	json.put("code", 301);
+	                json.put("message", "您不是企业用户！");
+	    		}
+	    	}else{
+	    		json.put("code", 302);
+	            json.put("message", "请先登入");
+	    	}
+	            
+		} catch (Exception e) {
+			e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String companyAuction(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(request.getSession().getAttribute("userId")!=null){
+				
+				if(request.getSession().getAttribute("status").toString().equals("1") && request.getParameter("userId")!=null){ //判断用户是否为企业用户
+					
+					if(request.getSession().getAttribute("companyId")!=null && request.getSession().getAttribute("isSaveUserInfo")!=null && "1".equals(request.getSession().getAttribute("isSaveUserInfo").toString())){
+						
+						boolean flag = true;
+						String userId = null;
+						String companyId = request.getSession().getAttribute("companyId").toString();
+						
+						Map<String, Object> params = new HashMap<String, Object>();
+						params.put("i_compUserId", request.getSession().getAttribute("userId").toString());
+						params.put("i_companyId", companyId);
+						if(Util.isVerify(request.getParameter("userId"), 0, 0, "[0-9]{0,10}")){
+							userId = request.getParameter("userId");
+							params.put("i_userId", userId);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("bidPrice"), 0, 0, "[0-9]{1,2}[.]{0,1}[0-9]{0,1}")){
+							Float bidPrice = Float.parseFloat(request.getParameter("bidPrice"));
+							params.put("i_bidPrice", bidPrice);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("monthCount"), 0, 0, "[0-9]{2}")){
+							int monthCount = Integer.parseInt(request.getParameter("monthCount"));
+							params.put("i_monthCount", monthCount);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("isOption"), 0, 0, "[0-1]")){
+							int isOption = Integer.parseInt(request.getParameter("isOption"));
+							params.put("i_isOption", isOption);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("bidCount"), 0, 0, "[0-9]{1,5}")){
+							int bidCount = Integer.parseInt(request.getParameter("bidCount"));
+							params.put("i_bidCount", bidCount);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("workTitle"), 1, 35, null)){
+							String workTitle = request.getParameter("workTitle");
+							params.put("i_workTitle", workTitle);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("special"), 0, 0, "[0-9]{1,5}")){
+							int special = Integer.parseInt(request.getParameter("special"));
+							params.put("i_special", special);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("specialCount"), 0, 0, "[0-9]{1,5}")){
+							int specialCount = Integer.parseInt(request.getParameter("specialCount"));
+							params.put("i_specialCount", specialCount);
+						}else{
+							flag=false;
+						}
+						
+				    	if(flag){
+					    	companyDao.companyAuction(params);
+			    			//给人才发邮件
+			    			/**
+			    			if(i>0){
+			    				Map<String,Object> emailMap = bidmeDao.getCompanyAuctionEmailInfo(userId, companyId);
+								String isOptionStr = "未提供期权";
+								if(1==isOption){
+									isOptionStr="提供期权";
+								}
+								DateFormat dateDf=new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+								String substitution_vars = "{\"to\": [\""+emailMap.get("email").toString()+"\"], \"sub\" : { \"%companyName%\" : [\""+emailMap.get("companyName")+"\"], \"%bidPrice%\" : [\""+bidPrice+"\"], \"%monthCount%\" : [\""+monthCount+"\"], \"%isOption%\" : [\""+isOptionStr+"\"], \"%workTitle%\" : [\""+workTitle+"\"], \"%date%\" : [\""+dateDf.format(new Date())+"\"]}}";
+								new Thread(new SendCloudThread("companyAuction", substitution_vars, "您收到了新的面试邀请")).start();
+			    			}
+			    			*/
+					    	if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+					    		json.put("code", 200);
+				    	    	json.put("message", "出价成功");
+					    	}else if(params.get("resultNumber")!=null && "2".equals(params.get("resultNumber").toString())){
+					    		json.put("code", 301);
+				    	    	json.put("message", "当前出价低于您上次出价！");
+					    	}else{
+					    		json.put("code", 301);
+				    	    	json.put("message", "出价失败！");
+					    	}
+						}else{
+							json.put("code", 302);
+			    	    	json.put("message", "请填写完整信息！");
+						}
+					}else{
+						json.put("code", 303);
+			            json.put("message", "进入“公司主页”填写基本信息后才能参加竞拍！");
+					}
+				}else{
+			    	json.put("code", 304);
+		            json.put("message", "你不是企业用户，无法出价！");
+				}
+			}else{
+				json.put("code", 305);
+		        json.put("message", "请先登入");
+			} 
+		} catch (Exception e) {
+			e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getContacts(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{0,10}")){
+			try {
+				Map<String, Object> resultMapMap = companyDao.getContacts(request.getParameter("id"), request.getSession().getAttribute("companyId").toString());
+				if(resultMapMap!=null && resultMapMap.size()>0){
+					json.put("email", resultMapMap.get("email"));
+					json.put("telephone", resultMapMap.get("telephone"));
+					
+					Map<String,Object> params = new HashMap<String, Object>();
+					Map<String,Object> paramsMap = new HashMap<String, Object>();
+					paramsMap.put("isReply", 3);
+					params.put("paramsMap", paramsMap);
+					params.put("tableName", "bid_logs");
+					params.put("trem", "id="+request.getParameter("id")+" and companyId="+request.getSession().getAttribute("companyId").toString());
+					baseDao.baseUpdate(params);
+					
+					json.put("code", 200);
+		            json.put("message", "获取成功！");
+				}else{
+					json.put("code", 301);
+		            json.put("message", "获取失败！");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				json.put("code", 302);
+	            json.put("message", "获取失败！");
+			}
+		}else{
+			json.put("code", 303);
+            json.put("message", "操作失败，请重新选择！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String delOffice(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			String environmentImg = null;
+			String companyId = request.getSession().getAttribute("companyId").toString();
+			if(Util.isVerify(request.getParameter("imgName"), 0, 0, "[0-9]{13}_[0-9]{0,10}.[a-zA-Z]{3}")){
+				String environment = companyDao.getOfficeByCompanyId(companyId);
+				if(environment!=null && !"".equals(environment)){
+					String[] environmentStr = environment.split(",");
+					for(int i=0;i<environmentStr.length;i++){
+						if(!environmentStr[i].equals(request.getParameter("imgName"))){
+							if(environmentImg!=null){
+								environmentImg = environmentImg+","+environmentStr[i];
+							}else{
+								environmentImg = environmentStr[i];
+							}
+						}
+					}
+				}
+				int num =companyDao.updateOffice(environmentImg, companyId);
+				if(num>0){
+					String imgPath = SysConfig.getValue("UPLOAD_ENVIRONMENT_LOGO_URL").toString(); //原图保存路径
+					File imgFile = new File(imgPath, request.getParameter("imgName"));
+		    		if(imgFile.isFile()){
+		    			imgFile.delete();
+		    		}
+					json.put("code", 200);
+		    		json.put("message", "删除成功！");
+				}else{
+					json.put("code", 301);
+		    		json.put("message", "删除失败！");
+				}
+			}else{
+				json.put("code", 301);
+	    		json.put("message", "删除失败！");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String compProgress(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		int speedOfProgress = 0;
+		try {
+			Map<String, Object> companyProgress = companyDao.compProgress(request.getSession().getAttribute("companyId").toString());
+			if(companyProgress!=null && companyProgress.size()>0){
+				if(companyProgress.get("nickName")!=null && !"".equals(companyProgress.get("nickName").toString().trim())){//基本信息
+					speedOfProgress=speedOfProgress+10;
+				}
+				if(companyProgress.get("logoName")!=null && !"".equals(companyProgress.get("logoName").toString().trim())){//公司logo
+					speedOfProgress=speedOfProgress+5;
+				}
+				if(companyProgress.get("website")!=null && !"".equals(companyProgress.get("website").toString().trim())){//公司网址
+					speedOfProgress=speedOfProgress+5;
+				}
+				if(companyProgress.get("addr")!=null && !"".equals(companyProgress.get("addr").toString().trim())){//公司详细地址
+					speedOfProgress=speedOfProgress+2;
+				}
+				if(companyProgress.get("companyIntro")!=null && !"".equals(companyProgress.get("companyIntro").toString().trim())){//公司介绍
+					speedOfProgress=speedOfProgress+10;
+				}
+				if(companyProgress.get("welfare")!=null && !"".equals(companyProgress.get("welfare").toString().trim())){//公司福利
+					speedOfProgress=speedOfProgress+3;
+				}
+				if(companyProgress.get("environment")!=null && !"".equals(companyProgress.get("environment").toString().trim())){//公司环境
+					speedOfProgress=speedOfProgress+15;
+				}
+				if(companyProgress.get("productName")!=null && !"".equals(companyProgress.get("productName").toString().trim())){//产品信息
+					speedOfProgress=speedOfProgress+25;
+				}
+				if(companyProgress.get("founderName")!=null && !"".equals(companyProgress.get("founderName").toString().trim())){//创始人
+					speedOfProgress=speedOfProgress+25;
+				}
+			}
+			json.put("speedOfProgress", speedOfProgress);
+			json.put("code", "200");
+	        json.put("message", "获取成功！");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+}

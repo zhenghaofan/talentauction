@@ -1,0 +1,130 @@
+package com.auction.common.model;
+
+import java.io.Serializable;
+
+public class User implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
+	private int userId;
+	private String email;
+    private String password;
+    private String telephone;
+    private int status;
+    private int isSuccess;
+    private int isSaveUserInfo;
+    private int isNormal;
+    private String rigistraTime;
+    private int isRead;
+    private String readTime;
+    private String loginTime;
+    private String companyId;
+    private int type;
+    private String name;
+    private String jobTitle;
+    private String activaCode;
+    
+    
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getTelephone() {
+		return telephone;
+	}
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public int getIsSuccess() {
+		return isSuccess;
+	}
+	public void setIsSuccess(int isSuccess) {
+		this.isSuccess = isSuccess;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public int getIsSaveUserInfo() {
+		return isSaveUserInfo;
+	}
+	public void setIsSaveUserInfo(int isSaveUserInfo) {
+		this.isSaveUserInfo = isSaveUserInfo;
+	}
+	public int getIsNormal() {
+		return isNormal;
+	}
+	public void setIsNormal(int isNormal) {
+		this.isNormal = isNormal;
+	}
+	public String getRigistraTime() {
+		return rigistraTime;
+	}
+	public void setRigistraTime(String rigistraTime) {
+		this.rigistraTime = rigistraTime;
+	}
+	public int getIsRead() {
+		return isRead;
+	}
+	public void setIsRead(int isRead) {
+		this.isRead = isRead;
+	}
+	public String getReadTime() {
+		return readTime;
+	}
+	public void setReadTime(String readTime) {
+		this.readTime = readTime;
+	}
+	public String getCompanyId() {
+		return companyId;
+	}
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public String getLoginTime() {
+		return loginTime;
+	}
+	public void setLoginTime(String loginTime) {
+		this.loginTime = loginTime;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getJobTitle() {
+		return jobTitle;
+	}
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+	public String getActivaCode() {
+		return activaCode;
+	}
+	public void setActivaCode(String activaCode) {
+		this.activaCode = activaCode;
+	}
+	
+}

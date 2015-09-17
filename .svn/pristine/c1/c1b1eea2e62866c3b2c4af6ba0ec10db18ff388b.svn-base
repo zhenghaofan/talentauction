@@ -1,0 +1,65 @@
+$(function($) {
+	
+//	var list = [{
+//		name: '移动端/前端',
+//		time: '14-5',
+//		bidSum: 12,
+//		bidCount: 16
+//	},{
+//		name: '移动端/前端',
+//		time: '14-5',
+//		bidSum: 12,
+//		bidCount: 16
+//	}];
+//	
+//	$('#spec_list').show();
+//	var html = _createSpecHtml(list);
+//	$("#spec_list_con").html(html);
+//	
+	_getSpec();
+	
+	/* 获取专场*/
+	function _getSpec() {
+		$.get('/bidme/getBidSpecial', function(res) {
+			if( res.code == 200 ) {
+				var list = res.specialList;
+				if(!list.length) {
+					$('.nodata').show();
+					return;
+				}else {
+					$('#spec_list').show();
+					var html = _createSpecHtml(list);
+					$("#spec_list_con").html(html);	
+				}
+			} else {
+				 T.alert(res.message);
+			}
+		});
+	}
+	
+	/* 生成专场列表*/
+	function _createSpecHtml(list) {
+		var html = [];
+		for( var i = 0; i < list.length; i++ ) {
+			var times = list[i].time.split('-');
+			html.push('<li class="spec-item box-shadow" data-id="'+ list[i].id +'">');
+				html.push('<a href="/mobile/placepool?spe=' + list[i].id + '&speCount=' + list[i].specialCount + '">');
+					html.push('<div class="spec-l">');
+						html.push('<div class="spec-title">'+ list[i].name +'</div>');
+						html.push('<div class="spec-con">');
+							html.push('<span class="c-b">'+ Number(times[0]) +'</span>天<span class="c-b">'+ Number(times[1]) +'</span>时结束');
+							html.push('<span class="split">|</span>');
+							html.push('<span class="c-b">'+ Number(list[i].bidSum) +'</span>名候选人');
+						html.push('</div>');
+					html.push('</div>');
+					
+					html.push('<div class="spec-r"><img class="direct-ico" src="../css/img/app_dirct_ico.png"/></div>');
+					html.push('<div class="clear"></div>');
+					html.push('</div>');
+				html.push('</a>');
+			html.push('</li>');
+		}
+		
+		return html.join('');
+	}
+});

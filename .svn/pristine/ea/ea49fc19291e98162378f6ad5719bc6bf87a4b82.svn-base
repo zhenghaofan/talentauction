@@ -1,0 +1,34 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'uiservice'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('vipCtrl', ['$scope', '$rootScope', '$http', '$q', 'uiservice',
+   		function($scope, $rootScope, $http, $q, uiservice) {
+		$rootScope.tabIndex = 8;
+		
+		$('.viewport').show();
+		
+		
+		/* 支付跳转*/
+		$scope.jumpPay = function() {
+			var config = {
+					
+			};
+			
+			$q.when($http.post('/fees/alipayapi'))
+			.then(function(result) {
+				console.log(result.data);
+				$('.plus-box').append(result.data);
+			}, function(err) {
+            	  console.error('alipayapi', err);
+			});			
+		};
+ 	}]);
+	
+	app.bootstrap();
+});

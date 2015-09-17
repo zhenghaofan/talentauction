@@ -1,0 +1,407 @@
+package com.auction.company.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import net.sf.json.JSONObject;
+
+import com.auction.common.dao.BidmeDao;
+import com.auction.company.dao.CompanyDao;
+import com.auction.company.dao.ForwardDao;
+import com.auction.company.service.ForwardService;
+import com.auction.resume.dao.ResumeDao;
+import com.auction.util.SendCloudThread;
+import com.auction.util.SysConfig;
+import com.auction.util.Util;
+import com.auction.wechat.Util.CommonUtil;
+import com.auction.wechat.model.resp.TemplateData;
+import com.auction.wechat.model.resp.WxTemplate;
+
+/** 
+ * @author tobber
+ * @version 2015年7月9日
+ */
+@Service
+public class ForwardServiceImpl implements ForwardService{
+	@Resource
+	private ForwardDao forwardDao;
+	@Resource
+	private ResumeDao resumeDao;
+	@Resource
+	private BidmeDao bidmeDao;
+	@Resource
+	private CompanyDao companyDao;
+	
+	@Override
+	public boolean isForward(HttpServletRequest request) {
+		boolean flag = false;
+		if(Util.isVerify(request.getParameter("code"), 0, 0, "[A-Za-z0-9_]{1~100}")){
+			Map<String, Object> forwardMap = forwardDao.getForwardResume(request.getParameter("code"));
+			if(forwardMap!=null && forwardMap.size()>0){
+				String forwardTime = request.getParameter("code").split("_")[1];
+				if(System.currentTimeMillis()-Long.parseLong(forwardTime)<7*24*60*60*1000){
+					flag = true;
+				}
+			}
+		}
+		return flag;
+	}
+
+	@Override
+	public String gerResume(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		boolean flag = false;
+		try {
+			if(Util.isVerify(request.getParameter("code"), 0, 0, "[A-Za-z0-9_-]{1,100}")){
+				Map<String, Object> forwardMap = forwardDao.getForwardResume(request.getParameter("code"));
+				if(forwardMap!=null && forwardMap.size()>0){
+					String forwardTime = forwardMap.get("creatTime").toString();
+					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					long time = df.parse(forwardTime).getTime();
+					if(System.currentTimeMillis()-time<7*24*60*60*1000){
+						
+						Map<String, Object> resumeMap = forwardDao.getResumInfo(forwardMap.get("userId").toString());
+						if(resumeMap!=null && resumeMap.size()>0){
+							json.put("resume", resumeMap);
+							if(resumeMap.get("phone")!=null){
+				        		String strPhone =resumeMap.get("phone").toString(); 
+				        		String telephone = strPhone.substring(0,3)+"*******"+strPhone.substring(strPhone.length()-1);
+				        		resumeMap.put("phone", telephone);
+				        	}
+				        	if(resumeMap.get("email")!=null){
+				        		String strEmail = resumeMap.get("email").toString();
+				        		String email = strEmail.substring(0,3)+"******"+strEmail.substring(strEmail.indexOf("@"));
+				        		resumeMap.put("email", email);
+				        	}
+				        	
+							Map<String, Object> params = new HashMap<String, Object>();
+				        	params.put("resumeId", resumeMap.get("resumeId").toString());
+				        	
+				        	params.put("tableName", "educations");
+				            List<Map<String, Object>> educationList = resumeDao.getEducationsAll(params);//教育经历
+				            if(educationList!=null && educationList.size()>0){
+				            	json.put("educations", educationList);
+				            }else{
+				            	json.put("educations", "null");
+				            }
+				         
+				            //项目经验表
+			        		params.put("tableName", "projects");
+				            json.put("projects", resumeDao.getProjectsAll(params));
+				            
+				            //工作经验表
+				            params.put("tableName", "work_experiences");
+				            json.put("work_experiences", resumeDao.getWorkExpAll(params));
+				         
+				            flag = true;
+						}
+					}
+				}
+			}
+			if(flag){
+				json.put("code", 200);
+				json.put("message", "获取成功");
+			}else{
+				json.put("code", 301);
+				json.put("message", "获取失败");
+			}
+		} catch (Exception e) {
+			json.put("code", 500);
+			json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String forwardAuction(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(Util.isVerify(request.getParameter("code"), 0, 0, "[A-Za-z0-9_-]{1,100}")){
+				Map<String, Object> forwardMap = forwardDao.getForwardResume(request.getParameter("code"));
+				if(forwardMap!=null && forwardMap.size()>0){
+					String forwardTime = forwardMap.get("creatTime").toString();
+					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					long time = df.parse(forwardTime).getTime();
+					if(System.currentTimeMillis()-time<7*24*60*60*1000){	
+						
+						boolean flag = true;
+						String userId = forwardMap.get("userId").toString();
+						String companyId = forwardMap.get("companyId").toString();
+						
+						Map<String, Object> params = new HashMap<String, Object>();
+						params.put("i_compUserId", forwardMap.get("companyUser").toString());
+						params.put("i_companyId", companyId);
+						params.put("i_userId", userId);
+						
+						if(Util.isVerify(request.getParameter("minBidPrice"), 0, 0, "[1-9][0-9]{0,1}") && Util.isVerify(request.getParameter("maxBidPrice"), 0, 0, "[1-9][0-9]{0,1}")){
+							if(Float.parseFloat(request.getParameter("minBidPrice"))<Float.parseFloat(request.getParameter("maxBidPrice"))){
+								params.put("i_minBidPrice", Float.parseFloat(request.getParameter("minBidPrice")));
+								params.put("i_maxBidPrice", Float.parseFloat(request.getParameter("maxBidPrice")));
+							}else{
+								flag=false;
+							}
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("isOption"), 0, 0, "[0-1]")){
+							int isOption = Integer.parseInt(request.getParameter("isOption"));
+							params.put("i_isOption", isOption);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("bidCount"), 0, 0, "[0-9]{1,5}")){
+							int bidCount = Integer.parseInt(request.getParameter("bidCount"));
+							params.put("i_bidCount", bidCount);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("workTitle"), 1, 35, null)){
+							String workTitle = request.getParameter("workTitle");
+							params.put("i_workTitle", workTitle);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("special"), 0, 0, "[0-9]{1,5}")){
+							int special = Integer.parseInt(request.getParameter("special"));
+							params.put("i_special", special);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("specialCount"), 0, 0, "[0-9]{1,5}")){
+							int specialCount = Integer.parseInt(request.getParameter("specialCount"));
+							params.put("i_specialCount", specialCount);
+						}else{
+							flag=false;
+						}
+						
+				    	if(flag){
+					    	companyDao.companyAuction(params);
+					    	if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+					    		//给人才发邮件
+					    		Map<String,Object> emailMap = bidmeDao.getCompanyAuctionEmailInfo(userId, companyId);
+			    				String isOption=null;
+								if(request.getParameter("isOption")!=null && request.getParameter("isOption").equals("1")){
+									isOption="是";
+								}else{
+									isOption="否";
+								}
+								String progressStr = null;
+								if(emailMap.get("progress")!=null && !emailMap.get("progress").equals("")){
+									int progress = Integer.parseInt(emailMap.get("progress").toString());
+									if(progress==0){
+										progressStr="未融资";
+									}else if(progress==1){
+										progressStr="天使轮";
+									}else if(progress==2){
+										progressStr="A轮";
+									}else if(progress==3){
+										progressStr="B轮";
+									}else if(progress==4){
+										progressStr="C轮";
+									}else if(progress==5){
+										progressStr="D轮及以上";
+									}else if(progress==6){
+										progressStr="上市公司";
+									}else if(progress==7){
+										progressStr="不需要融资";
+									}
+								}
+								String sizeStr = null;
+								if(emailMap.get("size")!=null && !emailMap.get("size").equals("")){
+									int size = Integer.parseInt(emailMap.get("size").toString());
+									if(size==0){
+										sizeStr="少于15人";
+									}else if(size==1){
+										sizeStr="15~50人";
+									}else if(size==2){
+										sizeStr="50~150人";
+									}else if(size==3){
+										sizeStr="150~500人";
+									}else if(size==4){
+										sizeStr="500~2000人";
+									}else if(size==5){
+										sizeStr="2000人以上";
+									}
+								}
+								String substitution_vars = "{\"to\": [\""+emailMap.get("email").toString()+"\"], "
+		                        		+ "\"sub\" : { "
+		                        		+ "\"%name%\" : [\""+emailMap.get("name").toString()+"\"],"
+		                        		+ "\"%companyUrl%\" : [\""+SysConfig.getString("SERVICE_URL")+"/base/chome"+companyId+".html\"],"
+		                        		+ "\"%compNick%\" : [\""+emailMap.get("nickName").toString()+"\"],"
+		                        		+ "\"%city%\" : [\""+emailMap.get("cityName").toString()+"\"], "
+		                        		+ "\"%progress%\" : [\""+progressStr+"\"], "
+		                        		+ "\"%scale%\" : [\""+sizeStr+"\"], "
+		                        		+ "\"%salaryRange%\" : [\""+request.getParameter("minBidPrice")+"K~"+request.getParameter("maxBidPrice")+"K\"], "
+		                        		+ "\"%isOption%\" : [\""+isOption+"\"], "
+		                        		+ "\"%message%\" : [\""+request.getParameter("workTitle")+"\"], "
+		                        		+ "\"%loginUrl%\" : [\""+SysConfig.getValue("SERVICE_URL")+"/talentform/jobbidlist\"]}}";
+		                        new Thread(new SendCloudThread("new_interview", substitution_vars, "您收到了新的面试邀请",false)).start();
+		                        
+		                        String education = null;
+		    					if(emailMap.get("education").toString().equals("1")){
+		    						education = "大专";
+		    					}else if(emailMap.get("education").toString().equals("2")){
+		    						education = "本科";
+		    					}else if(emailMap.get("education").toString().equals("3")){
+		    						education = "硕士";
+		    					}else if(emailMap.get("education").toString().equals("4")){
+		    						education = "博士";
+		    					}else{
+		    						education = "不详";
+		    					}
+		                        String subs_vars = "{\"to\": [\""+emailMap.get("email").toString()+"\"], "
+		                        		+ "\"sub\" : { "
+		                        		+ "\"%name%\" : [\""+emailMap.get("hrName")+"\"],"
+		                        		+ "\"%code%\" : [\""+emailMap.get("hrName")+"\"],"
+		                        		+ "\"%jobTitle%\" : [\""+emailMap.get("jobTitle")+"\"],"
+		                        		+ "\"%experience%\" : [\""+emailMap.get("jobYear")+"\"], "
+		                        		+ "\"%education%\" : [\""+education+"\"], "
+		                        		+ "\"%city%\" : [\""+emailMap.get("destination").toString()+"\"], "
+		                        		+ "\"%skill%\" : [\""+request.getParameter("skills")+"\"], "
+		                        		+ "\"%salaryRange%\" : [\""+request.getParameter("minBidPrice")+"K~"+request.getParameter("maxBidPrice")+"K\"], "
+		                        		+ "\"%isOption%\" : [\""+isOption+"\"], "
+		                        		+ "\"%message%\" : [\""+request.getParameter("workTitle")+"\"], "
+		                        		+ "\"%bidLogUrl%\" : [\""+SysConfig.getValue("SERVICE_URL")+"/talentform/jobbidlist\"]}}";
+		                        new Thread(new SendCloudThread("redirect_cv_bid", subs_vars, "您转发的候选人已被邀请面试",true)).start();
+		                        
+		                        //微信消息推送
+				    			if(emailMap.get("openId")!=null && !"".equals(emailMap.get("openId").toString())){
+											try {
+												WxTemplate t = new WxTemplate();  
+										        //t.setUrl("http://www.shilipai.net/views/appcomhome.html?companyId="+companyId);  
+												t.setUrl("https://open.weixin.qq.com/connect/oauth2/authorize?appid="+SysConfig.getString("WECHAT_APPID")+"&redirect_uri="+SysConfig.getValue("SERVICE_URL")+"/wechat/wechatRoute&response_type=code&scope=snsapi_base&state=jobbidlist#wechat_redirect");
+												t.setTouser(emailMap.get("openId").toString());  
+										        t.setTopcolor("#000000");  
+										        t.setTemplate_id("-Lc8dBMRVqHnJUPFDbkQRnA2OpN2IDDe2VpqVAuffkM");  
+										       
+										        Map<String,TemplateData> m = new HashMap<String,TemplateData>();  
+										        TemplateData first = new TemplateData();  
+										     
+										        first.setColor("#272B5A");  
+										        first.setValue(emailMap.get("email").toString()+"您好，您收到了一份新的面试邀请，详情如下：");  
+										        m.put("first", first);  //标题
+										      
+										        TemplateData keyword1 = new TemplateData();  
+										        keyword1.setColor("#272B5A");  
+										        keyword1.setValue(emailMap.get("nickName").toString());  
+										        m.put("keyword1", keyword1);  //公司简称
+										       
+										        TemplateData keyword2 = new TemplateData();  
+										        keyword2.setColor("#272B5A");  
+										        keyword2.setValue(emailMap.get("cityName").toString());  
+										        m.put("keyword2", keyword2); //城市
+										        
+										        TemplateData keyword3 = new TemplateData();  
+										        keyword3.setColor("#272B5A");  
+										        keyword3.setValue(request.getParameter("minBidPrice")+"k ~ "+request.getParameter("maxBidPrice")+"K");  
+										        m.put("keyword3", keyword3); //初定薪资
+										        
+										        TemplateData keyword4 = new TemplateData();  
+										        keyword4.setColor("#272B5A"); 
+										        keyword4.setValue(isOption);
+										        m.put("keyword4", keyword4); //是否提供期权
+										        
+										        TemplateData keyword5 = new TemplateData();  
+										        keyword5.setColor("#272B5A");  
+										        keyword5.setValue(request.getParameter("workTitle"));  
+										        m.put("keyword5", keyword5); //提供职位
+										        
+										        TemplateData remark = new TemplateData();  
+										        remark.setColor("#272B5A");  
+										        remark.setValue("请点击查看企业详情，并尽快回复，谢谢。");  
+										        m.put("remark", remark);  
+										        t.setData(m);
+										        
+										        String json1 = JSONObject.fromObject(t).toString();
+										        String accessToken = Util.getAccessToken(request);
+										        JSONObject jsonObject = CommonUtil.httpsRequest("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+accessToken, "POST", json1);
+										        System.out.print(jsonObject);
+											}catch (Exception e) {
+												e.printStackTrace();
+											}
+				    			}
+				    			
+					    		json.put("code", 200);
+				    	    	json.put("message", "出价成功");
+					    	}else if(params.get("resultNumber")!=null && "2".equals(params.get("resultNumber").toString())){
+					    		json.put("code", 301);
+				    	    	json.put("message", "同个候选人只能出价两次！");
+					    	}else{
+					    		json.put("code", 301);
+				    	    	json.put("message", "出价失败！");
+					    	}
+						}else{
+							json.put("code", 302);
+			    	    	json.put("message", "请填写完整信息！");
+						}
+					}else{
+						json.put("code", 303);
+			            json.put("message", "链接已失效！");
+					}
+				}else{
+			    	json.put("code", 303);
+		            json.put("message", "链接已失效！");
+				}
+			}else{
+				json.put("code", 303);
+		        json.put("message", "链接已失效！");
+			} 
+		} catch (Exception e) {
+			e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String forwardDeclined(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(Util.isVerify(request.getParameter("code"), 0, 0, "[0-9a-zA-Z-_]{1,50}")){
+				Map<String, Object> wechatMap = companyDao.getForwardInfo(request.getParameter("code"));
+				String education = null;
+				if(wechatMap.get("education").toString().equals("1")){
+					education = "大专";
+				}else if(wechatMap.get("education").toString().equals("2")){
+					education = "本科";
+				}else if(wechatMap.get("education").toString().equals("3")){
+					education = "硕士";
+				}else if(wechatMap.get("education").toString().equals("4")){
+					education = "博士";
+				}else{
+					education = "不详";
+				}
+				String substitution_vars = "{\"to\": [\""+wechatMap.get("email").toString()+"\"], "
+                		+ "\"sub\" : { "
+                		+ "\"%name%\" : [\""+wechatMap.get("name")+"\"],"
+                		+ "\"%talentUrl%\" : [\""+SysConfig.getValue("SERVICE_URL").toString()+"/talentform/placebid?sd="+wechatMap.get("userId").toString()+"\"], "
+                		+ "\"%code%\" : [\""+wechatMap.get("code").toString()+"\"], "
+                		+ "\"%jobTitle%\" : [\""+wechatMap.get("jobTitle").toString()+"\"], "
+                		+ "\"%experience%\" : [\""+wechatMap.get("jobYear").toString()+"\"], "
+                		+ "\"%education%\" : [\""+education+"\"], "
+                		+ "\"%city%\" : [\""+wechatMap.get("destination")+"\"], "
+                		+ "\"%skill%\" : [\""+wechatMap.get("skills")+"\"]}}";
+                new Thread(new SendCloudThread("redirect_cv_nogood", substitution_vars, "您转发的简历不合适",true)).start();
+                json.put("code", 200);
+                json.put("message", "回复成功！");
+			}else{
+				json.put("code", 301);
+                json.put("message", "操作失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			 json.put("code", 500);
+             json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+
+}

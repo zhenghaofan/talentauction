@@ -1,0 +1,213 @@
+$(function($) {
+//	var config = {companyId: 46};
+	
+	var config = {};
+	
+	if(_getParams('companyId')) config.companyId = _getParams('companyId');
+	
+	if(_getParams('back')) {
+		$('.top-bar-spec').show().click(function() {
+			window.history.back();
+		});
+	}else {
+		$('.content .top-bar span').css('margin-left', '0');
+	}
+	
+	/* 基本信息*/
+	var getCompanyInfo = function(data) {
+		var _obj = $('.info-base-warp .context');
+		if(!data) return;
+		$('.info-item-title span').text(data.nickName);
+		_obj.find('.scale').text(data.scaleTitle);
+		_obj.find('.cityName').text(data.cityName);
+		_obj.find('.trade').text(data.areaName);
+		_obj.find('.funds').text(data.progressTitle);
+		_obj.find('.website').text(data.website);
+		_obj.find('.addr').text(data.addr);
+		for(var i in data.welfareArray) {
+			_obj.find('.benefit_list').append('<span class="benefits">' + data.welfareArray[i] + '</span>');
+		}
+		
+		if(!data.website) _obj.find('.website').hide();
+	};
+	
+	/* 公司产品*/
+	var getProducts = function(data) {
+		var _obj = $('.info-detail-warp .products');
+		if(!data) return;
+		for(var i in data) {
+			var tmp = _formatProduct(data[i]);
+			var dom = '<div class="f_b">'+
+			'<a>'+ tmp.productName +'</a>'+
+			'<span class="c_g">&nbsp;('+ tmp.progressTitle +')</span>'+					
+		'</div>'+
+		'<div class="mar_b10">'+
+			'<p>'+ tmp.brief +'</p>'+
+		'</div>'
+			_obj.append(dom);
+		}
+	};
+	
+	/* 公司介绍*/
+	var getIntro = function(data) {
+		var _obj = $('.info-detail-warp .companyIntro');
+		if(!data) return;
+		_obj.find('p').text(data.companyIntro);
+	};
+	
+	/* 创始团队*/
+	var getFounder = function(data) {
+		var _obj = $('.info-detail-warp .founder');
+		if(!data) return;
+		for(var i in data) {
+			var dom = '<div class="f_b">'+
+			'<span>'+ data[i].name +' &nbsp;'+ data[i].jobName +'</span>'+					
+		'</div>'+
+		'<div class="mar_b10">'+
+			'<p>'+ data[i].brief +'</p>'+
+		'</div>'
+			_obj.append(dom);
+		}
+	};
+	
+	_doPost('/company/getCompanyAllInfo', config, function(result) {
+		console.log(result);
+		var companyInfo = _formatInfo(result.companyInfo);
+		var products = result.products;
+		var founder = result.founder;
+		getCompanyInfo(companyInfo);
+		getProducts(products);
+		getIntro(companyInfo);
+		getFounder(founder);
+	}, function(err) {
+		console.log('queryCompanyAll', err);
+	});
+});
+
+function _getParams(name) {
+	var query = window.location.search;
+	if (name) {
+		var r = new RegExp("[?&]" + name + "=([^&]*)");
+		var m = r.exec(query);
+		if (m) {
+			return m[1];
+		} else {
+			return null;
+		}
+	} else {
+		return this.parseQueryString(query);
+	}	
+}
+
+function _doPost(url, params, callback, error) {
+	_ajax(url, 'post',callback, error, params);
+}
+
+function _doGet(url, callback, error) {
+	_ajax(url, 'get', callback, error);
+}
+
+function _ajax(_url, _type, _callback, _error, _params) {
+	$.ajax({
+		url: _url,
+		type: _type,
+		dataType: 'json',
+		data: _params,
+		success: function(result) {
+			_callback(result);
+		},
+		error: function(err) {
+			_error(err);
+		}
+	});
+}
+
+/* 公司出价表格式*/
+function _formatInfo(item) {
+	if(item == null) return item;
+	if( !!item.welfare ) {
+		var _wels = item.welfare.split(',');
+		item.welfareArray = [];
+		for( var i = 0; i < _wels.length; i++ ) {
+			item.welfareArray.push(_wels[i]); 
+		}
+	}
+	
+	var scaleList = getCompanyScale();
+	for (var i = 0; i < scaleList.length; i++) {
+		if(scaleList[i].id == item.size) {
+			item.scaleTitle = scaleList[i].value;
+		}
+	}
+
+	switch (item.progress) {
+	case 0:
+		item.progressTitle = "未融资";
+		break;
+	case 1:
+		item.progressTitle = "天使轮";
+		break;
+	case 2:
+		item.progressTitle = "A轮";
+		break;
+	case 3:
+		item.progressTitle = "B轮";
+		break;
+	case 4:
+		item.progressTitle = "C轮";
+		break;
+	case 5:
+		item.progressTitle = "D轮";
+		break;
+	case 6:
+		item.progressTitle = "上市公司";
+		break;
+	case 7:
+		item.progressTitle = "不需要融资";
+		break;
+	default:
+		item.progressTitle = "未融资";
+		break;
+	}
+	return item	
+}
+
+/* 公司产品格式 */
+function _formatProduct(item) {
+	switch (item.progress) {
+	case 0:
+		item.progressTitle = '概念';
+		break;
+	case 1:
+		item.progressTitle = '开发中';
+		break;
+	case 2:
+		item.progressTitle = '已上线';
+		break;
+	default:
+		break;
+	}
+	return item;
+}
+
+function getCompanyScale() {
+	return [{
+		id: '0',
+		value: '少于15人'
+	},{
+		id: '1',
+		value: '15-50人'
+	},{
+		id: '2',
+		value: '50-150人'
+	},{
+		id: '3',
+		value: '150-500人'
+	},{
+		id: '4',
+		value: '500-2000人'
+	},{
+		id: '5',
+		value: '2000人以上'
+	}]
+}

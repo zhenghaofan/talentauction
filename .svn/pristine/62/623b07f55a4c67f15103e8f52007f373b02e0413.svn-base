@@ -1,0 +1,233 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('designerCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$('.viewport').show();
+		
+		return;
+		$scope._spc = url.get('spc') ? url.get('spc') : '' ;
+		$scope.jobYear = _formatSelectData(info.getJobYear(), 'id', $scope._experience);
+		$scope.getHotCitys = _formatSelectData(info.getHotCitys(), 'id', $scope._city);
+		$scope.education = _formatSelectData(info.getEducation(), 'id', $scope._education);
+		$rootScope.tabIndex = 5;
+		$scope.pageIndex = 1;
+		$scope.pageSize = 24;
+		$scope.totalPage = 1;
+		$scope.queryBidPools = [];
+		var tmpArray = [{experience: '0'}, {city: '0'}, {education: '0'}, {skill: ''}, {specialCount: ''}];
+		
+
+		/* 下拉刷新 */
+		$(window).scroll( function() { 
+			if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+				if($scope.pageIndex + 1 <= $scope.totalPage) {
+					$scope.pageIndex += 1;
+					$scope.getBidPool();
+				}
+			}
+		});
+		
+		/* 加载专场 */
+		$scope.getSkillsList = function() {
+			$q.when($http.get('/getSkillsList'))
+			.then(function(result) {
+				var tmp = result.data.specialList;
+				for (var i in tmp) {
+					if(tmp[i].skillName != null && tmp[i].skillName) tmp[i].skillName = tmp[i].skillName.split('、');
+					if(tmp[i].id == $scope._spc) {
+						$scope.skillNameList = tmp[i].skillName;
+						tmpArray[4].specialCount = tmp[i].specialCount;
+						$scope._spcName = tmp[i].specialName;
+					}
+				}
+				$scope.skillsList = tmp;
+				$scope.getBidPool();
+			}, function(err) {
+            	  console.error('getSkillsList', err);
+			});			
+		};
+		
+		/* 选择条件 */
+		$scope.sltExe = function(item, _event, status) {
+			$scope.queryBidPools = [];
+			$scope.pageIndex = 1;
+			var flag = false;
+			if($(_event.target).hasClass('selectd')) {
+				$(_event.target).removeClass('selectd');
+			}else {
+				$(_event.target).addClass('selectd').siblings().removeClass('selectd');
+				flag = true;
+			}
+			
+			if(tmpArray[0].experience && status == 'experience') {
+				tmpArray[0].experience  = flag? item.id : '0';
+			}else if(tmpArray[1].city && status == 'city') {
+				tmpArray[1].city  = flag? item.value : '0';
+			}else if(tmpArray[2].education && status == 'education') {
+				tmpArray[2].education  = flag? item.id : '0';
+			}else if(status == 'skill') {
+				tmpArray[3].skill = flag? item : '';
+			}
+			
+			$scope.getBidPool();
+		}
+		
+		/* 加载数据 */
+		$scope.getBidPool = function() {
+			var exparr = ['', '0,3', '3,5', '5'];
+			var params = {
+					index : $scope.pageIndex,
+					pageSize : $scope.pageSize,
+					experience: exparr[tmpArray[0].experience],
+					city: tmpArray[1].city == '0' ? '' : tmpArray[1].city,		
+					education: tmpArray[2].education == '0' ? '' : tmpArray[2].education,
+					skill: tmpArray[3].skill,
+					specialCount: tmpArray[4].specialCount,
+					special:  $scope._spc
+			};
+			
+			user.getBidPool( params )
+			.then(function(result) {
+				$scope.totalPage = result.totalPage;
+				$scope.pageIndex = result.index;
+				for (var i = 0; i < result.bidPools.length; i++) {
+					$scope.queryBidPools.push(result.bidPools[i]);
+				}
+				_formatBidPool($scope.queryBidPools);
+				setTimeout(function() {
+					$('#cv_warp .cv_item').show();
+				});
+			}, function(err) {
+				console.error(err.message);
+			});
+		};	
+		
+		/* 数据转换 */
+		function _formatBidPool(item) {
+			if(item) {
+				for (var i = 0; i < item.length; i++) {
+					item[i].productImgArray = [];
+					if(item[i].productImg) {
+						item[i].productImgArray = item[i].productImg.split(',');
+					}
+				}
+			}
+		}		
+		
+		function _formatSelectData(data, key, value) {
+			for( var i = 0, len = data.length; i < len; i++) {
+				if(data[i][key] == value) {
+					data[i].seleted = true;
+				} else {
+					data[i].seleted = false;
+				}
+			}
+			return data;
+		}
+		
+		function _getText(data, key, value, name) {
+			var text;
+			for( var i = 0, len = data.length; i < len; i++) {
+				if(data[i][key] == value) {
+					name = !!name ? name : 'name';
+					text = data[i][name];
+				} 
+			}
+			return text;
+		}
+		
+		$scope.day = 0;
+		$scope.hours = 0;
+		$scope.min = 0;
+		$scope.sec = 0;
+		
+		user.getBidTime({state: 0, id: $scope._spc})
+		.then(function(result) {
+			$scope.day = result.day;
+			$scope.hours = result.hours;
+			$scope.min = result.minute;
+			$scope.sec = result.second;
+			
+			var handle = setInterval(function() {
+				if( $scope.sec > 1 ) {
+					$scope.sec --;
+					$safeApply($scope, function() {
+						$scope.sec;
+					});
+				} else if( $scope.min > 1 ) {
+					$scope.min --;
+					$scope.sec = 59;
+					$safeApply($scope, function() {
+						$scope.min;
+						$scope.sec;
+					});
+				} else if( $scope.hours > 1 ) {
+					$scope.hours --;
+					$scope.min = 59;
+					$scope.sec = 59;
+					$safeApply($scope, function() {
+						$scope.hours;
+						$scope.min;
+						$scope.sec;
+					});
+				} else if( $scope.day > 1 ) {
+					$scope.day --;
+					$scope.hours = 23;
+					$scope.min = 59;
+					$scope.sec = 59;
+					$safeApply($scope, function() {
+						$scope.day;
+						$scope.hours;
+						$scope.min;
+						$scope.sec;
+					});
+				} else {
+					clearInterval(handle);
+				}
+				
+			}, 1000);
+		}, function(err) {
+			console.error(err.message);
+		});
+		
+
+		$scope.jumpTo = function(url) {
+			window.location.href = url;
+		};
+		
+		function $safeApply($scope, fn) {
+			var phase = $scope.$$phase;
+			if (phase == '$apply' || phase == '$digest') {
+				$scope.$eval(fn);
+			} else {
+				$scope.$apply(fn);
+			}
+		}
+		
+		$('.special_list').mouseenter(function(e) {
+			$(this).find('ul li').show();
+		}).mouseleave(function() {
+			$(this).find('ul li').hide();
+		});	
+		
+		$(document).on("mouseenter", ".cv_warp .cv_item", function() {
+			var t = $(this);
+			setTimeout(function() {
+				t.find('.tips').slideDown('fast');
+			}, 0);
+		}).on("mouseleave", ".cv_warp .cv_item", function() {
+			var t = $(this);
+			setTimeout(function() {
+				t.find('.tips').slideUp('fast');
+			}, 0);
+		});	
+ 	}]);
+	
+	app.bootstrap();
+});

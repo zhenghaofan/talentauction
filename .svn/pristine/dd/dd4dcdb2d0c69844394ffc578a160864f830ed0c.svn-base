@@ -1,0 +1,190 @@
+
+
+body {
+	background-color: #E2E2E2;
+}
+
+.content {
+	background-color: #e2e2e2;
+}
+
+.query-bar {
+	background-color: #fff;
+	padding-top: 10px;
+	width: 100%;
+}
+
+.query-item {
+	display: inline-block;
+	width: 32%;
+	height: 24px;
+	line-height: 24px;
+	text-align: center;
+	font-size: 16px;
+	padding-bottom: 7px;
+	border-bottom: 3px solid #fff;
+}
+
+.query-item i {
+	display: block;
+	border-right: 1px solid #dbdbdb;
+}
+
+.query-bar .b-r0 {
+	border-right: 0;
+}
+
+.query-item-s {
+	border-bottom-color: #3a89ce;
+}
+
+.con {
+	margin: 10px 10px 30px;
+}
+
+.con-li {
+	border-radius: 3px;
+	margin-bottom: 10px;
+	background-color: #fff;
+}
+
+.li-title {
+	border-bottom: 1px solid #dbdbdb;
+	line-height: 50px;
+	height: 50px;
+	width: 100%;
+}
+
+.li-title-name {
+	font-size: 18px;
+	color: #3b8acf;
+	padding-left: 5%;
+	width: 65%;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+}
+
+.li-title-city {
+	color: #727272;
+	float: right;
+	padding-right: 5%;
+	width: 25%;
+	text-align: right;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.li-con {
+	padding: 10px 5%; 
+	line-height: 24px;
+}
+
+.li-con-text-b {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.li-con-time {
+	color: #727272;
+}
+
+.li-con-text {
+	font-size: 15px;
+}
+
+.li-con-detial {
+	color: #727272;
+}
+
+.li-con-btn-box {
+	padding: 15px 0 5px;
+	text-align: center;
+}
+
+.li-con-btn {
+	display: inline-block;
+	color: #3a89ce;
+	border: 1px solid #3a89ce;
+	border-radius: 3px;
+	padding: 5px 10px;
+}
+
+.li-con-btn-result {
+	padding: 5px 0;
+}
+
+.reject-con {
+	margin: 10px;
+	padding: 10px;
+	border-radius: 3px;
+	background-color: #fff;
+}
+
+.reject-title {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.reject-li {
+	line-height: 24px;
+	margin-bottom: 5px;
+}
+
+.reject-li i {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background-color: #e3e3e3;
+	border-radius: 3px;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+
+.reject-li-s i {
+	background: url(/img/app_draw_w.png) center center no-repeat #3a89ce;
+}
+
+.reject-area {
+	padding-top: 5px;
+	border: 1px solid #e3e3e3;
+	width: 90%;
+	height: 50px;
+	padding: 10px 5%;
+	resize: none;
+	background-color: #e3e3e3;
+}
+
+.reject-control {
+	margin: 25px 10px 10px;
+	text-align: center;
+}
+
+.reject-cancle {
+	display: inline-block;
+	padding: 8px 18px;
+	border: 1px solid #4282c2;
+	color: #4282c2;
+	border-radius: 3px;
+	margin-right: 10px;
+}
+
+.reject-submit {
+	display: inline-block;
+	color: #fff;
+	border-radius: 3px;
+	background-color: #4182c6;
+	padding: 8px 45px;
+	border: 1px solid #4182c6;
+}
+
+.no-data {
+	line-height: 50px;
+	text-align: center;
+}
+
+#reject_box {
+	display: none;
+}

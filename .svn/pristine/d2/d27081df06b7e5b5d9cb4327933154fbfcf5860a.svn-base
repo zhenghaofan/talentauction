@@ -1,0 +1,39 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('mailboxCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		setTimeout(function() {
+			$('.viewport').show(0, function() {
+				$('body').css({'background-color': '#2C2F37'});
+			});
+		});
+		
+		/* 重新发送激活邮件*/
+		$scope.mailReSend = function() {
+			var config = {
+					email: $rootScope.user.email	
+			};
+			
+            $q.when($http.post('/talents/sendEmail', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		alert(data.message);
+            	}else {
+            		alert(data.message);
+            	}
+            }, function(err) {
+            	console.error('sendEmail', err);
+            });				
+		};
+		
+ 	}]);
+	
+	app.bootstrap();
+});

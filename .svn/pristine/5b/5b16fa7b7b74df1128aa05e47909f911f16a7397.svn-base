@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<title>简历状态</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/jobdefault.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<!-- <script src="../js/common/app_common.js"></script> -->
+	<script src="../js/mobile/jobdefault.js"></script>
+</head>
+<body>
+	<div class="viewport">
+		<div class="job-wrap">
+			<div class="bid-text-warp">
+				<div class="con">
+					<span id="bid-text-1">恭喜，您已经通过审核。开拍时您的简历将以匿名形式上架，请耐心等待。</span>
+					<span id="bid-text-2">您的简历正在拍卖中，请留意微信消息提醒处理offer，如需下架请联系我们的客服或直接向这个公众号发送您的邮箱地址，谢谢。</span>
+					<span id="bid-text-3">您的简历已经下架，需要再次参加拍卖，请使用PC登录实力拍，谢谢。</span>
+				</div>
+			</div>	
+					
+			<div class="info-base-warp">
+				<div class="title c_b">
+					<span>前端开发</span>
+				</div>
+				<div class="context">
+					<div>
+						<span class="ico_sex">男</span>
+						<span class="ico_clock">24岁</span>
+						<span class="ico_book">本科</span>
+						<span class="ico_book">6年经验</span>								
+					</div>
+					<div>
+						<span class="ico_phone pading_18">13800138000</span>
+						<span class="ico_msg">wubin@shilipai.net</span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="info-status-warp">
+				<div class="title">
+					<span>求职意向</span>
+				</div>
+				<div class="context">
+					<div>
+						<span>专业技能：<span class="avgPrice"></span></span>						
+					</div>
+					<div>
+						<span>目标城市：<span class="destination"></span></span>
+					</div>
+					<div>
+						<span>期望月资：<span class="companyNum"></span></span>
+					</div>
+					<div>
+						<span>屏蔽雇主：<span class="readCount"></span></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="info-detail-warp">
+				<div class="title">
+					<span>教育经历</span>
+				</div>
+				<div class="edu context"></div>
+				<div class="title">
+					<span>工作经历</span>
+				</div>
+				<div class="work context"></div>
+				<div class="title">
+					<span>项目经验</span>
+				</div>
+				<div class="project context"></div>
+				<div class="title">
+					<span>个人总结</span>
+				</div>
+				<div class="summary context">
+					<div class="mg_b16"><p></p></div>
+				</div>
+			</div>
+		</div>
+			
+		<div class="tips-warp">
+			<div id="step_1" class="state">
+				<div class="item-text">
+					<span>请尽快查看您的邮箱激活实力拍参加拍卖，谢谢。</span>
+				</div>
+			</div>
+			<div id="step_2" class="state">
+				<div class="item-text">
+					<span>请用PC登录实力拍提交简历参加拍卖，谢谢。</span>
+				</div>
+			</div>
+			<div id="step_3" class="state">
+				<div class="item-text">
+					<span>您的简历正在审核中，</span><br>
+					<span>我们会在1个工作日内给您回复，</span><br>
+					<span>请耐心等待谢谢。</span>
+				</div>
+			</div>
+			<div id="step_4" class="state">
+				<div class="item-text">
+					<span>非常抱歉，</span><br>
+					<span>您的拍卖申请没有通过审核。</span>
+				</div>
+				<div class="item-text">
+					<span>原因：您的经验太少了</span>
+				</div>
+				<div class="item-text">
+					<span>您可以用PC登录实力拍更新简历。再次申请，谢谢。</span>
+				</div>
+			</div>	
+		</div>
+	</div>
+</body>
+</html>

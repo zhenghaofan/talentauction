@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.common.dao.CommonDao">  
+    
+    <resultMap type="com.auction.common.model.Special" id="skillsResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="name" column="name"/>  
+        <result property="status" column="status"/>
+        <result property="bidTime" column="bidTime"/>
+        <result property="specialCount " column="specialCount "/>
+        <result property="skillName" column="skillName"/>
+    </resultMap>
+    
+    <!-- 获取城市 -->
+    <select id="getCityList" resultType="java.util.HashMap" parameterType="String">  
+        select * from cities where superId=#{0} 
+    </select> 
+    
+    <!-- 获取行业领域 -->
+    <select id="getAreasList" resultType="java.util.HashMap">  
+        select id,name from areas 
+    </select> 
+    
+    <select id="getCompanyList" resultType="java.util.HashMap" parameterType="Integer"> 
+        select a.*,
+        	b.name cityName,
+			c.name areaName 
+        from (
+	        select companyId,
+	        	size,
+	        	nickName,
+	        	area,
+	        	progress,
+	        	logoName,
+	        	city
+	        from company where nickName is not null order by progress desc limit #{0},#{1} 
+		) a 
+		left join cities b on a.city=b.id 
+		left join areas c on a.area=c.id 
+    </select>
+    
+    <select id="getCompanyListTotal" resultType="java.lang.Integer"> 
+	        select count(*) from company where nickName is not null 
+    </select>
+    
+    <select id="getBidLogsList" resultType="java.util.HashMap"> 
+		 select id,bidTime from bid_logs where isReply=0
+    </select>
+    
+    <select id="getBidLogsEmailList" parameterType="map" resultType="java.util.HashMap"> 
+        select a.*,b.email,c.name from (
+	        select userId,count(*) offerNumber from bid_logs where id in 
+			 <foreach collection="paramsList" index="index" item="item" open="(" separator="," close=") ">    
+	            #{item}  
+	        </foreach> 
+	        group by userId
+	    ) a 
+	    left join rigistration b on a.userId=b.userId 
+	    left join resume c on a.userId=c.userId 
+    </select>
+    
+    <select id="getBidResumeList" resultType="java.util.HashMap"> 
+		 select a.userId,
+		 	a.resumeId,
+		 	a.name,
+		 	b.bidTime,
+		 	b.duration,
+		 	c.email 
+		 from (
+		 	select userId,
+		 		resumeId,
+		 		name,
+		 		special,
+		 		specialCount 
+		 	from resume 
+		 	where cvBidStatus=1 and isSendEmail=0
+		 ) a 
+		 left join special_logs b on a.special=b.special and a.specialCount=b.specialCount 
+		 left join rigistration c on a.userId=c.userId 
+    </select>
+    
+    <update id="batchUpdateBidLogs" parameterType="map">
+        update bid_logs set replyTime=#{replyTime}, isReply=#{isReply}, rejectReason=#{rejectReason} where id in  
+        <foreach collection="paramsList" index="index" item="item" open="(" separator="," close=")">    
+            #{item}    
+        </foreach>  
+    </update>
+    
+    <update id="updateIsSendEmail" parameterType="map">
+        update resume set isSendEmail=#{isSendEmail} where resumeId in 
+        <foreach collection="resumeIdList" index="index" item="item" open="(" separator="," close=")">    
+            #{item}    
+        </foreach> 
+    </update>
+    
+    <select id="getSkillsList" resultMap="skillsResult">
+        select a.id,a.name,a.specialCount,a.status,a.bidTime,b.skillName from special a left join skills b on a.id=b.special
+    </select>
+    
+     <select id="addSuggestion" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call add_suggestion (
+				#{i_status,mode=IN,jdbcType=DECIMAL},
+		   		#{i_email,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL})}  
+		]]>
+    </select>
+</mapper> 

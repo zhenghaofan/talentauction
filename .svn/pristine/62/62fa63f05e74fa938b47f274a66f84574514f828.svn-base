@@ -1,0 +1,4 @@
+driver=com.mysql.jdbc.Driver
+url=jdbc:mysql://192.168.1.108:3306/bidme
+username=root
+password=root

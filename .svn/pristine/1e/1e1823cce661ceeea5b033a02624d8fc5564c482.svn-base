@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/jobresult.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/jobresult.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/jobresult" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/jobresult-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl"></div> 
+		<div id="main" ng-controller="jobresultCtrl">
+			<div class="result-wrap" ng-init="getResumeStatus()">
+				<div class="result-title box-shadow">
+						<span ng-if="resumeStatus.cvCheckResult == 0 || resumeStatus.cvCheckResult == 3">您的简历正在审核中，我们会在1个工作日内给您回复，请耐心等待谢谢！</span>
+						<span ng-if="resumeStatus.cvCheckResult == 1">非常抱歉，您的拍卖申请失败了。原因：<span ng-bind="resumeStatus.rejectReason"></span></span>
+						<span ng-if="resumeStatus.cvCheckResult == 2 && resumeStatus.cvBidStatus == 1">您的简历已经上架了，请注意查看企业给您发送的面试邀请。</span>
+						<span ng-if="resumeStatus.cvCheckResult == 2 && resumeStatus.cvBidStatus == 2">专场拍卖已结束，您的简历已下架，想要简历再次拍卖，请点再次拍卖按钮。</span>
+						<span ng-if="resumeStatus.cvCheckResult == 2 && (resumeStatus.cvBidStatus == 0 || resumeStatus.cvBidStatus == 3)">恭喜，您已经通过审核。我们将会在拍卖会开始的时候自动将你的简历上架，请耐心等候谢谢！</span>
+				</div>
+				<div class="result-body">
+					<div class="box-l box-shadow">
+						<div class="qrcode" ng-if="!resumeStatus.isOnline">
+							<img alt="二维码" src="../img/qrcode.jpg">
+							<span>绑定帐号随时随地看offer</span>
+						</div>
+										
+						<div class="box-con" ng-if="resumeStatus.isOnline">
+							<div class="l-item" ng-init="initResume()">
+								<div class="info-box">
+									<ul>
+										<li class="name" ng-bind="userInfo.resume.name"></li>
+										<li>{{userInfo.resume.sex? '女' : '男'}}<span class="mgn-1">|</span>{{userInfo.resume.educationStr}}<span class="mgn-1">|</span>{{userInfo.resume.age}}岁</li>
+										<li>{{userInfo.resume.jobYear}}年工作经验<span class="mgn-1">|</span>{{userInfo.resume.phone}}<span class="mgn-1">|</span>{{userInfo.resume.email}}</li>
+									</ul>
+								</div>					
+							</div>
+							<div class="l-item">
+								<div class="item-title">
+									<img class="item-img" src="/img/web_ico_l.png ">
+									<span>作品链接</span>
+								</div>
+								<div class="item-con">
+									<ul>
+										<li ng-repeat="item in userInfo.productUrl">
+											<a target="_blank" ng-href="{{item}}" ng-bind="item"></a>
+										</li>
+									</ul>
+								</div>								
+							</div>
+							
+							<div class="l-item">
+								<div class="item-title">
+									<img class="item-img img-2" src="/img/ui_show_ico.png "/>
+									作品展示
+								</div>
+								<div class="item-con">
+									<ul>
+										<li ng-repeat="item in productImgList">
+											<div class='resume-ui-box' >
+												<img class="resume-ui-img" ng-src="/upload/user/compression/{{item}}"  ng-click="showBigImg(item) "/>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+							
+							<div class="l-item">
+								<div class="item-title">
+									<img class="item-img img-1" src="/img/edu_ico_1.png ">
+									<span>教育经历</span>
+								</div>
+								<div class="item-con">
+									<ul ng-if="!!userInfo.resume.educations">
+										<li><pre ng-bind="userInfo.resume.educations"></pre></li>
+									</ul>
+									<ul ng-if="!userInfo.resume.educations" ng-repeat="item in userInfo.educations">
+										<li>
+											<span ng-bind="item.startTime"></span> — 
+											<span class="mgn-2" ng-bind="item.endTime"></span>
+											<span ng-bind="item.school"></span> |
+											<span class="mgn-2" ng-bind="item.specialty"></span>
+										</li>
+									</ul>
+								</div>							
+							</div>
+							<div class="l-item">
+								<div class="item-title">
+									<img class="item-img" src="/img/exp_ico.png ">
+									<span>工作经历</span>
+								</div>
+								<div class="item-con">
+									<ul ng-repeat="item in userInfo.work_experiences">
+										<li class="fb" ng-bind-template="{{item.startTime}}--{{item.endTime}}"></li>
+										<li class="fb" ng-bind-template="{{item.companyName}} | {{item.jobTitle}}"></li>
+										<li class="fb"></li>
+										<li><pre ng-bind="item.workContent"></pre></li>
+									</ul>
+								</div>								
+							</div>
+							<div class="l-item">
+								<div class="item-title">
+									<img class="item-img" src="/img/pro_ico.png ">
+									<span>项目经验</span>
+								</div>
+								<div class="item-con">
+									<ul ng-repeat="item in userInfo.projects">
+										<li class="fb">
+											<span ng-bind-template="{{item.startTime}} — {{item.endTime}}"></span>&nbsp;&nbsp;
+											<span ng-bind="item.name"></span>
+										</li>
+										<li class="fb">项目描述:</li>
+										<li><pre ng-bind="item.projectDetails"></pre></li>
+									</ul>
+								</div>							
+							</div>
+							<div class="l-item">
+								<div class="item-title">
+									<img class="item-img" src="/img/tec_ico.png ">
+									<span>个人总结</span>
+								</div>
+								<div class="item-con">
+									<ul>
+										<li><pre ng-bind="userInfo.resume.details"></pre></li>
+									</ul>
+								</div>							
+							</div>
+						</div>
+					</div>
+					
+					<div class="box-r">
+						<div class="box-con" ng-init="getJobInfo()">
+							<div class="r-item box-shadow">
+								<div class="itt-box">
+									<div class="itt-title">
+										<span>求职意向</span>
+										<img alt="编辑" src="../img/edit_pan_s.png" ng-click="init_ittInfo('edit')">
+									</div>
+									<div class="itt-con">
+										<span ng-bind-template="技能：{{jobInfo.skills}}"></span>
+										<span ng-bind-template="目标城市：{{jobInfo.destination}}"></span>
+										<span ng-bind-template="期望薪资：{{jobInfo.expectedSalary}}K"></span>
+										<span ng-bind-template="期望职位：{{jobInfo.jobTitle}}"></span>
+										<span ng-bind-template="屏蔽前雇主：baidu.com"></span>
+									</div>
+								</div>
+							</div>
+							<div class="r-item box-shadow">
+								<div class="opt-box">
+									<a class="bg-l-2" ng-if="resumeStatus.isOnline">
+										<span>原始简历</span>
+									</a>
+									
+									<a href="{{'/download/userDownloadResume'}}" class="bg-l-1" target="_blank" ng-if="!resumeStatus.isOnline">
+										<span>原始简历</span>
+									</a>
+									
+									<a class="bg-r-1" ng-if="resumeStatus.cvCheckResult == 1" ng-click="init_ittInfo()">
+										<span>重新申请</span>
+									</a>
+									
+									<a class="bg-r-2" ng-if="resumeStatus.cvCheckResult == 0 || resumeStatus.cvCheckResult == 3">
+										<span>更新简历</span>
+									</a>
+									
+									<a class="bg-r-2" ng-if="resumeStatus.cvCheckResult == 2 && resumeStatus.cvBidStatus == 1">
+										<span>更新简历</span>
+									</a>
+									
+									<a class="bg-r-1" ng-if="resumeStatus.cvCheckResult == 2 && resumeStatus.cvBidStatus == 2" ng-click="init_ittInfo()">
+										<span>再次拍卖</span>
+									</a>
+									
+									<a class="bg-r-1" ng-if="resumeStatus.cvCheckResult == 2 && (resumeStatus.cvBidStatus == 0 || resumeStatus.cvBidStatus == 3)" ng-click="init_ittInfo()">
+										<span>更新简历</span>
+									</a>
+								</div>							
+							</div>
+							<div class="r-item box-shadow" style="display: none;">
+								<div class="code">
+									<span>官方微信</span>
+									<img alt="二维码" src="../img/qrcode.jpg">
+									<span>绑定帐号随时获取最新动态</span>
+								</div>						
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+
+			<!-- 求职意向编辑 -->
+			<div class="itt-modal modal">
+				<div class="modal-backdrop in"></div>
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button class="close" ng-click="close('.itt-modal')">x</button>
+							<div class="modal-title"><span ng-bind="ittStatus? '请确认以下信息再更新简历' : '求职意向'"></span></div>
+						</div>
+						<div class="modal-body">
+							<div class="ipt-warp">
+								<div class="ipt-item mgn-2" ng-if="!ittStatus">
+									<span class="remarks">专业技能</span>
+									<span class="fz-1" ng-bind="ittInfo.skills"></span>
+								</div>
+								<div class="ipt-item mgn-1" ng-if="!ittStatus">
+									<span class="remarks">期望职位</span>
+									<span class="fz-1" ng-bind="ittInfo.jobTitle"></span>
+								</div>
+								<div class="ipt-item" ng-if="ittStatus">
+									<span class="remarks">专业技能</span>
+									<input type="text" id="itt_skills" readonly="true" maxlength="20" ng-model="ittInfo.skills" ng-click="initSkill()" placeholder="请选择技能（限两个）">
+								</div>
+								<div class="ipt-item" ng-if="ittStatus">
+									<span class="remarks">期望职位</span>
+									<input type="text" id="itt_jobTitle" maxlength="20" ng-model="ittInfo.jobTitle" placeholder="请选择职位">
+								</div>
+								<div class="ipt-item">
+									<span class="remarks">期望城市</span>
+									<input type="text" id="itt_city" readonly="true" ng-model="ittInfo.destination" ng-click="initCity()" placeholder="请选择城市">
+									<div class="city-modal">
+										<div class="city-header">
+											<button class="close" ng-click="close('.city-modal')">x</button>
+										</div>
+										<div class="city-body">
+											<div class="city-wapr">
+												<span class="feel-item" ng-click="sltCity($event)">北京</span>
+												<span class="feel-item" ng-click="sltCity($event)">上海</span>
+												<span class="feel-item" ng-click="sltCity($event)">广州</span>
+												<span class="feel-item" ng-click="sltCity($event)">深圳</span>
+												<span class="feel-item" ng-click="sltCity($event)">成都</span>
+												<span class="feel-item" ng-click="sltCity($event)">杭州</span>
+												<span class="feel-item" ng-click="sltCity($event)">其他</span>
+												<input type="text" class="city-inp" id="city_inp" maxlength="15">
+											</div>
+										</div>
+										<div class="city-footer">
+											<button class="btn btn-primary ng-scope" ng-click="confirmCity()">确定</button>
+										</div>				
+									</div>						
+								</div>
+								<div class="ipt-item">
+									<span class="remarks">期望薪资</span>
+									<input type="text" id="itt_salary" maxlength="8" ng-model="ittInfo.expectedSalary" placeholder="请选择薪资">
+									<span class="yuan">元/月</span>
+								</div>
+								<div class="ipt-item">
+									<span class="remarks">屏蔽雇主</span>
+									<input type="text" ng-model="ittInfo.shield[0]" placeholder="邮箱后缀如：baidu.com">
+									<img alt="增加" src="../img/reject_com_add.png" ng-if="ittInfo.shield.length < 3" ng-click="opt_shield('+', ittInfo)">
+								</div>
+								<div class="ipt-item pdg-1" ng-if="ittInfo.shield.length >= 2">
+									<input type="text" ng-model="ittInfo.shield[1]" placeholder="邮箱后缀如：baidu.com">
+									<img alt="增加" src="../img/reject_com_del.png" ng-click="opt_shield('-', ittInfo, 1)">
+								</div>
+								<div class="ipt-item pdg-1" ng-if="ittInfo.shield.length >= 3">
+									<input type="text" ng-model="ittInfo.shield[2]" placeholder="邮箱后缀如：baidu.com">
+									<img alt="增加" src="../img/reject_com_del.png" ng-click="opt_shield('-', ittInfo, 2)">
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary ng-scope" ng-click="save_ittInfo(ittInfo)"><span ng-bind="ittStatus? '保存并更新简历' : '保存'"></span></button>
+						</div>				
+					</div>
+				</div>
+			</div>
+			
+			<!-- 技能选择 -->
+			<div class="skill-modal modal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button class="close" ng-click="close('.skill-modal')">x</button>
+							<div class="modal-title"><span>擅长的职业技能</span><span class="fz-2">（最多选两个）</span></div>
+							<div class="slt-warp">
+								<span class="slt-item" ng-click="clearSkill(item, skillArray, true)" ng-repeat="item in skillArray" ng-bind="item"></span>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="skill-warp">
+								<div class="sideBar">
+									<ul class="skill-title">
+										<li ng-repeat="item in skillsList" ng-bind="item.specialName" ng-click="getSkillsDetails(item, $event)"></li>
+									</ul>
+								</div>
+								<div class="main">
+									<span class="skill-item" ng-click="sltSkill($event)" ng-repeat="item in skillNameList" ng-bind="item"></span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary ng-scope" ng-click="confirmSkill()">确定</button>
+						</div>				
+					</div>
+				</div>
+			</div>	
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

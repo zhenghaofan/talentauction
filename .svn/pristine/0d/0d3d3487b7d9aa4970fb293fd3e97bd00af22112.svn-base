@@ -1,0 +1,32 @@
+var require = {
+	baseUrl: '/',
+	
+	paths: {
+		'$': 'js/common/jquery-1.11.1.min',
+		'angular': 'js/common/angular.min',
+		'app': 'js/angular-module',
+		'cookie' : 'js/common/cookie',
+		'url': 'js/common/url',
+		'upload': 'js/common/upload',
+		'user': 'js/service/user'
+	},
+	shim: {
+		'$': { exports: '$' },
+		'angular': {
+			deps: ['$'],
+			exports: 'angular' 
+		},
+		'app': {
+			deps: ['angular'],
+			exports: 'app'
+		},
+		'upload': {
+			deps: ['$'],
+			exports: 'upload'
+		},
+		'user': {
+			deps: ['angular'],
+			exports: 'user'
+		}
+	}
+};

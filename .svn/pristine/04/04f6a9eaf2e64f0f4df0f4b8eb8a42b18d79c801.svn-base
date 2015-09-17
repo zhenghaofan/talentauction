@@ -1,0 +1,90 @@
+
+
+.meeting-wrap {
+	width: 1024px;
+	color: #6B7485;
+	margin: 130px auto 100px;
+}
+.meeting-item {
+	width: 243px;
+	height: 277px;
+	margin-bottom: 30px;
+	vertical-align: top;
+	display: inline-block;
+}
+
+
+.list-box {
+	width: 243px;
+	height: 190px;
+	position: relative;
+	z-index: 100;
+}
+.list-box.bg-1 {
+	background: url(../img/index_spc_andr.png) no-repeat transparent;
+}
+.list-box .box-link {
+	width: 243px;
+	height: 190px;
+	line-height: 190px;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: inline-block;
+}
+.list-box .ico-pay {
+	cursor: pointer;
+}
+.list-box .box-vote {
+	width: 243px;
+	height: 190px;
+	line-height: 190px;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+.list-box .box-vote .ico-hand {
+	cursor: pointer;
+}
+.list-box .box-vote .i-hand {
+	position: absolute;
+	top: -6px;
+	left: 110px;
+	color: red;
+	font-size: 20px;
+	font-style: normal;
+	display: none;
+	opacity: 0;
+}
+.list-box .box-tip {
+	position: absolute;
+	right: 10px;
+	top: -3px;
+	width: 54px;
+	height: 25px;
+	color: #fff;
+	text-align: center;
+	background: url(/img/index_spec_tip_l.png) top left no-repeat transparent;
+	padding-top: 4px;
+}
+.list-box .box-tip.bg-1 {
+	background: url(/img/index_spec_tip_li.png) top left no-repeat transparent;
+}
+
+
+.n-li-detial {
+	position: relative;
+	height: 66px;
+	padding: 10px;
+	z-index: 200;
+	border-left: 1px solid #d3d3d3;
+	border-right: 1px solid #d3d3d3;
+	border-bottom: 1px solid #d3d3d3;
+	background-color: #fff;
+	overflow: hidden;
+}
+
+
+
+
+
+
+

@@ -1,0 +1,48 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'uiservice'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('vipCtrl', ['$scope', '$rootScope', '$http', '$q', 'uiservice',
+   		function($scope, $rootScope, $http, $q, uiservice) {
+		$rootScope.tabIndex = 8;
+		
+		$('.viewport').show();
+		
+		/* 跳转支付*/
+		$scope.jumpPay = function(type) {
+			/*console.log(type);
+			var params = {
+			};
+			$q.when($http.post('/fees/getRechargeLogTotal', $.param(params)))
+            .then(function(result) {
+            	console.log(result);
+            	if(result.data.code==200) {
+            		window.open(window.location.origin + '/vip/vippay?type=' + type);
+            	}else {//已满五人
+            		
+            	}
+            });*/
+			
+			var xhr = new XMLHttpRequest();
+		    xhr.open("GET", "/fees/getRechargeLogTotal", false);  // synchronous request
+		    xhr.send(null);
+		    try {
+		    	var result = angular.fromJson(xhr.responseText);
+				if(result.code==200) {
+			    	window.open('/vip/vippay?type=' + type);
+			    }else {
+			    	uiservice.notify('您好，5次邀约名额已满，如有最新信息我们会第一时间通知您，谢谢！', result.code != 200);
+			    }
+			} catch (e) {
+				uiservice.notify('请正确操作。', true);
+			}
+		};
+ 	}]);
+	
+	app.bootstrap();
+});

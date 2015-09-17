@@ -1,0 +1,532 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('signupCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$('.viewport').show();
+		$scope.status = !!url.get('c') ? url.get('c') : 0;
+		$scope.userInfo = {emailLock: false, codeLock: false, isCodeSucceed: false};
+		var EMAIL_REGEXP = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		var cityArray = [];
+		var specialName = '';
+		var inviteCode = '';
+		var inviteId = '';
+		var inviteUrl = window.location.href;
+		
+		
+		/* 获取code*/
+		if(inviteUrl.indexOf('invite') !== -1) {
+			var length = inviteUrl.indexOf('invite');
+			inviteCode = inviteUrl.substring(length + 6 , length + 14);
+			_getInviteName();
+		}
+		
+		/* 获取推荐人姓名*/
+		function _getInviteName() {
+			var config = {
+					inviteCode: inviteCode
+			};
+			
+			$q.when($http.post('/getInviteName', $.param(config)))
+			.then(function(result) {
+				var data = result.data;
+				if(data.code == 200) {
+					inviteId = data.id;
+					$('.register-title-box .tip').css({'display': 'inline-block'})
+					.find('#invite_people').text('由好友' + data.name + '推荐注册实力拍' );
+				}
+			}, function(err) {
+				console.error('getInviteName', err);
+			});				
+		}		
+		
+		/* 注册*/
+		$scope.signUp = function() {
+			$scope.userInfo.email = $('#email').val();
+			$scope.userInfo.pwd = $('#pwd').val();
+			$scope.userInfo.skill = $('#skill').val();
+			$scope.userInfo.name = $('#name').val();
+			$scope.userInfo.city = $('#city').val();
+			$scope.userInfo.title = $('#title').val();
+			$scope.userInfo.phone = $('#phone').val();
+			
+			if(!_checkedSignUp($scope.userInfo, $scope.status)) {
+				return;
+			}else if(!$scope.userInfo.isCodeSucceed) {
+				if($('#code').css('display') == 'none') {
+					$('#phone').focus();
+					$('#phone_tip').show().text('请输入验证码！');
+				}else {
+					$('#code').focus();
+					$('#code_tip').show().text('请输入验证码！');
+				}
+				return;
+			}else if(!$scope.userInfo.agreementBox){
+				$('#agreement_tip').show().text('请接受协议！');
+				return;
+			}
+			
+			var config = {
+				email: $scope.userInfo.email,
+				password: $scope.userInfo.pwd,
+				telephone: $scope.userInfo.phone,
+				status: $scope.status			
+			}
+			
+			if($scope.status) {
+				config.name = $scope.userInfo.name;
+				config.jobTitle = $scope.userInfo.title;
+			}else {
+				config.skills = $scope.userInfo.skill;
+				config.destination = $scope.userInfo.city;
+			}
+			
+			if(inviteId) config.id = inviteId;
+			
+			$q.when($http.post('/user/userRegister', $.param(config)))
+			.then(function(retsult) {
+				var data = retsult.data;
+				if(data.code == 200) {
+					window.location.href = '/base/mailbox';
+				}else {
+					$('#agreement_tip').show().text(retsult.data.message);
+				};
+			}, function(err) {
+				console.error('userRegister', err);
+			});			
+		};
+		
+		/* 切换注册方式*/
+		$scope.changStatus = function(status) {
+			$scope.status = status;
+			$scope.userInfo = {emailLock: false, codeLock: false};
+			$('.register-l .checked label').hide();
+		};
+		
+		/* 清除提示*/
+		$scope._clearTip = function(ele) {
+			$(ele).text('').hide();
+		};		
+		
+		/* 验证邮箱*/
+		$scope.checkEmail = function() {
+			$scope.userInfo.email = $('#email').val();
+			if(!$scope.userInfo.email) return;
+			
+			if(EMAIL_REGEXP.test($scope.userInfo.email)) {
+				if($scope.status && !_checkComEmail($scope.userInfo.email)) {
+					$('.register-l .checked label').hide();
+					$('#email').focus();
+					$('#email_tip').show().text('请输入企业邮箱！');
+					$scope.userInfo.emailLock = true;					
+					return;
+				}
+				
+				$q.when($http.post('/user/emailVerify?email=' + $scope.userInfo.email))
+				.then(function(result) {
+					if(result.data.code != 200) {
+						 $('.register-l .checked label').hide();
+						 $('#email').focus();
+						 $('#email_tip').show().text(result.data.message);
+						 $scope.userInfo.emailLock = true;
+					 }else {
+						 $scope.userInfo.emailLock = false;
+					 }
+				}, function(err) {
+	            	  console.error('checkEmail', err);
+				});
+				 
+			}else {
+				$('.register-l .checked label').hide();
+				$('#email').focus();
+				$('#email_tip').show().text('请输入有效邮箱！');
+				$scope.userInfo.emailLock = true;
+			}		
+		};
+		
+		$scope.sendCode = function() {
+			$scope.userInfo.email = $('#email').val();
+			$scope.userInfo.pwd = $('#pwd').val();
+			$scope.userInfo.skill = $('#skill').val();
+			$scope.userInfo.name = $('#name').val();
+			$scope.userInfo.city = $('#city').val();
+			$scope.userInfo.title = $('#title').val();
+			$scope.userInfo.phone = $('#phone').val();
+			
+			if(!_checkedSignUp($scope.userInfo, $scope.status) || $scope.userInfo.codeLock) return;
+			
+			var param = {telephone : $scope.userInfo.phone};
+			var dom = $("#send_code_btn");
+			dom.attr('data-work', '1');
+			dom.text('发送中...').css({'background-color' : '#ccc'});
+			
+			$q.when($http.post('/sendMessage/sendSMS', $.param(param)))
+			.then(function(result) {
+				_countTime();
+			}, function(err) {
+				console.error('sendSMS', err.message);
+				dom.attr('data-work', '0');
+				dom.text('发送验证码').css({
+					'background-color' : '#b783c3'
+				});
+				$('#phone_tip').show().text(err.message);
+			});	
+		};
+		
+		/* 校验验证码*/
+		$scope.checkPhoneCode = function() {
+			var code = $('#code').val();
+			var param = {code : code};
+			
+			if( !code || code.length != 6 ) {
+				$('#code_tip').show().removeClass('correct-ico').addClass('err-ico').text('验证码错误！');
+				return;
+			}
+			
+			$q.when($http.post('/sendMessage/smsVerify', $.param(param)))
+			.then(function(result) {
+				$scope.userInfo.isCodeSucceed = true;
+				$('#code_tip').show().removeClass('err-ico').addClass('correct-ico').text('验证成功！');
+			}, function(err) {
+				$scope.userInfo.isCodeSucceed = false;
+				console.error('smsVerify', err.message);
+				$('#code_tip').show().text('已失效，请重发！');
+			});
+		};		
+		
+		/* 短信倒计时*/
+		function _countTime() {
+			var time = 60;
+			var dom = $("#send_code_btn");
+			dom.attr('data-work', '1');
+			dom.text('60秒后可重送').css({
+				'background-color' : '#ccc'
+			});
+			
+			$scope.userInfo.codeLock = true;
+			$('#phone').attr({'readOnly': 'true'});
+			$("#code").slideDown();
+			
+			var handle = setInterval(function() {
+				time --;
+				dom.text(time+'秒后可重送');
+				if( time <= 1 ) {
+					clearInterval(handle);
+					dom.attr('data-work', '0');
+					dom.text('发送验证码').css({
+						'background-color' : '#b783c3'
+					});
+					$scope.userInfo.codeLock = false;
+					$('#phone').removeAttr('readOnly');
+				} 
+			}, 1000);
+		}
+		
+		/* 验证注册*/
+		function _checkedSignUp(data, status) {
+			if(data.emailLock && data.email) return;
+			$('.register-l .checked label').hide();
+			
+			if(!data.email) {
+				$('#email').focus();
+				$('#email_tip').show().text('请输入邮箱！');
+				return false;
+			}else if(!data.pwd || data.pwd.length < 6) {
+				$('#pwd').focus();
+				$('#pwd_tip').show().text('请输入6-16位密码！');
+				return false;
+			}else if(!data.skill && !status) {
+				$('#skill').focus();
+				$('#skill_tip').show().text('请选择技能！');
+				return false;
+			}else if(!data.name && status) {
+				$('#name').focus();
+				$('#name_tip').show().text('请输入姓名！');
+				return false;
+			}else if(!data.city && !status) {
+				$('#city').focus();
+				$('#city_tip').show().text('请选择城市！');
+				return false;
+			}else if(!data.title && status) {
+				$('#title').focus();
+				$('#title_tip').show().text('请输入职称！');
+				return false;
+			}else if(!data.phone || data.phone.length < 11) {
+				$('#phone').focus();
+				$('#phone_tip').show().text('请输入13位手机号！');
+				return false;
+			}
+			return true;
+		}		
+		
+		/*初始化城市*/
+		$scope.initCity = function() {
+			$('.city-modal').show();
+			$scope._clearTip('#city_tip');
+			
+			var flag = false;
+			var eleList = $('.city-wapr .feel-item').removeClass('feel-slt');
+			$('.other-city-in').hide();
+			
+			if($scope.userInfo.city){
+				cityArray = $scope.userInfo.city.split(',');
+			}else{
+				cityArray = [];			
+			}
+				
+			$('.city-wapr .feel-item').each(function(index) {
+				var obj = $(this);
+				for ( var i in cityArray) {
+					if(cityArray[i] == obj.text()) obj.addClass('feel-slt');
+				}
+			});
+			
+			for (var i in cityArray) {
+				eleList.each(function() {
+					if(cityArray[i] == $(this).text()) flag = true;
+				});
+				
+				if(!flag) {
+					$('.other-city-in').show().val(cityArray[i]);
+					$('.city-wapr .feel-item:last').addClass('feel-slt');
+				}else {
+					flag = false;
+				}
+			}
+		};
+		
+		/*选择城市*/
+		$scope.sltCity = function(_event) {
+			var ele = $(_event.target);
+			var tmp = [];
+			var inp = $('.other-city-in');
+			var inpText = '';
+			
+			if(ele.hasClass('feel-slt')) {
+				ele.removeClass('feel-slt');
+				if(ele.text() == '其他') {
+					inpText = inp.val();
+					inp.val('').hide();
+				}
+				
+				for(var i in cityArray) {
+					if(cityArray[i]  == inpText) {
+						cityArray.splice(i, cityArray.length == 1? 1 : cityArray.length -1);
+					}else if(cityArray[i]  == ele.text()) {
+						cityArray.splice(i, cityArray.length == 1? 1 : cityArray.length -1);
+					}
+				}
+			}else {
+				if($('.feel-slt').length <= 1) {
+					ele.addClass('feel-slt');
+					if(ele.text() == '其他') 
+						inp.show();
+					else
+						cityArray.push(ele.text());
+				}
+			}
+		};
+		
+		/*确认选择城市*/
+		$scope.confirmCity = function() {
+			var ele = $('#other_city_in');
+			var flag = true;
+			
+			if(ele.css('display') != 'none') {
+				if($.trim(ele.val()) == ''){
+					ele.focus();
+					return;
+				}else {
+					for ( var i in cityArray) {
+						if(cityArray[i] == ele.val()) flag = false;
+					}
+					if(flag) cityArray.push(ele.val());
+				}
+			}
+			
+			$scope.userInfo.city = cityArray.toString();
+			$scope.close('.city-modal');
+		};
+		
+		
+		/*关闭*/
+		$scope.close = function(ele) {
+			$(ele).hide();
+			$('.skill-modal').removeClass('slt-item');
+		};		
+		
+		/*初始化技能*/
+		$scope.initSkill = function() {
+			$scope._clearTip('#skill_tip');
+			
+			if(!$scope.skillsList) {
+				$scope.getSkillsList();
+			}else {
+				_bindSkillEle();
+				$('.skill-modal').show();
+			}
+		};
+		
+		/*获取技能列表*/
+		$scope.getSkillsList = function() {
+			$q.when($http.post('/bidme/getSkillsList'))
+			.then(function(result) {
+				var tmp = result.data.specialList;
+				for ( var i in tmp) {
+					if(tmp[i].skillName != null && tmp[i].skillName) {
+						tmp[i].skillName = tmp[i].skillName.split('、');
+					}
+				}
+				$scope.skillsList = tmp;
+				setTimeout(function() {
+					_bindSkillEle();
+				});
+				$('.skill-modal').show();
+			}, function(err) {
+            	  console.error('getSkillsList', err);
+			});
+		};
+		
+		/*获取技能详情*/
+		$scope.getSkillsDetails = function(item, _event) {
+			$(_event.target).addClass('slt').siblings().removeClass('slt');
+			$scope.skillNameList = item.skillName;
+			specialName = item.name;
+		};
+		
+		/*选择技能*/
+		$scope.sltSkill = function(_event) {
+			var ele = $(_event.target);
+			
+			if(ele.hasClass('skill-slt')) {
+				ele.removeClass('skill-slt');
+				$scope.skillArray = $scope.clearSkill(ele.text(), $scope.skillArray);
+			}else {
+				if($scope.skillArray.length <= 1) {
+					ele.addClass('skill-slt');
+					$scope.skillArray.push(ele.text());
+				}
+			}
+		};
+		
+		/* 清除技能*/
+		$scope.clearSkill = function(str, array) {
+			for ( var i in array) {
+				if(array[i] == str) array.splice(i, array.length == 1? 1 : array.length -1);
+			}
+			
+			return array;
+		};
+		
+		/*确定技能*/
+		$scope.confirmSkill = function() {
+			$scope.userInfo.skill = $scope.skillArray.toString();
+			$scope.close('.skill-modal');
+			if($('.skill-slt').length <= 1) specialName = $('.skill-modal ul .slt').text();
+		};
+		
+		//绑定元素
+		function _bindSkillEle() {
+			var specialEle = $('.skill-warp ul li').removeClass('slt');
+			var skillEle = $('.skill-warp .skill-item').removeClass('skill-slt');
+			
+			if($scope.userInfo.skill)
+				$scope.skillArray = $scope.userInfo.skill.split(',');
+			else {
+				$scope.skillArray = [];	
+				specialName = specialEle.first().text();
+			}
+			
+			specialEle.each(function(index) {
+				var obj = $(this);
+				if(obj.text() == specialName) {
+					obj.addClass('slt');
+					$safeApply($scope, function() {
+						$scope.skillNameList = $scope.skillsList[index].skillName;
+					});
+				}
+			});
+			
+			skillEle.each(function(index) {
+				var obj = $(this);
+				for ( var i in $scope.skillArray) {
+					if($scope.skillArray[i] == obj.text()){
+						obj.addClass('skill-slt');
+					}
+				}
+			});			
+		}
+		
+		/* 企业邮箱验证*/
+		function _checkComEmail(email) {
+			var _eArr = email.split('@');
+			if( _eArr.length < 2 ) return false;
+			$t = _eArr[1];
+			$t = $t.toLowerCase();
+			
+			var flag = true;
+			if ($t == '163.com') {
+				flag = false;
+			} else if ($t == 'vip.163.com') {
+				flag = false;
+			} else if ($t == '126.com') {
+				flag = false;
+			} else if ($t == 'qq.com' || $t == 'vip.qq.com' || $t == 'foxmail.com') {
+				flag = false;
+			} else if ($t == 'gmail.com') {
+				flag = false;
+			} else if ($t == 'sohu.com') {
+				flag = false;
+			} else if ($t == 'tom.com') {
+				flag = false;
+			} else if ($t == 'vip.sina.com') {
+				flag = false;
+			} else if ($t == 'sina.com.cn' || $t == 'sina.com') {
+				flag = false;
+			} else if ($t == 'tom.com') {
+				flag = false;
+			} else if ($t == 'yahoo.com.cn' || $t == 'yahoo.cn') {
+				flag = false;
+			} else if ($t == 'tom.com') {
+				flag = false;
+			} else if ($t == 'yeah.net') {
+				flag = false;
+			} else if ($t == '21cn.com') {
+				flag = false;
+			} else if ($t == 'hotmail.com') {
+				flag = false;
+			} else if ($t == 'sogou.com') {
+				flag = false;
+			} else if ($t == '188.com') {
+				flag = false;
+			} else if ($t == '139.com') {
+				flag = false;
+			} else if ($t == '189.cn') {
+				flag = false;
+			} else if ($t == 'wo.com.cn') {
+				flag = false;
+			} else if ($t == '139.com') {
+				flag = false;
+			} else if ($t == 'outlook.com') {
+				flag = false;
+			} 
+			return flag;
+		};
+		
+		function $safeApply($scope, fn) {
+			var phase = $scope.$$phase;
+			if (phase == '$apply' || phase == '$digest') {
+				$scope.$eval(fn);
+			} else {
+				$scope.$apply(fn);
+			}
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

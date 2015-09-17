@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mailbox.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/mailbox.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/mailbox" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/mailbox-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="mailboxCtrl">
+			<div class="mail-wrap box-shadow">
+				<div class="title">
+					<span>注册邮箱验证</span>
+				</div>
+				<div class="mail-body">
+					<div class="mail-item">
+						<div class="text1">验证邮箱，完成注册</div>
+						<div class="text2">验证邮件已发送至邮箱：<span ng-bind="user.email"></span></div>
+						<div class="text3">请登录邮箱点击邮件内的链接，验证后即参加拍卖</div>
+					</div>
+					<div class="mail-item">
+						<span>没有收到验证邮件，怎么办？</span>
+						<ol>
+							<li>邮箱填写错误？<a class="fc-1" href="signup">换个邮箱</a></li>
+							<li>请检查垃圾邮件文件夹。</li>
+							<li>稍等几分钟，若还未收到验证邮件，<a class="fc-1" href="" ng-click="mailReSend()">重新发送验证邮件</a></li>
+						</ol>
+					</div>
+				</div>
+				<div class="mail-footer">
+					<span class="fc-2">如果有任何问题，请发邮件到：
+						<span class="fc-1">tellus@shilipai.net</span>，我们将第一时间为您处理
+					</span>
+				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

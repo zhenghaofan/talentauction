@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/jobbidlist.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/jobbidlist.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/jobbidlist" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/dist/jobbidlist-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="bidlistCtrl">
+			<div class="list-wrap" ng-init="getBidLogs('sort')">
+				<div class="left-bar box-shadow">
+					<div class="menu-box">
+						<span class="menu" ng-class="{'0': 'fc-3'}[replayState]" ng-click="sltSort(0)">未处理</span>
+						<span class="menu" ng-class="{'1': 'fc-3'}[replayState]" ng-click="sltSort(1)">已答应</span>
+						<span class="menu" ng-class="{'2': 'fc-3'}[replayState]" ng-click="sltSort(2)">已拒绝</span>
+					</div>
+					<div class="list-con">
+						<div class="list-box" ng-if="listData.length">
+							<div class="list-item" ng-repeat="item in listData" ng-click="getBidInfo(item, $event)">
+								<span class="area pst">
+									<i class="point" ng-if="!item.isUserRead"></i>
+									<a class="name bold" ng-href="/base/chome{{item.companyId}}.html" target="_blank" ng-bind="item.nickName"></a>
+									<span class="city" ng-bind="item.cityName"></span>
+								</span>
+								<span class="area">
+									<span ng-bind-template="{{item.minBidPrice}} - {{item.maxBidPrice}}K"></span>
+									<span ng-if="item.isOption">（加期权）</span>
+								</span>
+							</div>
+						</div>
+						<div class="no-data" ng-if="!listData.length">
+							<span>暂无数据</span>
+						</div>
+					</div>
+				</div>
+				<div class="right-bar">
+					<div class="qr-code box-shadow" ng-if="!listData.length">
+						<img alt="二维码" src="../img/qrcode.jpg">
+						<span>绑定帐号随时获取最新动态</span>
+					</div>
+					<div class="info-wrap" ng-if="listData.length">
+						<div class="info-title box-shadow">
+							<div class="l-box">
+								<img alt="logo" ng-src="/download/getCompanyIcon/companyLogo/{{bidInfo.logoName}}">
+							</div>
+							<div class="r-box">
+								<div class="row">
+									<a class="name mgn-1" ng-href="/base/chome{{bidInfo.companyId}}.html" target="_blank" ng-bind="bidInfo.companyName"></a>
+									<span class="nickname" ng-bind="bidInfo.nickName"></span>
+								</div>
+								<div class="row">
+									<span class="text" ng-bind="bidInfo.cityName"></span>
+									<span class="text" ng-bind="bidInfo.sizeStr"></span>
+									<span class="text" ng-bind="bidInfo.areaName"></span>
+									<span class="text" ng-bind="bidInfo.pgsStr"></span>
+								</div>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<div class="info-con">
+							<div class="sub-item box-shadow" ng-repeat="item in bidList">
+								<div class="info-base">
+									<div class="row">
+										<span class="price">
+											<span ng-bind-template="{{item.minBidPrice}} - {{item.maxBidPrice}}K"></span>
+											<span ng-if="item.isOption">（加期权）</span>
+											<span class="bidnum" ng-bind-template="第{{bidList.length - $index}}次邀请"></span>
+										</span>
+										<span class="reply" ng-switch="item.isReply">
+											<span ng-switch-when="0">未回复</span>
+											<span ng-switch-when="1">已答应</span>
+											<span ng-switch-when="2">已拒绝</span>
+											<span ng-switch-when="3">已答应</span>
+										</span>
+									</div>
+									<div class="row">
+										<span class="rjt-text" ng-bind-template="邀请短信：{{item.workTitle}}"></span>
+									</div>
+								</div>
+								<div class="info-box">
+									<div class="step" ng-class="{'3': 'slt'}[item.isReply]" ng-if="item.acquireTime">
+										<div class="time-axis step-3">
+											<i class="star slt"></i>
+											<span class="line"></span>
+										</div>
+										<div class="row">
+											<span class="time fz-1">2015-06-26 10:05</span>
+										</div>
+										<div class="row">
+											<span class="price">企业获取了我的联系方式</span>
+										</div>
+										<div class="row">
+											<span class="text" ng-bind="'姓名：张珊'"></span>
+											<span class="text" ng-bind="'手机号：13800138000'"></span>
+											<span class="text" ng-bind="'邮箱：li@test.com'"></span>
+										</div>
+									</div>
+									
+									<div class="step" ng-class="{'2': 'slt'}[item.isReply]" ng-if="item.replyTime && item.isReply == 2">
+										<div class="time-axis step-3">
+											<i class="star"></i>
+											<span class="line"></span>
+										</div>
+										<div class="row">
+											<span class="time fz-1" ng-bind="item.replyTime"></span>
+										</div>
+										<div class="row">
+											<span class="">人才拒绝了面试邀请</span>
+										</div>
+										<div class="row">
+											<span class="text" ng-bind-template="理由：{{item.rejectReason}}"></span>
+										</div>
+									</div>
+									
+									<div class="step" ng-class="{'1': 'slt'}[item.isReply]" ng-if="item.replyTime && item.isReply != 2">
+										<div class="time-axis step-2">
+											<i class="star"></i>
+											<span class="line"></span>
+										</div>
+										<div class="row">
+											<span class="time fz-1">2015-06-26 10:05</span>
+										</div>
+										<div class="row">
+											<span class="">我接受了邀请</span>
+										</div>
+									</div>
+									
+									<div class="step" ng-class="{'0': 'slt'}[item.isReply]" ng-if="item.bidTime">
+										<div class="time-axis step-1">
+											<i class="star"></i>
+											<span class="line"></span>
+										</div>
+										<div class="row">
+											<span class="time fz-1">2015-06-26 10:05</span>
+										</div>
+										<div class="row">
+											<span class="">企业想我发送了面试邀请</span>
+										</div>
+										<div class="row">
+											<span class="text">12-16k（加期权）</span>
+											<span class="text">短信：安卓开发主管</span>
+										</div>
+									</div>
+								</div>
+								<div class="btn-group">
+									<button class="btn btn-success mgn-2" ng-click="agreeOpt(item)">接受面试</button>
+									<button class="btn btn-danger" ng-click="_show('.reject-modal')">残忍拒绝</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+				<div class="reject-modal modal">
+					<div class="modal-backdrop in"></div>
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button class="close" ng-click="_close('.reject-modal')">x</button>
+								<div class="modal-title">拒绝理由</div>
+							</div>
+							<div class="modal-body">
+								<div class="rjt-box">
+									<div class="rjt-con">
+										<div class="inp-item">
+											<input type="checkbox"><span class="mgn-1">薪资条件不合适</span>
+											<input type="checkbox"><span>已有更好的机会</span>
+										</div>
+										<div class="inp-item pdg-1">
+											<span class="mgn-1">其他</span>
+											<textarea ng-model="bidInfo.minBidPrice" maxlength="30" ng-change="_clearTip()" placeholder="输入拒绝理由（限30字）"></textarea>
+										</div>
+										<div class="err-wrap">
+											<label id="rjt_tip" class="ico-invalid"></label>
+										</div>
+									</div>
+									<div class="btn-group">
+										<span class="btn btn-success" ng-click="rejectOpt()">确定</span>
+									</div>
+								</div>
+							</div>		
+						</div>
+					</div>
+				</div>				
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

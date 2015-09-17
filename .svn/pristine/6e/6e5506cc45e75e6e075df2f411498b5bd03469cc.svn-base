@@ -1,0 +1,109 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('bidlistCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$rootScope.tabIndex = 5;
+		$scope.replayState = 0;
+		var page = {
+				pageIndex: 1,
+				pageSize: 10
+		};
+		
+		/* 获取拍卖记录*/
+		$scope.getBidLogs = function() {
+            $q.when($http.post('/resume/getBidLogs', $.param(page)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.listData = data;
+            	console.log(data);
+            	_initPager();
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getBidLogs', err);
+            });
+		};
+		
+		/* 选择排序方法*/
+		$scope.sltSort = function(status) {
+			pageIndex = 1;
+			page.pageSize = 10;
+			page.reply = status;
+			$scope.replayState = status;
+			$scope.getBidLogs();
+		};
+		
+		/* 拒绝面板*/
+		$scope.rejectBox = function(item) {
+			item.isReply = 0;
+			//if(!_checkReply) return;
+		};
+		
+		/* 拒绝操作*/
+		$scope.rejectOpt = function(item) {
+			var config = {
+					id: id,
+					isReply: isReply,
+					rejectReason: rejectReason
+			};
+			
+			$scope.subReply(config, item);
+		};
+		
+		/* 同意操作*/
+		$scope.agreeOpt = function() {
+			var config = {
+					id: id,
+					isReply: isReply
+				};
+			
+			$scope.subReply(config);
+		};
+		
+		/* 提交回复*/
+		$scope.subReply = function(config, item) {
+            $q.when($http.post('resume/userReply', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	console.log(data);
+            	if(item) item.isReply = 2;
+            }, function(err) {
+            	console.error('userReply', err);
+            });
+		};
+		
+		/* 翻页*/
+		$scope.turnPage = function(_event, status) {
+			if(status == '+') {
+				$scope.pageIndex ++;
+			}else if(status == '-') {
+				$scope.pageIndex --;
+			}else {
+				$scope.pageIndex = status;
+				$(_event.target).addClass('slt').siblings().removeClass('slt');
+			}
+			$scope.getBidLogs();
+		};		
+		
+		/*初始化翻页*/
+		function _initPager() {
+			$scope._pageCount = [];
+			for (var i = 0; i < $scope.totalPage; i++) {
+				$scope._pageCount.push(i + 1);
+			}
+		}
+		
+		/*验证回复*/
+		function _checkReply(data) {
+			
+			return true;
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

@@ -1,0 +1,99 @@
+package com.auction.common.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import com.auction.common.model.BidLogs;
+
+/** 
+ * @author tobber
+ * @version 2015年4月15日
+ */
+
+public interface BidmeDao {  
+	
+	/**
+	 * 获取专场列表
+	 * @return
+	 */
+	public List<Map<String, Object>> getSpecialList(); 
+	
+	/**
+	 * 获取拍卖中转车列表
+	 * @return
+	 */
+	public List<Map<String, Object>> getBidSpecial(); 
+	
+	
+	/**
+	 * 获取专场技能列表
+	 * @return
+	 */
+	public List<Map<String, Object>> getSkillsList();
+	
+	/**
+	 * 获取简历池信息
+	 * @return
+	 */
+	public List<Map<String, Object>> getBidPools(Map<String, Object> params); 
+	
+	/**
+	 * 获取简历池分页总条数
+	 * @return
+	 */
+	public int getBidPoolsTotal(Map<String, Object> params); 
+	
+	/**
+	 * 企业获取拍卖价格
+	 * @param userId 用户ID
+	 * @param companyId 企业ID
+	 * @return
+	 */
+	public Map<String, Object> getBidPricieLogs(String userId,String companyId); 
+	
+	/**
+	 * 获取企业阅读记录
+	 * @param userId 用户ID
+	 * @param companyId 企业ID
+	 * @return
+	 */
+	public Map<String, Object> getReadLog(String userId,String companyId);
+	
+	/**
+	 * 添加阅读记录
+	 * @param userId 用户ID
+	 * @param companyId 企业ID
+	 * @return
+	 */
+	public int addReadLog(Map<String, Object> params);
+	
+	/**
+	 * 添加拍卖记录
+	 * @param userId 用户ID
+	 * @param companyId 企业ID
+	 * @return
+	 */
+	public int addBidLog(BidLogs bidLogs);
+			
+	/**
+	 * 获取公司竞拍 邮件信息
+	 * @param userId 用户ID
+	 * @param companyId 企业ID
+	 * @return
+	 */
+	public Map<String, Object> getCompanyAuctionEmailInfo(String userId,String companyId);
+	
+	/**
+	 * 获取简历拍卖动态
+	 * @return
+	 */
+	public List<Map<String, Object>> getResumDynamic(Map<String, Object> params);
+	
+	/**
+	 * 获取简历拍卖动态
+	 * @return
+	 */
+	public int getResumDynamicTotal(Map<String, Object> params);
+	
+} 
+

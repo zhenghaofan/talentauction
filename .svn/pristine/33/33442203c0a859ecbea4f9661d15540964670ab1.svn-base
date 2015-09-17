@@ -1,0 +1,92 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'uiservice'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('bidlistCtrl', ['$scope', '$rootScope', '$http', '$q', 'uiservice',
+   		function($scope, $rootScope, $http, $q, uiservice) {
+		$rootScope.tabIndex = 5;
+		$scope.replayState = 0;
+		$scope.page = {
+				page: 1,
+				pageSize: 5,
+				totalPage: 1
+		};
+		
+		/* 选择排序方法*/
+		$scope.sltSort = function(status) {
+			$scope.page = {
+					page: 1,
+					pageSize: 5,
+					totalPage: 1
+			};
+			
+			if(status) $scope.page.reply = status;
+			$scope.replayState = status;
+			$scope.getBidLogs();
+		};
+		
+		/* 获取联系*/
+		$scope.getReplay = function(item) {
+			var config = {
+					id: item.id
+			};
+			
+			uiservice.confirm('确定获取联系方式吗？', function() {
+	            $q.when($http.post('/company/getContacts', $.param(config)))
+	            .then(function(result) {
+	            	var data = result.data;
+					if(data.code == 200) {
+						$scope.getBidLogs();
+					}	            	
+	            }, function(err) {
+	            	console.error('getContacts', err);
+	            });
+			});
+		};
+		
+		/* 获取拍卖记录*/
+		$scope.getBidLogs = function() {
+            $q.when($http.post('/company/companyBidLogs', $.param($scope.page)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.listData = data.bidLogs;
+            	$scope.page.totalPage = data.totalPage;
+            	$scope.page.page = data.page;
+            	
+            	_initPager();
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('companyBidLogs', err);
+            });
+		};
+		
+		
+		/* 翻页*/
+		$scope.turnPage = function(_event, status) {
+			if(status == '+') {
+				$scope.page.page ++;
+			}else if(status == '-') {
+				$scope.page.page --;
+			}else {
+				$scope.page.page = status;
+				$(_event.target).addClass('slt').siblings().removeClass('slt');
+			}
+			$scope.getBidLogs();
+		};		
+		
+		/*初始化翻页*/
+		function _initPager() {
+			$scope._pageCount = [];
+			for (var i = 0; i < $scope.page.totalPage; i++) {
+				$scope._pageCount.push(i + 1);
+			}
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

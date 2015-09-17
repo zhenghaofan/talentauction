@@ -1,0 +1,279 @@
+
+body {
+	background: url(/img/spec_ios_bg.jpg) top left no-repeat #072c58;
+}
+.designer-wrap {
+	overflow: hidden;
+	padding-bottom: 80px;
+  	margin: 130px auto 100px;
+  	overflow: hidden;
+}
+
+/****** 专场时间 ******/
+.content-b {
+	width: 1024px;
+	margin: 0 auto;
+}
+.top-time-text {
+	font-style: normal;
+	margin-left: 5px;
+}
+.top-time {
+	float: right;
+	color: #fff;
+}
+
+/****** 筛选导航 ******/
+.nav_warp {
+	position: relative;
+	width: 1024px;
+	border-radius: 5px;
+	margin: 15px auto 0 auto;
+	background-color: #fff;
+}
+.nav_warp .c_l {
+	float: left;
+	height: 145px;
+	width: 35px;
+	color: #fff;
+	text-align: center;
+	border-radius: 5px 0 0 5px;
+	background-color: #4182C6;
+}
+.nav_warp .c_l span {
+	height: 50px;
+	width: 20px;
+	margin-top: 45px;
+	padding-top: 20px;
+	display: inline-block;
+	background: url(../img/ui_dressing_ico.png) no-repeat;
+	background-position: 50% 0;
+}
+.nav_warp .c_r {
+	padding-top: 20px;
+	overflow: hidden;
+}
+.nav_warp .work_item {
+	float: left;
+	width: 230px;
+	padding: 10px 0 20px 35px;
+	border-right: 1px dotted #e5e5e5;
+}
+.nav_warp .city_item {
+	float: left;
+	width: 255px;
+	padding: 10px 0 20px 40px;
+	border-right: 1px dotted #e5e5e5;
+}
+.nav_warp .edu_item {
+	float: left;
+	width: 230px;
+	padding: 10px 0 20px 40px;
+}
+
+.nav_warp .title span {
+	color: #ccc;
+	display: inline-block;
+}
+.work_item .title span {
+	padding-left: 28px;
+	background: url(../img/ui_work_ico.png) no-repeat;
+}
+.city_item .title span {
+	padding-left: 20px;
+	background: url(../img/ui_city_ico.png) no-repeat;
+}
+.edu_item .title span {
+	padding-left: 30px;
+	background: url(../img/ui_edu_ico.png) no-repeat;
+}
+.nav_warp .content {
+	padding-top: 5px;]
+}
+.nav_warp .content span {
+	color: #666;
+	padding: 1px 4px;
+	margin: 5px 20px 0 0;
+	display: inline-block;
+	cursor: pointer;
+}
+.nav_warp .content span:hover {
+	color: #4182C6;
+}
+.nav_warp .content span.selectd {
+	color: #fff;
+	border-radius: 3px;
+	background-color: #4182C6;
+}
+.nav_warp .special_list {
+	z-index: 100;
+	position: absolute;
+	top: 0px;
+	right: 15px;
+	border-radius: 0 0 5px 5px;
+	overflow: hidden;
+}
+.nav_warp .special_list span {
+	height: 42px;
+	width: 110px;
+	color: #fff;
+	line-height: 42px;
+	text-align: center;
+	border-bottom: 1px solid #88B6E5;
+	background: #4182C6 url(../img/icon-arrow-white.png) no-repeat;
+	background-position: 85px 50%;
+	display: inline-block;
+	cursor: pointer;
+}
+.nav_warp .special_list span i {
+	height: 38px;
+	width: 80px;
+	font-style: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	margin-left: -5px;
+	display: inline-block;
+	overflow: hidden;
+}
+ul li ul li {
+	border-bottom: 1px solid #88B6E5;
+	background-color: #71A8E0;
+	display: none;
+	cursor: pointer;
+}
+ul li ul li:hover {
+	background-color: #4182C6;	
+}
+ul li ul li a {
+	width: 80px;
+	height: 40px;
+	color: #fff;
+	text-align: center;
+	line-height: 40px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	padding: 0 15px;
+	overflow: hidden;
+	display: block;
+}
+
+/****** 简历列表 ******/
+.cv_warp {
+	width: 1046px;
+	min-height: 600px;
+	margin: 20px auto 0 auto;
+	padding-left: 22px;
+	overflow: hidden;
+}
+.cv_warp .cv_item {
+	float: left;
+	width: 334px;
+	border-radius: 3px;
+	margin-right: 10px;
+	margin-bottom: 20px;
+	overflow: hidden;
+	cursor: pointer;
+	border-bottom: 1px solid #e5e5e5;
+}
+.cv_warp .cv_item:hover {
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+	border-bottom: 1px solid #4ba6e5;
+}
+.cv_warp .photo {
+	position: relative;
+	height: 242px;
+	border-radius: 5px 5px 0 0;
+	background-color: #F5F5F5;
+	overflow: hidden;
+}
+.cv_warp .tips {
+	position: absolute;
+	height: 36px;
+	width: 100%;
+	color: #fff;
+	line-height: 36px;
+	bottom: 0px;
+	background: url(../img/bg_ui.png);
+	display: none;
+}
+.cv_warp .tips span {
+	padding-left: 15px;
+	display: inline-block;
+}
+.cv_warp .tips span:first-child {
+	padding-left: 20px;
+}
+.cv_warp .photo img {
+	width: 337px;
+	margin-bottom: -3px;
+}
+.cv_warp .detail {
+	height: 88px;
+	padding: 0 20px;
+	background-color: #fff;
+}
+.cv_warp .detail .title {
+	height: 50px;
+	font-size: 16px;
+	line-height: 50px;
+}
+.cv_warp .detail .title > span:hover {
+	color: #4182C6;
+}
+.cv_warp .detail .work span {
+	color: #999;
+	margin-right: 20px;
+	display: inline-block;
+}
+.cv_warp .detail .city {
+	padding-left: 14px;
+	background: url("../img/ui_mcity_ico.png") no-repeat;
+	background-position: 0 50%;
+}
+.cv_warp .detail .take {
+	padding-left: 20px;
+	background: url("../img/ui_mwork_ico.png") no-repeat;
+	background-position: 0 50%;	
+}
+.cv_warp .detail .look {
+	padding-left: 22px;
+	background: url("../img/ui_mlook_ico.png") no-repeat;
+	background-position: 0 50%;	
+}
+.cv_warp .no-data {
+	height: 200px;
+	color: #fff;
+	font-size: 18px;
+	text-align: center;
+	line-height: 200px;
+}
+.cv_warp .load {
+	height: 350px;
+	line-height: 50px;
+	color: #fff;
+	font-size: 18px;
+	text-align: center;
+}
+.cv_warp .load.disabled {
+	height: 50px;
+}
+.cv_warp .load span {
+	padding-left: 35px;
+	margin-left: -22px;
+	background: url("../img/loading.gif") no-repeat 0 50%;
+	background-size: 26px;
+	display: inline-block;
+}
+.cv_warp .load span.close {
+	padding-left: 0;
+	background: none;	
+}
+.title:hover {
+	color: #1e95ea;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

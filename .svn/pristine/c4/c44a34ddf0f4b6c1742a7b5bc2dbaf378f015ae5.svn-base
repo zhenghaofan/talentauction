@@ -1,0 +1,112 @@
+package com.auction.common.util;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
+public class Util {
+	private static final Logger logger = Logger.getLogger(Util.class);
+	 
+	public void responesWriter(HttpServletResponse response,String content) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");  
+        response.setCharacterEncoding("UTF-8");  
+        PrintWriter out = response.getWriter();
+        out.write(content);
+        out.flush();
+	}
+	
+	public static boolean isNumeric(String str){ 
+		   Pattern pattern = Pattern.compile("[0-9]*"); 
+		   Matcher isNum = pattern.matcher(str);
+		   if( !isNum.matches() ){
+		       return false; 
+		   } 
+		   return true; 
+	}
+	
+	/**
+	 * 字符串验证
+	 * @param str 验证字符串
+	 * @param min 最小长度
+	 * @param max 最大长度
+	 * @param matche 正则表达式
+	 * @return
+	 */
+	public static boolean isVerify(String str,int min,int max,String matche){
+		boolean flag = (str!=null && !"".equals(str.trim()));
+		if(flag && min>0 && max>0){
+			flag = (str.trim().length()>=min && str.trim().length()<=max);
+		}
+		if(str!=null && matche!=null){
+			flag = str.matches(matche);
+		}
+		return flag;
+	}
+	
+	public static String getMACAddress(String ip){ 
+		String line = "";    
+        String macAddress = "";    
+        final String MAC_ADDRESS_PREFIX = "MAC Address = ";    
+        final String LOOPBACK_ADDRESS = "127.0.0.1";    
+        //如果为127.0.0.1,则获取本地MAC地址。    
+        if (LOOPBACK_ADDRESS.equals(ip)) {
+        	try {
+		        InetAddress inetAddress = InetAddress.getLocalHost();    
+		        //貌似此方法需要JDK1.6。    
+		        byte[] mac = NetworkInterface.getByInetAddress(inetAddress).getHardwareAddress();    
+		        //下面代码是把mac地址拼装成String    
+		        StringBuilder sb = new StringBuilder();    
+		        for (int i = 0; i < mac.length; i++) {    
+		            if (i != 0) {    
+		                sb.append("-");    
+		            }    
+		            //mac[i] & 0xFF 是为了把byte转化为正整数    
+		            String s = Integer.toHexString(mac[i] & 0xFF);    
+		            sb.append(s.length() == 1 ? 0 + s : s);    
+		        }    
+		        //把字符串所有小写字母改为大写成为正规的mac地址并返回    
+		        macAddress = sb.toString().trim().toUpperCase();
+        	} catch (Exception e) {
+				e.printStackTrace();
+			}
+            return macAddress;    
+        }    
+        //获取非本地IP的MAC地址    
+        try {    
+            Process p = Runtime.getRuntime().exec("nbtstat -A " + ip);    
+            InputStreamReader isr = new InputStreamReader(p.getInputStream());    
+            BufferedReader br = new BufferedReader(isr);    
+            while ((line = br.readLine()) != null) {    
+                if (line != null) {    
+                    int index = line.indexOf(MAC_ADDRESS_PREFIX);    
+                    if (index != -1) {    
+                        macAddress = line.substring(index + MAC_ADDRESS_PREFIX.length()).trim().toUpperCase();    
+                    }    
+                }    
+            }    
+            br.close();    
+        } catch (IOException e) {    
+            e.printStackTrace(System.out);    
+        }    
+        return macAddress; 
+	}
+	
+	public static void main(String[] args) throws ParseException {
+		
+		System.out.println("1421895000169_528.jpg".matches("[0-9]{13}_[0-9]{0,10}.[a-zA-Z]{3}"));
+	}
+}

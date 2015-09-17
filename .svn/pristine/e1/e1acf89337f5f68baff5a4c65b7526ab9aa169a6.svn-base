@@ -1,0 +1,140 @@
+
+
+.info-wrap {
+	width: 720px;
+	color: #6B7485;
+	margin: 130px auto 100px;
+	border-radius: 3px;
+	background-color: #fff;
+}
+
+
+.nav-warp {
+	text-align: center;
+	padding-top: 30px;
+}
+.nav-warp .tab-item {
+	width: 92px;
+	text-align: center;
+	vertical-align: top;
+	margin-left: -34px;
+	margin-top: 3px;
+	display: inline-block;
+}
+.nav-warp .line {
+	width: 120px;
+	height: 7px;
+	vertical-align: top;
+	margin-top: 10px;
+	margin-left: -32px;
+	background-color: #d8dbe0;
+	display: inline-block;
+}
+.nav-warp .tab-step {
+	width: 20px;
+	height: 20px;
+	color: #fff;
+	font-size: 14px;
+	text-align: center;
+	line-height: 20px;
+	border-radius: 25px;
+	border: 1px solid #d8dbe0;
+	margin-bottom: 5px;
+	background-color: #d8dbe0;
+	display: inline-block;
+}
+.nav-warp .tab-text {
+	color: #d8dbe0;
+}
+.nav-warp .slt {
+	color: #6B7485;
+	font-size: 15px;
+}
+.nav-warp .slt .tab-step {
+	width: 23px;
+	height: 23px;
+	font-size: 15px;
+	line-height: 23px;
+	margin-bottom: 8px;
+	border-radius: 15px;
+	border: 1px solid #71A8E0;
+	background-color: #71A8E0;
+}
+.nav-warp .slt .tab-text {
+	color: #6B7485;
+	font-size: 15px;
+}
+
+
+.box-info {
+	padding: 30px 90px 40px;
+}
+.box-info .remarks {
+	color: #6B7485;
+	font-size: 18px;
+	margin-bottom: 10px;
+	display: block;
+}
+.box-info input, .box-info select {
+	width: 538px;
+	height: 42px;
+	color: #6B7485;
+	font-size: 14px;
+	text-indent: 12px;
+	border-radius: 3px;
+	border: 1px solid #F3F1F1;
+	display: inline-block;
+	background-color: #eceef1;
+}
+.box-info select.slt-l {
+	width: 260px;
+	margin-right: 15px;
+}
+.box-info select.slt-r {
+	width: 260px;
+}
+.box-info .err-wrap {
+	min-height: 25px;
+}
+
+.box-info .phase-item {
+	width: 77px;
+	height: 77px;
+	line-height: 77px;
+	text-align: center;
+	border-radius: 5px;
+	border: 2px solid #fff;
+	margin-right: 5px;
+	background-color: #eceef1;
+	display: inline-block;
+	cursor: pointer;
+	
+}
+.box-info .phase-item.slt {
+	border-color: #71A8E0;
+	background: url(../img/icon-check-c.png) 101% -1% no-repeat;
+}
+.box-info .btn-con {
+	text-align: center;
+	margin-top: 40px;
+}
+.box-info .btn {
+	height: 40px;
+	color: #fff;
+	font-size: 14px;
+	padding: 0 25px;
+	border-radius: 3px;
+	border: none;
+	background-color: #73a6e5;
+	cursor: pointer;
+}
+.box-info .btn:hover {
+	background-color: #4182c6;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}
+

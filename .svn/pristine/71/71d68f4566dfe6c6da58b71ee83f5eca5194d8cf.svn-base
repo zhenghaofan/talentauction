@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/compdefault.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/compdefault.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/compdefault" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/compdefault-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="defaultCtrl">
+			<div id="notify_view" class="main-wrap" ng-init="getCompInfo()">
+				<div class="sidebar">
+					<div class="prog-warp box-shadow" ng-if="isLock">
+						<a class="jump-btn" href="/base/placedefault">进入拍卖会</a>
+						<div class="prog-title"><span>完善资料让人才更快了解你！</span></div>
+						<div class="prog-con" ng-init="initIntegrity()">
+							<span>
+								<span>企业主页资料完整度：</span>
+								<span id="on_pro_text">0</span>%
+							</span>
+							<span><i id="on_pro_line"></i></span>
+						</div>
+					</div>
+					
+					<div class="jd-warp box-shadow">
+						<div class="title">
+							<span><img class="title-ico" src="/img/team_ico.png"/>人才需求</span>
+							<img class="add-ico" alt="增加"  ng-if="(demands.length > 0 && demands.length < 8) && !jdInfo.isEdit" src="/img/add_b.png" ng-click="editJd(1)">
+						</div>
+						
+						<div class="jd-con">
+							<div class="jd-box" ng-if="!!demands.length && !jdInfo.isEdit">
+								<div class="jd-item" ng-repeat="item in demands">
+									<span ng-bind-template="{{item.skills}} [{{item.minJobYear}}-{{item.maxJobYear}}年]"></span>
+									<a ng-href="{{item.website}}" target="_blank"><img class="earth" alt="网址" src="../img/icon_earth.png"></a>
+									<div class="opt-ico">
+										<img alt="删除" src="/img/icon-cancel-b.png" ng-click="delJd(item.id)">													
+									</div>
+								</div>
+							</div>					
+							<div class="new-box" ng-if="!demands.length && !jdInfo.isEdit && isLock">
+								<span  ng-click="editJd(1)">添加人才需求</span>
+							</div>
+							<div class="edit-box" ng-if="jdInfo.isEdit">
+								<div class="edit-item">
+								<div class="edit-item">
+									<span class="remarks">经验</span>
+									<input type="text" id="jd_exp_min" class="small" maxlength="2" ng-model="jdInfo.minJobYear" ng-change="_clearTip('#jd_exp_tip')" onkeyup="value=value.replace(/[^\d.]/g,'')"> —
+									<input type="text" id="jd_exp_max" class="small" maxlength="2" ng-model="jdInfo.maxJobYear" ng-change="_clearTip('#jd_exp_tip')" onkeyup="value=value.replace(/[^\d.]/g,'')">&nbsp;&nbsp;年
+									<div class="err-wrap">
+										<label id="jd_exp_tip" class="ico-invalid"></label>
+									</div>
+								</div>
+									<span class="remarks">职位</span>
+									<input type="text" id="jd_skills" ng-model="jdInfo.skills" ng-change="_clearTip('#jd_skills_tip')" maxlength="16" placeholder="请输入需求职位（必填）">
+									<div class="err-wrap">
+										<label id="jd_skills_tip" class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">JD地址</span>
+									<textarea ng-model="jdInfo.website" placeholder="请输入在拉钩、51等网站发布的职位连接URL"></textarea>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div calss="edit-item">
+									<button class="btn save" ng-click="addJd()">保存</button>
+									<button class="btn cancel" ng-click="editJd(0)">取消</button>
+								</div>
+							</div>
+						</div>						
+					</div>
+					
+					<div class="team-warp box-shadow">
+						<div class="title">
+							<span><img class="title-ico" src="/img/team_ico.png"/>创始团队</span>
+							<img class="add-ico" alt="增加" ng-if="(founder.length > 0 && founder.length < 3) &&!teamInfo.isEdit " src="/img/add_b.png" ng-click="editTeam(1)">
+						</div>
+						
+						<div class="team-con">
+							<div class="team-box" ng-if="!teamInfo.isEdit && !!founder.length">
+								<div class="team-item" ng-repeat="item in founder">
+									<div class="team-photo">
+										<div class="user-img" ng-if="item.imgName">
+											<img ng-src="{{'/download/getCompanyIcon/founderLogo/' + item.imgName}}">
+										</div>
+										<div class="opt-ico">
+											<img alt="编辑" src="/img/edit_pan_s.png" ng-click="editTeam(2, item)">
+											<img alt="删除" src="/img/icon-cancel-b.png" ng-click="delTeam(item.id)">													
+										</div>
+										<div class="clear"></div>
+									</div>
+									<div class="team-info">
+										<div class="item-title">
+											<span ng-bind-template="{{item.name}}&nbsp;{{item.jobName}}"></span>
+											<a target="_blank" ng-href="{{item.website}}" ng-if="item.website">
+												<span ng-switch="item.webType">											
+													<span ng-switch-when="1">
+														<img class="earth" src="/img/sina_ico.gif">
+													</span>
+													<span ng-switch-when="2">
+														<img class="earth" src="/img/zhihu_ico.png">
+													</span>
+													<span ng-switch-when="3">
+														<img class="earth" src="/img/licdn_ico.png">
+													</span>
+													<span ng-switch-default>
+														<img class="earth" src="/img/icon_earth.png">
+													</span>
+												</span>
+											</a>												
+										</div>
+										<div class="clear"></div>											
+									</div>
+									<div class="team-text">
+										<pre ng-bind="item.brief"></pre>
+									</div>
+								</div>
+							</div>
+							
+							<div class="new-box" ng-if="!teamInfo.isEdit && !founder.length && isLock">
+								<span ng-click="editTeam(1)">添加创始团队</span>
+							</div>
+							
+							<div class="edit-box" ng-if="teamInfo.isEdit">
+								<div class="edit-item">
+									<div class="canvas" ng-click="imgSlt(3)">
+										<img ng-if="!teamInfo.tmpLogoName" ng-src="{{teamInfo.imgName ? '/download/getCompanyIcon/founderLogo/' + teamInfo.imgName : '/img/company_logo_default.png'}}">
+										<img ng-if="teamInfo.tmpLogoName" ng-src="{{'/download/getTempIcon/' + teamInfo.tmpLogoName}}">
+									</div>
+									<div class="prompt">
+										<span>更换头像</span>
+									</div>									
+								</div>
+								<div class="edit-item">
+									<span class="remarks">名称</span>
+									<input type="text" id="team_name" ng-model="teamInfo.name" ng-change="_clearTip('#team_name_tip')" maxlength="20" placeholder="请输入姓名"/>
+									<div class="err-wrap">
+										<label id="team_name_tip" class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">职位</span>
+									<input type="text" id="team_title" ng-model="teamInfo.jobName" ng-change="_clearTip('#team_title_tip')" maxlength="20" placeholder="职位"/>
+									<div class="err-wrap">
+										<label id="team_title_tip" class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">博客地址</span>
+									<textarea class="small" ng-model="teamInfo.website" maxlength="160" placeholder="请输入个人微博，知乎，领英或其他网站地址"></textarea>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">个人简介</span>
+									<textarea ng-model="teamInfo.brief" maxlength="100" placeholder="请输入个人介绍，例如学历工作 经历等（限100字）"></textarea>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<button class="btn save" ng-click="upTeam()">保存</button>
+									<button class="btn cancel" ng-click="editTeam(0)">取消</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="intro-warp box-shadow">
+						<div class="title">
+							<span><img class="title-ico" src="/img/cominfo_ico.png"/>公司介绍</span>
+							<img class="add-ico" alt="编辑" ng-if="baseInfo.companyIntro" src="/img/edit_pan_s.png" ng-click="editIntro(1)">
+						</div>
+						<div class="intro-con">
+							<div class="intro-text" ng-if="!introEdit && baseInfo.companyIntro">
+								<pre ng-bind="baseInfo.companyIntro"></pre>
+							</div>						
+							<div class="new-box" ng-if="!baseInfo.companyIntro && isLock">
+								<span  ng-click="editIntro(1)">添加公司介绍</span>
+							</div>
+							<div class="edit-box" ng-if="introEdit">
+								<div class="edit-item">
+									<textarea class="textarea-middle" ng-model="baseInfo.companyIntro" maxlength="150" placeholder="公司亮点，如公司愿景，限150字"></textarea>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div calss="edit-item">
+									<button class="btn save" ng-click="upIntro()">保存</button>
+									<button class="btn cancel" ng-click="editIntro(0)">取消</button>
+								</div>
+							</div>
+						</div>						
+					</div>
+					
+					<div class="qrcode-box-n box-shadow">
+						<div class="qrcode-title-n">官方微信</div>
+						<div><img class="qrcode-img-n" src="/img/qrcode.jpg" /></div>
+						<div class="qrcode-tip-n" ng-if="user.status == 1">绑定账号随时获取候选人回复</div>
+						<div class="qrcode-tip-n" ng-if="user.status == 0">绑定账号随时获取面试邀请</div>
+					</div>
+					
+					<div class="hr-qq-box box-shadow" ng-if="user.status == 1">
+						<div>加入实力拍HR交流QQ群</div>
+						<div>和同行聊聊</div>
+						<div class="qq-text">345580895</div>
+					</div>
+					
+					<div class="hr-qq-box box-shadow" ng-if="user.status == 0">
+						<div>加入实力拍人才交流QQ群</div>
+						<div>和同行聊聊</div>
+						<div class="qq-text">338403574</div>
+					</div>
+				</div>
+				
+				<div class="rightbar">
+					<div class="base-wrap box-shadow">
+						<div class="title">
+							<span><img class="title-ico" src="/img/message_ico.png"/>基本信息</span>
+							<img class="add-ico" alt="编辑" src="/img/edit_pan_s.png" ng-if="!baseInfo.isEdit" ng-click="editCompInfo(1)">
+						</div>
+						<div class="base-con" ng-class="{'true': 'pdg'}[!baseInfo.isEdit]">
+							<div class="base-box" ng-if="!baseInfo.isEdit">
+								<div class="photo" ng-if="baseInfo.logoName">
+									<img ng-src="{{'/download/getCompanyIcon/companyLogo/' + baseInfo.logoName}}">
+								</div>
+								<div class="base-info">
+									<div class="name">
+										<span class="fz-2" ng-bind="baseInfo.nickName"></span>&nbsp;&nbsp;
+										<span ng-bind="baseInfo.name"></span>
+									</div>
+									<div class="other">
+										<div class="other-span w-120" title="规模"><img class="base-ico"  src="/img/com_size_ico.png"/><span ng-bind="baseInfo.sizeStr"></span></div>
+										<div class="other-span w-120" title="地点"><img class="base-ico"  src="/img/city_ico.png"/><span ng-bind="baseInfo.cityName"></span></div>
+										<div class="other-span w-180" title="领域"><img class="base-ico"  src="/img/area_ico.png"/><span ng-bind="baseInfo.areaName"></span></div>
+									</div>
+									<div class="other">
+										<div class="other-span w-119" title="阶段"><img class="base-ico"  src="/img/progress_ico.png"/><span ng-bind="baseInfo.progressStr"></span></div>
+										<div class="other-span w-280 b-w" title="公司主页" ng-if="baseInfo.website"><img class="base-ico"  src="/img/web_ico.png"/><a target="_blank" ng-href="{{baseInfo.website}}" ng-bind="baseInfo.website"></a></div>
+									</div>
+									<div class="other weal">
+										<span title="公司福利" ng-if="baseInfo.welfare">
+											<img class="base-ico"  src="/img/weal_ico.png"/>
+											<em ng-repeat="item in baseInfo.welfareArray" ng-bind="item"></em>
+										</span>
+									</div>	
+									<div class="other addr" style="margin-right: 15px;">
+										<span title="详细地址" ng-if="baseInfo.addr"><img class="base-ico"  src="/img/detial_addr_ico.png"/><span ng-bind="baseInfo.addr" ></span></span>
+									</div>
+								</div>
+								<div class="clear"></div>
+							</div>
+							
+							<div class="edit-box" ng-if="baseInfo.isEdit">
+								<div class="edit-item first">
+									<span class="remarks">公司LOGO</span>
+									<div class="canvas" ng-click="imgSlt(1)">
+										<img ng-if="!compInfo.tmpLogoName" ng-src="{{compInfo.logoName ? '/download/getCompanyIcon/companyLogo/' + compInfo.logoName : '/img/company_logo_default.png'}}">
+										<img ng-if="compInfo.tmpLogoName" ng-src="{{'/download/getTempIcon/' + compInfo.tmpLogoName}}">
+									</div>
+									<div class="prompt">
+										<span>更换头像</span>
+									</div>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>				
+								</div>
+								<div class="edit-item">
+									<span class="remarks">公司全称</span>
+									<input type="text" id="compInfo_name" ng-model="compInfo.name" maxlength="50" ng-change="_clearTip('#compInfo_name_tip')" placeholder="请输入公司全称，如：拍手网"/>
+									<div class="err-wrap">
+										<label id="compInfo_name_tip" class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">公司简称</span>
+									<input type="text" id="compInfo_nickname" ng-model="compInfo.nickName" ng-change="_clearTip('#compInfo_nickname_tip')" maxlength="20" placeholder="请输入公司简称，如：拍手"/>
+									<div class="err-wrap">
+										<label id="compInfo_nickname_tip" class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">所在城市</span>
+									<select class="small mgn-1" ng-model="compInfo.province" ng-options="c.id as c.name for c in webContext.provinceList" 
+										ng-change="getCityList(compInfo.province, true)">
+									</select>
+									<select class="small" ng-model="compInfo.city" ng-options="c.id as c.name for c in webContext.cityList">
+									</select>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">行业领域</span>				
+									<select class="select-city" ng-model="compInfo.area" ng-options="c.id as c.name for c in webContext.areasList">
+									</select>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">公司规模</span>
+									<select class="select-city" ng-model="compInfo.size" ng-options="c.id as c.value for c in webContext.compSizeList">
+									</select>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">公司网址</span>
+									<input type="text" ng-model="compInfo.website" maxlength="160" placeholder="请输入公网址，如：www.baidu.com"/>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">详细地址</span>
+									<input type="text" ng-model="compInfo.addr" maxlength="50" placeholder="请输入公司详细地址"/>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">公司福利</span>
+									<div class="item-ori-input">
+										<input type="text" maxlength="6"/>
+									</div>
+									<div class="welfare-tip">
+										<span>请选择或输入公司福利（按回车生成）限4个，每个长度不超过6个字</span>
+									</div>
+									<div>
+										<span class="phase-item" ng-class="{true: 'slt'}[(item.slt)]" ng-click="sltWelfare(item)" 
+											ng-repeat="item in webContext.welfareList" ng-bind="item.value"></span>	
+									</div>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item"> 
+									<span class="remarks">发展阶段</span>
+									<div>
+										<span class="phase-item" ng-class="{true: 'slt'}[(compInfo.progress == item.id)]" ng-click="sltPhase(item.id)" 
+											ng-repeat="item in webContext.compPhaseList" ng-bind="item.value"></span>							
+									</div>
+									<div class="err-wrap">
+										<label id="compInfo_tip" class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<button class="btn save" ng-click="upCompInfo()">保存</button>
+									<button class="btn cancel" ng-click="editCompInfo(0)">取消</button>
+								</div>									
+							</div>
+						</div>
+					</div>
+					
+					<div class="pdt-wrap box-shadow">
+						<div class="title">
+							<span><img class="title-ico"  src="/img/product_ico.png"/>公司产品</span>
+							<img class="add-ico" ng-if="(products.length > 0 && products.length < 3) && !pdtInfo.isEdit" alt="增加" src="/img/add_b.png" ng-click="editPdt(1)">
+						</div>
+						<div class="pdt-con">
+							<div class="pdt-box" ng-if="!pdtInfo.isEdit">
+								<div class="pdt-item" ng-repeat="item in products">
+									<div class="photo" ng-if="item.imgName">
+										<img ng-src="{{'/download/getCompanyIcon/productsLogo/' + item.imgName}}">
+									</div>
+									<div class="item-con">
+										<div class="pdt-info">
+											<span ng-if="!!item.website">
+												<a target="_blank" ng-href="{{item.website}}"><span ng-bind="item.productName"></span></a>
+											</span>
+											<span class="name" ng-if="!item.website">
+												<span ng-bind="item.productName"></span>
+											</span>
+											<span class="progress">（&nbsp;<span ng-bind="item.progressStr"></span>&nbsp;）</span>
+											<span class="opt-ico">
+												<img alt="删除" src="/img/icon-cancel-b.png" ng-click="delPdt(item.id)">	
+												<img alt="编辑" src="/img/edit_pan_s.png" ng-click="editPdt(2, item)">	
+											</span>				
+										</div>
+										<div class="other">
+											<pre ng-bind="item.brief"></pre>
+										</div>						
+									</div>
+								</div>
+							</div>
+													
+							<div class="new-box" ng-if="!products.length && !pdtInfo.isEdit && isLock">
+								<span ng-click="editPdt(1)">添加公司产品</span>
+							</div>							
+
+							<div class="edit-box"  ng-if="pdtInfo.isEdit">
+								<div class="edit-item">
+									<div class="canvas" ng-click="imgSlt(2)">
+										<img ng-if="!pdtInfo.tmpLogoName" ng-src="{{pdtInfo.imgName ? '/download/getCompanyIcon/productsLogo/' + pdtInfo.imgName : '/img/company_logo_default.png'}}">
+										<img ng-if="pdtInfo.tmpLogoName" ng-src="{{'/download/getTempIcon/' + pdtInfo.tmpLogoName}}">
+									</div>
+									<div class="prompt">
+										<span>更换产品图片</span>
+									</div>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>						
+								</div>
+								<div class="edit-item">
+									<span class="phase-item" ng-class="{true: 'slt'}[(pdtInfo.progress == item.id)]" ng-click="sltPdtPhase(item.id)" 
+											ng-repeat="item in webContext.pdtPhaseList" ng-bind="item.value"></span>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">产品名称</span>
+									<input type="text" id="pdt_name" ng-model="pdtInfo.productName" ng-change="_clearTip('#pdt_name_tip')" maxlength="20" placeholder="请输入产品名称"/>
+									<div class="err-wrap">
+										<label id="pdt_name_tip" class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">产品地址</span>
+									<input type="text" ng-model="pdtInfo.website" maxlength="160" placeholder="请输入网址"/>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<span class="remarks">产品信息</span>
+									<textarea class="middle" ng-model="pdtInfo.brief" maxlength="200" placeholder="请输入项目产品信息（限200字）"></textarea>
+									<div class="err-wrap">
+										<label class="ico-invalid"></label>
+									</div>
+								</div>
+								<div class="edit-item">
+									<button class="btn save" ng-click="upPdt()" ng-bind="pdtInfo.isEdit == 1? '增加' : '保存'"></button>
+									<button class="btn cancel" ng-click="editPdt(0)">取消</button>
+								</div>
+							</div>			
+						</div>
+					</div>
+
+					<div class="env-warp box-shadow">
+						<div class="title">
+							<span><img class="title-ico"  src="/img/environment_ico.png"/>公司环境</span>
+							<img class="add-ico" alt="增加" src="/img/add_b.png" ng-if="baseInfo.officeArray.length < 3" ng-click="imgSlt(4)">
+						</div>
+						<div class="env-con">
+							<div class="new-box" ng-if="!baseInfo.officeArray.length && isLock">
+								<span ng-click="imgSlt(4)">添加公司环境</span>
+							</div>
+							<div class="env-box" ng-if="!!baseInfo.officeArray.length">
+								<div class="env-item" ng-repeat="item in baseInfo.officeArray">
+									<div class="img-show">
+										<img ng-src="{{'/download/getCompanyIcon/environment/' + item}}">
+									</div>
+									<div class="opt-ico">
+										<img alt="删除" src="/img/icon-cancel-b.png" ng-click="delOffice(item)">	
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+				<input type="file" class="hidden" name="upload" id="upload" accept="image/gif, image/jpeg, image/png, image/x-png, image/pjpeg">
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

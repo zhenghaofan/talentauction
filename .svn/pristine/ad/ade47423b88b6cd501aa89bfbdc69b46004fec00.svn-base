@@ -1,0 +1,86 @@
+package com.auction.resume.web;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import com.auction.common.util.Util;
+import com.auction.resume.service.CvMakeService;
+
+/** 
+ * @author tobber
+ * @version 2015年4月17日
+ */
+
+@Controller
+@RequestMapping(value = "cvmake")
+public class CvMakeController {
+	
+	@Resource 
+	private CvMakeService cvMakeService;
+	
+	@RequestMapping(value = "addIntent")//填写求职意向
+	public void addIntent(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.addIntent(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getResumeStatus")//获取简历当前状态
+	public void getResumeStatus(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.getResumeStatus(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "updateResumeInfo")//编辑个人信息
+	public void updateResumeInfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.updateResumeInfo(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "addEducations")//添加教育经历
+	public void addEducations(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.updateResumeInfo(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "addWorkExperiences")//添加教育经历
+	public void addWorkExperiences(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.addWorkExperiences(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "addProjects")//添加教育经历
+	public void addProjects(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.addProjects(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "addProductUrl")//添加产品链接
+	public void addProductUrl(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.addProductUrl(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "addDetails")//添加个人总结
+	public void addDetails(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.addDetails(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "speedOfProgress")//获取简历完善度
+	public void speedOfProgress(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.speedOfProgress(request);
+		new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "submitCheck")//简历提交审核
+	public void submitCheck(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = cvMakeService.submitCheck(request);
+		new Util().responesWriter(response,result);
+	}
+	
+}
+
+

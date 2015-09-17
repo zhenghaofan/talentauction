@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<title>简历状态</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/placedetail.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<!-- <script src="../js/common/app_common.js"></script> -->
+	<script src="../js/mobile/placedetail.js"></script>
+</head>
+<body>
+	<div class="viewport">
+		<div class="job-wrap">
+			<div class="top-bar">
+				<i class="top-bar-spec"><img class="top-bar-ico" src="/img/app_back_w.png"/></i>
+				<span>简历详情</span>
+				<div class="clear"></div>
+			</div>
+			<div class="info-item-title">
+				<span class="skill">前端开发</span>
+				<span>[ 20号 ]</span>
+			</div>
+			<div class="info-base-warp">
+				<div class="context">
+					<div>
+						<span class="ico_sex">男</span>
+						<span class="ico_clock">24岁</span>
+						<span class="ico_book">本科</span>
+						<span class="ico_book">6年经验</span>						
+					</div>
+					<div>
+						<span class="ico_phone pading_18">13800138000</span>
+						<span class="ico_msg">wubin@shilipai.net</span>
+					</div>
+					<div>
+						<span class="ico_msg">iOS，C++</span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="info-status-warp">
+				<div class="title">
+					<span>竞拍状态</span>
+				</div>
+				<div class="context">
+					<div>
+						<span>平均出价：<span class="avgPrice c_r"></span></span>
+						<span>浏览次数：<span class="readCount c_b"></span></span>							
+					</div>
+					<div>
+						<span>目标城市：<span class="destination c_b"></span></span>	
+					</div>
+				</div>
+			</div>
+			
+			<div class="info-detail-warp">
+				<div class="title">
+					<span>教育经历</span>
+				</div>
+				<div class="edu context"></div>
+				<div class="title">
+					<span>工作经历</span>
+				</div>
+				<div class="work context"></div>
+				<div class="title">
+					<span>项目经验</span>
+				</div>
+				<div class="project context"></div>
+				<div class="title">
+					<span>个人总结</span>
+				</div>
+				<div class="summary context">
+					<div><p></p></div>
+				</div>
+				<div class="title">
+					<span>求职意向</span>
+				</div>
+				<div class="intention context">
+					<div><span></span></div>				
+				</div>
+			</div>
+			
+			<a href="" class="button">面试邀请</a>		
+		</div>
+	</div>
+</body>
+</html>

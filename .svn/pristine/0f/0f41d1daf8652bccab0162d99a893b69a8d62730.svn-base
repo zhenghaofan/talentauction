@@ -1,0 +1,18 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'uiservice'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('vipCtrl', ['$scope', '$rootScope', '$http', '$q', 'uiservice',
+   		function($scope, $rootScope, $http, $q, uiservice) {
+		$rootScope.tabIndex = 8;
+		
+		$('.viewport').show();
+ 	}]);
+	
+	app.bootstrap();
+});

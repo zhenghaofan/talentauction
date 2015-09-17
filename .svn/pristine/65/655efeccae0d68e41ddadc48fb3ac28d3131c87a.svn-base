@@ -1,0 +1,103 @@
+$(function($) {
+	$('.skill-wrap').show();
+	
+	load();
+	
+	
+	/* 后退*/
+	$('.bar-back').click(function() {
+		window.location.href="/wap/signup.html";
+	});
+	
+	
+//	/*获取技能列表*/
+//	$scope.getSkillsList = function() {
+//		$q.when($http.post('/common/getSkillsList'))
+//		.then(function(result) {
+//			var tmp = result.data.specialList;
+//			for ( var i in tmp) {
+//				if(tmp[i].skillName != null && tmp[i].skillName) {
+//					tmp[i].skillName = tmp[i].skillName.split('、');
+//				}
+//			}
+//			$scope.skillsList = tmp;
+//			setTimeout(function() {
+//				_bindSkillEle();
+//			});
+//			$('.skill-modal').fadeIn(150);
+//		}, function(err) {
+//        	  console.error('getSkillsList', err);
+//		});
+//	};
+	
+	
+	/* 获取技能*/
+	function load() {
+		$.post('/common/getSkillsList', {}, function(res){
+			  res = $.parseJSON(res);
+			  
+			  if( res.code == 200 ) {
+				  console.log(res);
+				  initEle(res.specialList);
+			  }
+		});
+	};
+	
+	
+	/* 初始化元素*/
+	function initEle(list) {
+		var ele = $('.skill-box');
+		var html = [];
+		
+		for ( var i in list) {
+			var subList = list[i].skillName.split('、');
+			html.push('<ul class="skill-item">');
+			html.push('<li class="skill-title">');
+			html.push('<span>' + list[i].name + '</span>');
+			html.push('<span class="angle"></span>');
+			html.push('</li>');
+			
+			for ( var j in subList) {
+				html.push('<li>');
+				html.push('<span class="text">' + subList[j] + '</span>');
+				html.push('<span class="hook"></span>');
+				html.push('</li>');
+			}
+			
+			html.push('</ul>');
+		}
+		
+		ele.append(html.join(''));
+		bind();
+	};
+	
+	
+	/* 绑定元素*/
+	function bind() {
+		$('ul li').on('click', function() {
+			var hook = $(this).find('.hook');
+			var angle = $(this).find('.skill-title .angle');
+			var text = $(this).find('.text');
+			
+			if(hook.css('display') == 'none') {
+				hook.css({'display': 'inline-block'});
+				text.css({'color': '#3a89ce'});
+			}else {
+				hook.css({'display': 'none'});
+				text.css({'color': '#666'});
+			}
+		});
+		
+		$('.skill-item .skill-title').on('click', function() {
+			var angle = $(this).find('.angle');
+			
+			if(angle.hasClass('down')) {
+				angle.removeClass('down');
+				$(this).siblings().hide();
+			}else {
+				angle.addClass('down');
+				$(this).siblings().show();
+			}
+		});		
+	}
+});

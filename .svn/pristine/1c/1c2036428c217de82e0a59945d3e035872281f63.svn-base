@@ -1,0 +1,54 @@
+package com.auction.company.web;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.auction.common.util.Util;
+import com.auction.company.service.CompanyService;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+
+@Controller
+@RequestMapping(value = "company")
+public class CompanyController {
+	@Resource
+	private CompanyService companyService;
+	
+	@RequestMapping(value = "addCompany")//添加公司
+	public void addCompany(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.addCompany(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getSameCompanyList")//获取同邮箱后缀公司列表
+	public void getSameCompanyList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.getSameCompanyList(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getCompanyInfo")//获取公司基本信息
+	public void getCompanyInfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.getCompanyInfo(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "saveCompanyInfo")//添加公司基本信息
+	public void saveCompanyInfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.saveCompanyInfo(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "updateCompanyInfo")//更新公司基本信息
+	public void updateCompanyInfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.updateCompanyInfo(request);
+        new Util().responesWriter(response,result);
+	}
+
+}

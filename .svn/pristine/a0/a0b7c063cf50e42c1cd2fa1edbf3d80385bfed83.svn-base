@@ -1,0 +1,337 @@
+
+
+.fc-1 {
+	color: #4182c4;
+}
+.fc-2 {
+	color: #e4785b;
+}
+.fz-1 {
+	font-size: 13px;
+}
+.fb {
+	font-weight: bold;
+}
+pre {
+	color: #6B7485;
+	font-size: 14px;
+}
+
+.bid-wrap {
+	width: 1024px;
+	color: #6B7485;
+	padding-bottom: 10px;
+	margin: 130px auto 90px; 
+	overflow: hidden;
+}
+
+.bid-title .tip {
+	height: 97px;
+	color: #fff;
+	font-size: 25px;
+	line-height: 100px;
+	text-align: center;
+	border-radius: 3px;
+	margin-bottom: 20px;
+	background: url(/img/cv_detial_bg.jpg) top left no-repeat transparent;
+	display: inherit;
+}
+
+
+/* 左侧栏*/
+.bid-box-l {
+	float: left;
+	width: 700px;
+	border-radius: 3px;
+	background-color: #fff;
+	display: inline-block;
+}
+.info-item {
+	border-bottom: 1px dotted #e5e5e5;
+	margin-bottom: 20px;	
+}
+.info-item:last-child {
+	border-bottom: 0;
+}
+.info-item ul {
+	margin-bottom: 20px;
+}
+.info-item ul:last-child {
+	margin-bottom: 0;
+}
+.info-item .item-title {
+	height: 30px;
+	font-size: 18px;
+	line-height: 30px;
+	padding-left: 40px;
+}
+.info-item .item-img {
+	width: 20px;
+	margin-bottom: -1px;
+}
+.info-item .item-img.edu {
+	width: 24px;
+}
+.info-item .item-con {
+	font-size: 16px;
+	line-height: 30px;
+	margin: 15px 40px 0;
+	padding-bottom: 20px;
+}
+.info-item .item-con a {
+	color: #6B7485;
+	word-break: break-all;
+}
+.info-item .item-con a:hover {
+	color: #3fa9f5;
+}
+.info-item .resume-box {
+	padding: 10px;
+	max-height: 400px;
+	text-align: center;
+}
+.info-item .resume-box .resume-img {
+	max-width: 600px;
+	max-height: 400px;
+/* 	cursor: -moz-zoom-in; */
+/* 	cursor: -webkit-zoom-in; */
+/* 	cursor: zoom-in; */
+}
+
+/* 基本信息*/
+.base-info .bid-name {
+	font-size: 20px;
+	color: #4182c4;
+}
+.base-info .bid-state {
+	font-size: 17px;
+	font-weight: bold;
+	margin-top: 5px;
+}
+.base-info .state-item {
+	margin-right: 10px;
+}
+.base-info .state-item i {
+	margin-left: 5px;
+	font-style: normal;
+	font-weight: normal;
+}
+.base-info .line {
+	margin: 0 2px 0 10px;
+}
+
+
+
+
+/* 右侧栏*/
+.bid-con-r {
+	float: right;
+	width: 300px;
+	padding-right: 2px;
+}
+
+/* 竞拍*/
+.bid-box {
+	color: #fff;
+	padding: 30px 30px 15px;
+	border-radius: 3px;
+	margin-bottom: 22px;
+	background-color: #2d4e7b;
+}
+.bid-box .title {
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+.bid-box .inp-box {
+	margin-bottom: 10px;
+}
+.bid-box .inp-box input {
+	height: 35px;
+	width: 50px;
+	font-size: 16px;
+	text-indent: 6px;
+	border-radius: 3px;
+}
+.bid-box .inp-box .bid-unit {
+	vertical-align: bottom;
+	margin-left: 5px;
+	display: inline-block;
+}
+.bid-box .ccl-ico {
+	font-size: 20px;
+	vertical-align: middle;
+	margin: 0 20px 0px 18px;
+}
+.bid-box .check-box {
+	height: 40px;
+	font-size: 16px;
+	text-align: right;
+	line-height: 40px;
+}
+.bid-box .check-box input {
+	margin-right: 5px;
+}
+.bid-box .jobs-label {
+	display: block;
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+.bid-box .job-text {
+	width: 92%;
+	height: 100px;
+	padding: 10px;
+	resize: none;
+	line-height: 20px;
+}
+.bid-box .btn-con {
+	text-align: center;
+	padding: 15px 0;
+}
+.bid-box .bid-btn {
+	width: 230px;
+	color: #fff;
+	font-size: 20px;
+	padding: 13px 0;
+	background-color: #71a8e0;
+	border-radius: 3px;
+	display: inline-block;
+	cursor: pointer;
+}
+.bid-box .bid-btn:hover {
+	background-color: #4182c6;
+}
+.bid-box .err-wrap {
+	min-height: 25px;
+}
+.bid-box .err-wrap label {
+	height: 25px;
+	color: #FF1414;
+	line-height: 25px;
+	text-indent: 20px;
+	padding-left: 18px;
+	display: none;
+}
+.bid-box .err-wrap .ico-invalid {
+	background: url(../img/icon-error.png) 0 45% no-repeat;
+}
+
+
+
+/* 浮动竞拍*/
+.float-bid {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 65px;
+	line-height: 65px;
+	text-align: center;
+	border-radius: 3px;
+	z-index: 999;
+	display: none;
+}
+.float-bid .bid-btn {
+	color: #fff;
+	width: 100%;
+	height: 60px;
+	font-size: 20px;
+	line-height: 60px;
+	text-align: center;
+	border-radius: 3px;
+	background-color: rgba(113,168,224,.85);
+	display: inline-block;
+	cursor: pointer;
+}
+
+
+/* 拍卖动态*/
+.bid-list {
+	padding-bottom: 30px;
+	border-radius: 3px;
+	margin-bottom: 22px;
+	background-color: #fff;
+}
+.bid-list .list-title {
+	font-size: 16px;
+	line-height: 60px;
+	height: 60px;
+	padding-left: 30px;
+	border-bottom: 1px solid #eceef1;
+}
+.bid-list .item-img {
+	width: 16px;
+	margin-bottom: -1px;
+}
+.bid-list .item-img.h {
+	width: auto;
+	height: 16px;
+}
+.bid-list .list-box {
+	max-height: 300px;
+	padding: 10px 30px 0;
+	overflow-y: hidden;
+}
+.bid-list .item-con {
+	color: #b0b6bd;
+	line-height: 22px;
+	padding: 10px 0;
+	border-bottom: 1px dotted #e5e5e5;
+}
+.bid-list .item-con:last-child {
+	border-bottom: 0;
+}
+.bid-list .item-con i {
+	font-style: normal;
+	color: #5d5d5d;
+}
+
+
+/* 温馨提示*/
+.warm-box {
+	color: #656769;
+	margin-top: 20px;
+	background-color: #fff;
+	border-radius: 3px;
+}
+.warm-title {
+	height: 45px;
+	color: #4182c5;
+	font-size: 16px;
+	line-height: 45px;
+	padding-left: 30px;
+	border-bottom: 1px solid #eceef1;
+}
+.warm-con {
+	padding: 20px 15px;
+	line-height: 24px;
+}
+.warm-item {
+	text-indent: -15px;
+	padding-left: 15px;
+}
+
+
+/* 二维码*/
+.qrcode-box-n {
+	background-color: #fff;
+	padding: 25px 30px;
+	border-radius: 3px;
+	margin: 22px 0;
+}
+.qrcode-box-n {
+	padding: 25px 20px;
+}
+.qrcode-title-n {
+	font-size: 16px;
+	color: #5c6467;
+	text-align: center;
+}
+.qrcode-tip-n {
+	color: #6e7377;
+	text-align: center;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

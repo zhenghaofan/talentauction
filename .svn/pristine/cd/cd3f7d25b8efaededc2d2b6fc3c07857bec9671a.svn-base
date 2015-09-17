@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/signup.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/signup.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/signup" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/dist/signup-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="signupCtrl">
+			<div class="signup-wrap box-shadow">
+				<div class="red-wrap"></div>
+				<div class="signup-title-box">
+					<span class="signup-title">注册账号</span>
+					<span class="tip">
+						<span id="invite_people"></span>
+						<span class="rangle"></span>
+					</span>
+				</div>
+				
+				<div class="signup-l">
+					<form ng-submit="signUp()" ng-disabled="false">				
+						<div class="in-warp-l">
+							<div class="type">
+								<div ng-click="changStatus(0)">
+									<span class="reg-type-range" ng-class="{0: 'reg-type-range-selected'}[status]" id="person"></span><span class="reg-type-text">找工作</span>
+								</div>
+								<div style="margin-right: 0;" ng-click="changStatus(1)">
+									<span class="reg-type-range" ng-class="{1: 'reg-type-range-selected'}[status]"></span><span class="reg-type-text">招聘方</span>
+								</div>
+							</div>
+							
+							<div class="in-item">
+								<span class="remarks">邮箱</span>
+								<input type="text" id="email" class="signup-input" ng-model="userInfo.email" 
+									ng-blur="checkEmail()" ng-change="_clearTip('#email_tip')" maxlength="50" placeholder="请输入常用邮箱"/>
+								<div class="checked">
+									<label id="email_tip" class="invalid"></label>
+								</div>
+							</div>
+							
+							<div class="in-item">
+								<span class="remarks">密码</span>
+								<input type="password" id="pwd" class="signup-input" ng-model="userInfo.pwd" 
+									ng-change="_clearTip('#pwd_tip')" maxlength="16" placeholder="请输入注册密码">
+								<div class="checked">
+									<label id="pwd_tip" class="invalid"></label>
+								</div>								
+							</div>						
+							
+							<div class="in-item" ng-show="status == 0">
+								<span class="remarks">技能</span>
+								<input type="text" id="skill" class="signup-input" ng-model="userInfo.skill" 
+									ng-click="initSkill()" readOnly="true" maxlength="30" placeholder="请选择技能">
+								<div class="checked">
+									<label id="skill_tip" class="invalid"></label>
+								</div>								
+							</div>
+							
+							<div class="in-item" ng-show="status == 1">
+								<span class="remarks">姓名</span>
+								<input type="text" id="name" class="signup-input" ng-model="userInfo.name" 
+									ng-change="_clearTip('#name_tip')" maxlength="20" placeholder="请输入您的姓名"/>
+								<div class="checked">
+									<label id="name_tip"class="invalid"></label>
+								</div>
+							</div>
+						</div>
+						
+						<div class="in-warp-r">
+							<div class="in-item" ng-show="status == 0">
+								<span class="remarks">城市</span>
+								<input type="text" id="city" class="signup-input" ng-model="userInfo.city" 
+									ng-click="initCity()" readOnly="true" maxlength="20" placeholder="请选择城市">
+								<div class="checked">
+									<label id="city_tip" class="invalid"></label>
+								</div>
+							</div>
+							
+							<div class="in-item" ng-show="status == 1">
+								<span class="remarks">职位</span>
+								<input type="text" id="title" class="signup-input"  ng-model="userInfo.title" 
+									ng-change="_clearTip('#title_tip')" maxlength="20" placeholder="请输入您的职位"/>
+								<div class="checked">
+									<label id="title_tip" class="invalid"></label>
+								</div>
+							</div>
+													
+							<div class="in-item">
+								<span class="remarks">手机</span>
+								<input type="text" id="phone" class="tel signup-input" ng-model="userInfo.phone" 
+									ng-change="_clearTip('#phone_tip')" maxlength="11" placeholder="请输手机号">
+								<span class="send-code-btn" id="send_code_btn" ng-click="sendCode()">发送验证码</span>
+								<div class="checked">
+									<label id="phone_tip"class="invalid"></label>
+								</div>					
+							</div>
+							
+							<div class="in-item">
+								<input type="text" id="code" ng-model="userInfo.code"  class="code signup-input" 
+									 ng-change="_clearTip('#code_tip')" ng-keyup="checkPhoneCode()" maxlength="6" placeholder="请输验证码">
+								<i id="code_tip"class="err-ico"></i>
+							</div>
+							
+							<div class="agreement">
+								<input id="agreementBox" ng-model="userInfo.agreementBox" ng-change="_clearTip('#agreement_tip')" type="checkbox">
+								<label><a href="/base/agreement" target="_blank">接受用户服务协议</a></label>
+								<label id="agreement_tip"class="invalid"></label>
+							</div>
+							
+							<div class="in-item">
+								<button id="click-register" class="btn">注册</button>	
+							</div>
+							
+							<div class="bottom-tip">
+								<a class="email-link" href="/base/mailresend">还没收到验证邮件？</a>
+								<span><a class="login-link" ng-href="signin" >立即登录</a></span>
+							</div>											
+						</div>
+					</form>
+				</div>
+			</div>		
+			
+			<!-- 城市选择 -->
+			<div class="city-modal modal">
+				<div class="modal-backdrop in"></div>
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button class="close" ng-click="close('.city-modal')">x</button>
+							<div class="modal-title">
+								<span>目标城市</span>
+								<span class="fz-2">（限两个）</span>
+								<div class="slt-warp">
+									<span class="slt-item" ng-repeat="item in cityArray" ng-click="clearCity(item)" ng-bind="item"></span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="city-wapr">
+								<span class="feel-item" ng-click="sltCity($event)">北京</span>
+								<span class="feel-item" ng-click="sltCity($event)">上海</span>
+								<span class="feel-item" ng-click="sltCity($event)">广州</span>
+								<span class="feel-item" ng-click="sltCity($event)">深圳</span>
+								<span class="feel-item" ng-click="sltCity($event)">成都</span>
+								<span class="feel-item" ng-click="sltCity($event)">杭州</span>
+								<span class="fc-1">其他：</span>
+								<input type="text" class="other-city-in" ng-keyup="addCity($event)" maxlength="5" placeholder="输入城市名，回车确认">
+								<span class="fc-1">（回车确认）</span>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" ng-click="confirmCity()">确定</button>
+						</div>			
+					</div>
+				</div>
+			</div>		
+		
+			<!-- 技能选择 -->
+			<div class="skill-modal modal">
+				<div class="modal-backdrop in"></div>
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button class="close" ng-click="close('.skill-modal')">x</button>
+							<div class="modal-title">
+								<span>职业技能</span><span class="fz-2">（限两个）</span>
+								<div class="slt-warp">
+									<span class="slt-item" ng-repeat="item in skillArray" ng-click="clearSkill(item)" ng-bind="item"></span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="skill-warp">
+								<div class="sideBar">
+									<ul class="skill-title">
+										<li ng-repeat="item in skillsList" ng-bind="item.name" ng-click="getSkillsDetails(item, $event)"></li>
+									</ul>
+								</div>
+								<div class="main">
+									<span class="skill-item" ng-repeat="item in skillNameList" ng-click="sltSkill($event)"  ng-bind="item"></span>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary ng-scope" ng-click="confirmSkill()">确定</button>
+						</div>				
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

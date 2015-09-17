@@ -1,0 +1,163 @@
+
+.viewport {
+	padding-top: 146px;
+	background-color: #ECEEF1;
+}
+
+.intent-wrap {
+	width: 580px;
+	color: #6B7485;
+	border-radius: 3px;
+	margin: 0 auto 100px;
+	background-color: #fff;
+}
+.intent-title {
+	text-align: center;
+	padding-top: 35px;
+	border-radius: 3px;
+}
+.intent-title .tab-item {
+	width: 60px;
+	text-align: center;
+	vertical-align: top;
+	margin-left: -20px;
+	margin-top: 3px;
+	display: inline-block;
+}
+.intent-title .tab-item:first-child {
+	margin-left: 0;
+}
+.intent-title .tab-item-step {
+	color: #fff;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	font-size: 14px;
+	margin-bottom: 5px;
+	border-radius: 22px;
+	border: 1px solid #d8dbe0;
+	background-color: #d8dbe0;	
+	display: inline-block;
+}
+.intent-title .tab-item-text {
+	color: #d8dbe0;
+}
+.intent-title .tab-item-slt {
+	width: 64px;
+	margin-top: 0;
+}
+.intent-title .tab-item-slt .tab-item-step {
+	width: 25px;
+	height: 25px;
+	color: #fff;
+	font-size: 15px;
+	line-height: 25px;
+	text-align: center;
+	margin-bottom: 10px;
+	border-radius: 15px;
+	border: 1px solid #70a7e0;
+	background-color: #70a7e0;
+	display: inline-block;
+}
+.intent-title .tab-item-slt .tab-item-text {
+	color: #6B7485;
+	font-size: 15px;
+}
+.intent-title .tab-line {
+	width: 115px;
+	height: 7px;
+	vertical-align: top;
+	margin-top: 10px;
+	margin-left: -20px;
+	background-color: #d8dbe0;
+	display: inline-block;
+}
+
+
+.intent-body {
+	width: 450px;
+	margin: 30px auto 0;
+}
+.intent-body input {
+	width: 265px;
+	height: 42px;
+	font-size: 14px;
+	text-indent: 12px;
+	border: 1px solid #F3F1F1;
+	display: inline-block;
+	background-color: #eceef1;
+	border-radius: 3px;
+}
+.intent-body .remarks {
+	font-size: 16px;
+	margin-right: 6px;
+}
+.intent-body .in-item {
+	margin-left: 40px;
+}
+.intent-body .in-item.aid {
+	padding-left: 75px;
+	margin-top: 25px;
+}
+.intent-body .in-item img {
+	vertical-align: middle;
+	cursor: pointer;
+}
+.intent-body .yuan {
+	font-size: 12px;
+	vertical-align: bottom;
+}
+.intent-body .err-wrap {
+	min-height: 25px;
+}
+.intent-body .err-wrap label {
+	width: 260px;
+	height: 25px;
+	color: #FF1414;
+	line-height: 25px;
+	text-indent: 20px;
+	padding-left: 18px;
+	margin-left: 74px;
+	display: none;
+}
+.intent-body .err-wrap .ico-invalid {
+	background: url(../img/icon-error.png) no-repeat transparent;
+	background-position: 0 45%;
+}
+.intent-body .sub {
+	margin-top: 15px;
+	margin-left: 0;
+	text-align: center;
+}
+.intent-body .sub .btn {
+	width: 115px;
+	height: 44px;
+	color: #fff;
+	font-size: 14px;
+	text-align: center;
+	border: none;
+	border-radius: 5px;
+	background-color: #70a7df;
+	cursor: pointer;
+}
+.intent-body .sub .btn:hover {
+	background-color: #4182c6;
+}
+
+
+.intent-footer {
+	height: 80px;
+	line-height: 80px;
+	text-align: center;	
+}
+.intent-footer label {
+	color: #4884c2;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}
+

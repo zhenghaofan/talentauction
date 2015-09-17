@@ -1,0 +1,66 @@
+
+
+body {
+	background-color: #e2e2e2;
+}
+
+
+/* 用户登录*/
+.mail-wrap {
+	position: relative;
+}
+.mail-wrap input {
+	width: 85%;
+	max-width: 300px;
+	height: 36px;
+	color: #3B3B3B;
+	padding: 5px 10px;
+	border: 0;
+}
+.mail-wrap input.email {
+	border-radius: 3px;
+}
+.top-bar {
+	height: 50px;
+	color: #fff;
+	font-size: 1.3em;
+	line-height: 50px;
+	text-align: center;
+	background-color: #2d4e7b;
+}
+.top-bar .bar-back {
+	float: left;
+	height: 50px;
+}
+.top-bar .back-ico {
+	width: 15px;
+	padding: 12px 10px 0 15px;
+}
+.top-bar .bar-title {
+	margin-left: -40px;
+}
+
+
+.mail-wrap .sign-form {
+	margin: 20px 0;
+	text-align: center;
+}
+.mail-wrap .btn {
+	width: 85%;
+	max-width: 300px;
+	padding: 5px 10px;
+	height: 36px;
+	color: #fff;
+	font-size: 1.2em;
+	line-height: 36px;
+	border-radius: 3px;
+	background-color: #3a89ce;
+	display: inline-block;
+	cursor: pointer;
+}
+.mail-wrap .btn.mgn {
+	margin-top: 25px;
+}
+.mail-wrap .btn:active {
+	background-color: #337BBA;
+}

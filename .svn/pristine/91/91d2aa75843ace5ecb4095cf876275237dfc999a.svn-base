@@ -1,0 +1,66 @@
+if (typeof define !== 'function') {
+	var define = require('amdefine')(module);
+}
+
+define(['$', "angular", 'cookie'], function($, angular, cookie) {
+	var moduleName = 'bidmeApp';
+	var app = angular.module(moduleName, []);
+
+	app.config([ '$httpProvider',
+  		function($httpProvider) {
+      		$httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+	}]).controller('headerCtrl', ['$scope', '$rootScope', '$http', '$q', 
+	    function($scope, $rootScope, $http, $q) {
+		
+        $(document).on("mouseenter", ".footer-contact-weixin", function() {
+        	$(this).parent().find('.qrcode-box').addClass("qrcode-show");
+        })
+        .on("mouseleave", ".footer-contact-weixin", function() {
+        	$(this).parent().find('.qrcode-box').removeClass("qrcode-show");
+        });		
+		
+		$(document).on("mouseenter", "#peo_ico", function(){
+			$("#det_box").show();
+		})
+		.on("mouseleave" ,"#peo_ico", function(){
+			$("#det_box").hide();
+		})
+		.on("mouseenter", "#det_box", function(){
+			$("#det_box").show();
+		})
+		.on("mouseleave" ,"#det_box", function(){
+			$("#det_box").hide();
+		});
+		
+		
+		
+		
+		
+	}]);
+	
+	return {
+		config : function() {
+			app.config.apply(this, arguments);
+			return this;
+		},
+		controller : function() {
+			app.controller.apply(this, arguments);
+			return this;
+		},
+		directive : function() {
+			app.directive.apply(this, arguments);
+			return this;
+		},
+		service: function(){
+			app.service.apply(this, arguments);
+			return this;
+		},
+		factory: function(){
+			app.service.apply(this, arguments);
+			return this;
+		},
+		bootstrap : function() {
+			angular.bootstrap(document.body, [moduleName]);
+		}
+	};
+});

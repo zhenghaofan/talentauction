@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.company.dao.CompanyDao">
+    
+    <select id="addCompany" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call add_company (
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_name,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL})}  
+		]]>
+    </select>
+    
+    <select id="getSameCompanyList" parameterType="String" resultType="map">
+        select a.*,c.name from (
+        	select r.companyId from rigistration r where r.status='1' and r.companyId is not null and r.email like #{0}
+        ) a left join company c on a.companyId=c.companyId where c.name is not null
+    </select>
+    
+    <select id="getCompanyInfo" parameterType="String" resultType="map">
+        select r.*,
+        	d.name provinceName,
+        	a.name cityName,
+        	b.name areaName 
+        from (
+        	select c.id,
+        		c.companyId,
+        		c.name,
+        		c.nickName,
+        		c.province,
+        		c.city,
+        		c.addr,
+        		c.phone,
+        		ifnull(c.logoName,"") logoName,
+        		c.dateOfRegist,
+        		ifnull(c.website,"") website,
+        		c.area,
+        		c.progress,
+        		c.size,
+        		ifnull(c.companyIntro,"") companyIntro,
+        		ifnull(c.welfare,"") welfare,
+        		ifnull(c.environment ,"") environment 
+        	from company c where c.companyId=#{0}
+        ) r 
+        left join cities a on a.id=r.city 
+        left join cities d on d.id=r.province 
+        left join areas b on b.id=r.area
+    </select>
+    
+    <update id="isSaveUserInfo" parameterType="String">
+        update rigistration set isSaveUserInfo=1 where userId=#{0}
+    </update>
+    
+    <update id="updateProducts" parameterType="map">
+        update products set id=#{id} 
+        <if test="i_imgName != null and i_imgName != ''">
+			,imgName = #{i_imgName} 
+        </if>
+        <if test="i_progress != null and i_progress != ''">
+			,progress = #{i_progress} 
+        </if>
+        <if test="i_productName != null and i_productName != ''">
+			,productName = #{i_productName} 
+        </if>
+        <if test="i_website != null and i_website != ''">
+			,website = #{i_website} 
+        </if>
+        <if test="i_brief != null and i_brief != ''">
+			,brief = #{i_brief} 
+        </if>
+        where id=#{id} and companyId=#{i_companyId}
+    </update>
+
+    <select id="addProducts" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call add_products (
+		   		#{i_companyId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_productName,mode=IN,jdbcType=VARCHAR},
+		   		#{i_imgName,mode=IN,jdbcType=VARCHAR},
+		   		#{i_progress,mode=IN,jdbcType=DECIMAL},
+		   		#{i_website,mode=IN,jdbcType=VARCHAR},
+		   		#{i_brief,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL})}  
+		]]>
+    </select>
+    
+    <update id="updateFounder" parameterType="map">
+        update founder set id=#{id} 
+        <if test="i_imgName != null and i_imgName != ''">
+			,imgName = #{i_imgName} 
+        </if>
+        <if test="i_jobName != null and i_jobName != ''">
+			,jobName = #{i_jobName} 
+        </if>
+        <if test="i_name != null and i_name != ''">
+			,name = #{i_name} 
+        </if>
+        <if test="i_website != null and i_website != ''">
+			,website = #{i_website} 
+        </if>
+        <if test="i_brief != null and i_brief != ''">
+			,brief = #{i_brief} 
+        </if>
+        where id=#{id} and companyId=#{i_companyId}
+    </update>
+    
+    <select id="addFounder" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call add_founder (
+		   		#{i_companyId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_imgName,mode=IN,jdbcType=VARCHAR},
+		   		#{i_name,mode=IN,jdbcType=VARCHAR},
+		   		#{i_jobName,mode=IN,jdbcType=VARCHAR},
+		   		#{i_website,mode=IN,jdbcType=VARCHAR},
+		   		#{i_brief,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL}
+		   	)}  
+		]]>
+    </select>
+    
+    <select id="addTalentDemand" parameterType="java.util.HashMap"
+    	statementType="CALLABLE" resultType="java.util.Map">
+    	{call insert_talent_demand_pro(
+    		#{id,mode=IN},
+    		#{companyId,mode=IN},
+    		#{skills,mode=IN},
+    		#{website,mode=IN},
+    		#{updateTime,mode=IN},
+    		#{userId,mode=IN},
+    		#{minJobYear,mode=IN},
+    		#{maxJobYear,mode=IN},
+    		#{minSalary,mode=IN},
+    		#{maxSalary,mode=IN},
+    		#{email,mode=IN},
+    		#{matchField,mode=IN},
+    		#{flag, mode=OUT, jdbcType=INTEGER}
+    	)}
+    </select>
+    
+    <select id="delTalentDemand" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call del_talent_demand (
+		   		#{i_companyId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_id,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL}
+		   	)}  
+		]]>
+    </select>
+    
+    <update id="updateTalentDemand" parameterType="map">
+        update talent_demand set id=#{id} 
+        <if test="skills != null and skills != ''">
+			,skills = #{skills} 
+        </if>
+        <if test="website != null and website != ''">
+			,website = #{website} 
+        </if>
+        <if test="updateTime != null and updateTime != ''">
+			,updateTime = #{updateTime} 
+        </if>
+        <if test="minJobYear != null and minJobYear != ''">
+			,minJobYear = #{minJobYear} 
+        </if>
+        <if test="maxJobYear != null and maxJobYear != ''">
+			,maxJobYear = #{maxJobYear} 
+        </if>
+        <if test="minSalary != null and minSalary != ''">
+			,minSalary = #{minSalary} 
+        </if>
+        <if test="maxSalary != null and maxSalary != ''">
+			,maxSalary = #{maxSalary} 
+        </if>
+        <if test="matchField != null and matchField != ''">
+			,matchField = #{matchField} 
+        </if>
+        <if test="email != null and email != ''">
+			,email = #{email} 
+        </if>
+        where id=#{id} and companyId=#{companyId}
+    </update>
+    
+    <!-- 获取企业招聘需求 -->
+    <select id="getTalentDemand" parameterType="String" resultType="java.util.HashMap">
+        select id,skills,website,minJobYear,maxJobYear,minSalary,maxSalary from talent_demand where companyId=#{0}
+    </select>
+    
+    <!-- 获取企业产品信息 -->
+    <select id="getProductList" parameterType="String" resultType="java.util.HashMap">
+        select id,imgName,progress,productName,website,brief from products where companyId=#{0}
+    </select>
+    
+     <!-- 获取企业团队信息 -->
+    <select id="getFounderList" parameterType="String" resultType="java.util.HashMap">
+        select id,imgName,name,jobName,website,brief from founder where companyId=#{0}
+    </select>
+    
+    <select id="companyBidLogs" parameterType="map" resultType="java.util.HashMap">
+		select a.*,
+			r.jobTitle,
+			r.code 
+		from (
+			select id,
+				userId,
+				companyId,
+				minBidPrice,
+				maxBidPrice,
+				bidTime,
+				isReply,
+				replyTime,
+				isCompanyRead 
+			from bid_logs d where isDelete='1' and d.companyId=#{companyId} 
+		    <if test="reply != null and reply ==1">
+				and a.isReply != 0 
+        	</if>
+        	<if test="reply != null and reply ==0">
+				and a.isReply = #{reply} 
+        	</if>
+			order by replyTime desc,bidTime desc 
+		) a 
+		left join resume r on a.userId=r.userId group by userId limit #{page},#{pageSize}
+    </select>
+    
+    <select id="companyBidLogsTotal" parameterType="map" resultType="java.lang.Integer">
+        select count(*) from (
+			select userId from bid_logs d where isDelete='1' and d.companyId=#{companyId} 
+			<if test="reply != null and reply ==1">
+				and a.isReply != 0 
+	       	</if>
+	       	<if test="reply != null and reply ==0">
+				and a.isReply = #{reply} 
+	       	</if>
+	       	group by userId ) a 
+    </select>
+    
+    <select id="companyAuction" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call company_auction (
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_compUserId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_companyId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_minBidPrice,mode=IN,jdbcType=DECIMAL},
+		   		#{i_maxBidPrice,mode=IN,jdbcType=DECIMAL},
+		   		#{i_isOption,mode=IN,jdbcType=DECIMAL},
+		   		#{i_workTitle,mode=IN,jdbcType=VARCHAR},
+		   		#{i_bidCount,mode=IN,jdbcType=DECIMAL},
+		   		#{i_special,mode=IN,jdbcType=DECIMAL},
+		   		#{i_specialCount,mode=IN,jdbcType=DECIMAL},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL})}  
+		]]>
+    </select>
+    
+    <!-- 获取联系方式 -->
+    <select id="getContacts" parameterType="String" resultType="map">
+        select a.*,r.email,r.telephone,b.name,b.toEmail,b.toPhone from (select b.userId from bid_logs b where b.id=#{0} and b.companyId=#{1} and b.isReply=1) a left join rigistration r on r.userId=a.userId left join resume b on a.userId=b.userId
+    </select>
+    
+    <!-- 判断是否已获取联系方式 -->
+    <select id="isGetContacts" parameterType="String" resultType="Integer">
+        select count(*) from bid_logs where userId=#{0} and companyId=#{1} and isReply=3
+    </select>
+    
+    <!-- 获取企业环境 -->
+    <select id="getOfficeByCompanyId" resultType="String" parameterType="String">
+    	select environment from company where companyId=#{0}
+    </select>
+    
+    <!-- 更新企业环境 -->
+    <update id="updateOffice" parameterType="String">
+    	update company set environment=#{0} where companyId=#{1}
+    </update>
+    
+    <update id="updateCompBasicInfo" parameterType="map">
+    	update company  
+    	<set>
+    	    <if test="name != null">
+    	        name=#{name},
+    	    </if>
+    	    <if test="nickName != null">
+    	        nickName=#{nickName},
+    	    </if>
+    	    <if test="province != null">
+    	        province=#{province},
+    	    </if>
+    	    <if test="city != null">
+    	        city=#{city},
+    	    </if>
+    	    <if test="area != null">
+    	        area=#{area},
+    	    </if>
+    	    <if test="size != null">
+    	        size='${size}',
+    	    </if>
+    	    <if test="progress != null">
+    	        progress=#{progress},
+    	    </if>
+    	    <if test="website != null">
+    	        website=#{website},
+    	    </if>
+    	    <if test="addr != null">
+    	        addr=#{addr},
+    	    </if>
+    	    <if test="welfare != null">
+    	        welfare=#{welfare},
+    	    </if>
+    	    <if test="companyIntro != null">
+    	        companyIntro=#{companyIntro},
+    	    </if>
+    	    <if test="logoName != null">
+    	        logoName=#{logoName},
+    	    </if>
+    	    companyId=#{companyId} 
+    	</set>
+    	where companyId=#{companyId}
+    </update>
+    
+    <select id="compProgress" parameterType="String" resultType="java.util.HashMap">
+        select a.*,b.productName,c.name founderName from (
+        	select companyId,nickName,logoName,website,addr,companyIntro,welfare,environment 
+        	from company where companyId=#{0}
+        ) a 
+        left join (
+        	select companyId,productName 
+        	from products where companyId=#{0} limit 0,1
+        ) b on a.companyId=b.companyId 
+        left join (
+        	select companyId,name 
+        	from founder where companyId=#{0} limit 0,1 
+        ) c on a.companyId=c.companyId
+    </select>
+    
+    <select id="getCompMessage" parameterType="String" resultType="java.lang.Integer">
+        select count(*) from bid_logs where compUserId=#{0} and isReply=1
+    </select>
+    
+    <update id="updateCompRead" parameterType="String">
+        update bid_logs set isCompanyRead=1 where compUserId=#{0}
+    </update>
+    
+    <select id="addForwardResume" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call add_forward_resume (
+		   		#{i_id,mode=IN,jdbcType=VARCHAR},
+		   		#{i_companyUser,mode=IN,jdbcType=DECIMAL},
+		   		#{i_companyId,mode=IN,jdbcType=DECIMAL},
+		   		#{i_userId,mode=IN,jdbcType=DECIMAL},
+		   		#{i_toEmail,mode=IN,jdbcType=VARCHAR},
+		   		#{i_message,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL})}  
+		]]>
+    </select>
+    
+    <select id="getForwardInfo" parameterType="String" resultType="java.util.HashMap">
+        select a.*,b.name,b.jobTitle title,b.email,c.nickName,d.jobTitle,d.jobYear,d.education,d.destination,d.skills,d.code from (select id,companyUser,companyId,userId from forward_resume where id=#{0}) a 
+        left join rigistration b on a.companyUser=b.userId 
+        left join company c on a.companyId=c.companyId 
+        left join resume d on a.userId=d.userId 
+    </select>
+    
+    <select id="getBidDetails" parameterType="String" resultType="java.util.HashMap">
+        select a.*,b.email,b.telephone from (select userId,destination,skills,expectedSalary,jobYear,jobTitle,sex,age,educcation,toEmail,toPhone,name from resume where userId=#{0}) left join rigistration b on a.userId=b.userId
+    </select>
+    <select id="getBidLogInfo" parameterType="String" resultType="java.util.HashMap">
+        select isOption,workTitle,bidTime,isReply,replyTime,rejectReason,minBidPrice,maxBidPrice,acquireTime from bid_logs where userId=#{0} and companyUserId=#{1} order by isReply desc
+    </select>
+</mapper> 

@@ -1,0 +1,82 @@
+package com.auction.company.dao;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/** 
+ * @author tobber
+ * @version 2015年7月28日
+ */
+public interface FeesDao {
+	
+	/**
+	 * 获取简历池信息
+	 * @return
+	 */
+	public List<Map<String, Object>> getResumePools(Map<String, Object> params);
+	
+	public int getResumePoolsTotal(Map<String, Object> params);
+	
+	/**
+	 * @param 获取简历详情
+	 * @param userId 
+	 * @return
+	 */
+	public HashMap<String, Object> getResumDetailByUserId(Map<String, Object> params); 
+	
+	/**
+	 * @param 获取教育经历
+	 * @return
+	 */
+	public List<Map<String, Object>> getEducationsAll(Map<String, Object> params);
+	
+	/**
+	 * @param 获取项目经历
+	 * @return
+	 */
+	public List<Map<String, Object>> getProjectsAll(Map<String, Object> params); 
+	
+	/**
+	 * @param 获取工作经历
+	 * @return
+	 */
+	public List<Map<String, Object>> getWorkExpAll(Map<String, Object> params);
+	
+	/**
+	 * @param 添加阅读纪录
+	 * @param userId 
+	 * @return
+	 */
+	public String addReadLogs(Map<String,Object> params);
+	
+	/**
+	 * 面试邀请
+	 * @return
+	 */
+	public String interviewInvite(Map<String, Object> params);
+	
+	/**
+	 * 获取邀请记录
+	 * @return
+	 */
+	public List<Map<String, Object>> getInviteLogs(Map<String, Object> params);
+	
+	public int getInviteLogsTotal(Map<String, Object> params);
+	
+	/**
+	 * 拍卖记录标记为已读
+	 * @return
+	 */
+	public String updateCompRead(Map<String, Object> params);
+	
+	public List<Map<String, Object>> getInviteInfo(Map<String, Object> params);
+	
+	public Map<String, Object> getInviteDetails(String userId);
+	
+	/**
+	 * @param 获取扣费记录
+	 * @return
+	 */
+	public List<Map<String, Object>> getDebitLogs(String compUserId); 
+}

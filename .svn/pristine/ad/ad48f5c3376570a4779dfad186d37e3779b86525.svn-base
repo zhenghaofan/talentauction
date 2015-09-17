@@ -1,0 +1,26 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('defaultCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$('.viewport').show();
+		$rootScope.tabIndex = 4;
+		
+		/* 获取公司信息*/
+		$scope.get = function() {
+			
+		};
+		
+		
+		
+		
+		
+ 	}]);
+	
+	app.bootstrap();
+});

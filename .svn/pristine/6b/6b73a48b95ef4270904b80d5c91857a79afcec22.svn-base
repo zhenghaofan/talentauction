@@ -1,0 +1,192 @@
+
+
+.viewport {
+	padding-top: 100px;
+	background-color: #ECEEF1;
+}
+
+.slt-wrap {
+	width: 720px;
+	min-height: 400px;
+	color: #6B7485;
+	margin: 0 auto 80px;
+	/* border-radius: 3px; */
+	background-color: #fff;
+}
+
+
+.nav-warp {
+	text-align: center;
+	padding-top: 30px;
+}
+.nav-warp .tab-item {
+	width: 92px;
+	text-align: center;
+	vertical-align: top;
+	margin-left: -34px;
+	margin-top: 3px;
+	display: inline-block;
+}
+.nav-warp .line {
+	width: 120px;
+	height: 7px;
+	vertical-align: top;
+	margin-top: 10px;
+	margin-left: -32px;
+	background-color: #d8dbe0;
+	display: inline-block;
+}
+.nav-warp .tab-step {
+	width: 20px;
+	height: 20px;
+	color: #fff;
+	font-size: 14px;
+	text-align: center;
+	line-height: 20px;
+	border-radius: 25px;
+	border: 1px solid #d8dbe0;
+	margin-bottom: 5px;
+	background-color: #d8dbe0;
+	display: inline-block;
+}
+.nav-warp .tab-text {
+	color: #d8dbe0;
+}
+.nav-warp .slt {
+	color: #6B7485;
+	font-size: 15px;
+}
+.nav-warp .slt .tab-step {
+	width: 23px;
+	height: 23px;
+	font-size: 15px;
+	line-height: 23px;
+	margin-bottom: 8px;
+	border-radius: 15px;
+	border: 1px solid #42b4dd;
+	background-color: #42b4dd;
+}
+.nav-warp .slt .tab-text {
+	color: #6B7485;
+	font-size: 15px;
+}
+
+
+.comp-warp {
+	width: 542px;
+	padding-top: 40px;
+	margin: 0 auto;
+}
+.comp-warp .item-title {
+	color: #4a4f53;
+	font-size: 16px;
+	margin-bottom: 10px;
+}
+.comp-warp .item-title i {
+	color: red;
+	margin-right: 5px;
+}
+.comp-warp .item-title a {
+	color: #71A8E0;
+	cursor: pointer;
+}
+
+
+.comp-warp .con-slt {
+	padding-bottom: 60px;
+}
+.comp-warp .con-slt.mgn-1 {
+	padding-bottom: 20px;
+}
+.comp-warp .comp-list div {
+	height: 40px;
+	line-height: 40px;
+	border-bottom: 1px solid #d8dbe0;
+}
+.comp-warp .comp-list div:first-child {
+	border-bottom: 1px solid #d8dbe0;
+}
+.comp-warp .comp-list div:last-child {
+	border: none;
+}
+
+
+.btn-group {
+	text-align: center;
+}
+.btn-group .btn {
+	width: 215px;
+	height: 41px;
+	color: #fff;
+	border: 0px;
+	background: url("../img/btn-comp-1.png") no-repeat -23px -121px;
+}
+.btn-group .btn:hover {
+	background: url("../img/btn-comp-1.png") no-repeat -252px -121px;
+}
+.comp-warp .comp-list .com-opt {
+	float: right;
+	color: #71A8E0;
+	cursor: pointer;
+}
+.comp-warp .comp-list .com-name {
+	color: #71A8E0;
+}
+
+.comp-warp .con-add {
+	padding-top: 20px;
+}
+.comp-warp .con-add input {
+	width: 420px;
+	height: 42px;
+	color: #6B7485;
+	font-size: 14px;
+	text-indent: 12px;
+	border: 1px solid #F3F1F1;
+	display: inline-block;
+	background-color: #eceef1;
+	border-radius: 3px;
+}
+.comp-warp .con-add div {
+	text-align: center;
+}
+.comp-warp .con-add div:last-child {
+	margin-top: 10px;
+}
+.comp-warp .con-add button {
+	color: #fff;
+	padding: 10px 30px;
+	border: none;
+	border-radius: 3px;
+	background-color: #71A8E0;
+}
+.comp-warp .con-add button:hover {
+	background-color: #4182c6;
+}
+.comp-warp .con-add .err-wrap {
+	text-align: left;
+	min-height: 25px;
+}
+.comp-warp .err-wrap label {
+	width: 260px;
+	height: 25px;
+	color: #FF1414;
+	line-height: 25px;
+	text-indent: 20px;
+	padding-left: 18px;
+	margin-left: 60px;
+	display: none;
+}
+.comp-warp .err-wrap .ico-invalid {
+	background: url(../img/icon-error.png) 0 45% no-repeat;	
+}
+	
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}
+
+
+

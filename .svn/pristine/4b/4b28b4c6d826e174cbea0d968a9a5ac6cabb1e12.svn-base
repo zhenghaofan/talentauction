@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/jobinfo.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/jobinfo.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/jobinfo" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/jobinfo-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl"></div> 
+		<div id="main" ng-controller="jobinfoCtrl">
+			<div class="info-warp">
+				<div class="info-title box-shadow">
+					<div class="tab-wrap">
+						<div class="tab-item">
+							<div class="tab-item-step">1</div>
+							<div class="tab-item-text">求职意向</div>
+						</div>
+						<div class="tab-line"></div>
+						<div class="tab-item tab-item-slt">
+							<div class="tab-item-step">2</div>
+							<div class="tab-item-text">提交简历</div>
+						</div>
+					</div>
+					<div class="tip-wrap">
+						<i class="ico"></i>
+						<span>请选择其中一种方式提交简历</span>
+					</div>					
+					<div class="slt-wrap">
+						<div class="btn slt" style="margin-right: 50px;">
+							<span class="rand slt"></span>
+							<span class="text">在线填写简历</span>
+						</div>
+						<div class="btn">
+							<span class="rand"></span>
+							<span class="text">上传简历</span>
+						</div>
+					</div>
+					<div class="tip-wrap">
+						<span>如果有任何问题，请发邮件到：<label>tellus@shilipai.net</label>，我们将第一时间为您处理。</span>
+					</div>
+				</div>
+				
+				<div class="body-wrap">
+					<div class="sidebar">
+						<div class="cv-pro box-shadow">
+							<div class="pro-title">完善简历才能提交审核</div>
+							<div class="pro-text">简历完整度：
+								<span class="f-c-1"><span id="on_pro_text">5</span>%</span>
+							</div>
+							<div class="line">
+								<div class="slider" id="on_pro_line" style="width: 5%;"></div>
+							</div>
+						</div>
+						<div class="cv-ico">
+							<div class="ico-line" ng-class="{'5': 'ico-line-l'}[resume.special]"></div>
+							<div class="ico-item first">
+								<div class="ico-point"><div class="ico-point-p"></div></div>
+								<div class="ico-person"><span class="ico-base"></span></div>
+								<div class="ico-text">基本信息</div>
+							</div>
+							
+							<div class="ico-item">
+								<div class="ico-point"><div class="ico-point-p"></div></div>
+								<div class="ico-person"><span class="ico-edu"></span></div>
+								<div class="ico-text">教育经历</div>
+							</div>
+							
+							<div class="ico-item">
+								<div class="ico-point"><div class="ico-point-p"></div></div>
+								<div class="ico-person"><span class="ico-exp"></span></div>
+								<div class="ico-text">工作经历</div>
+							</div>
+							
+							<div class="ico-item">
+								<div class="ico-point"><div class="ico-point-p"></div></div>
+								<div class="ico-person"><span class="ico-pro"></span></div>
+								<div class="ico-text">项目经历</div>
+							</div>
+							
+							<div class="clear"></div>
+						</div>
+					</div>
+					<div class="rightbar box-shadow">
+						<div class="cv-title">
+							<div class="edit-wrap">
+								<div class="edit-ico" ng-click="openBaseMessageDialog()">
+								</div><div class="clear"></div>
+							</div>
+							<div class="edit-box" ng-if="!onResume.baseMessage.haveData">
+								<div class="edit-btn" ng-click="openBaseMessageDialog()">编辑个人基本信息</div>
+							</div>							
+							<div class="base-msg">
+								<div class="base-phone"><i></i><span ng-bind="resume.phone + '13077894014'"></span></div>
+								<div class="base-email"><i></i><span ng-bind="resume.email + 'li1@test.com'"></span></div>
+							</div>							
+						</div>
+						<div class="cv-body">
+							<div class="resume-item">
+								<div class="resume-title" id="edu_title">
+									<img class="edu-ico" src="/img/edu_ico_1.png">教育经历
+									<span class="item-add" ng-if="!onResume.education.isEdit" ng-click="onResume.education.addEducation()"></span>
+								</div>
+								<div class="resume-con" ng-if="!onResume.education.haveData" ng-click="onResume.education.addEducation()">
+									<div class="resume-init">
+										<i class="add-ico"></i>
+										添加教育经历
+									</div>
+								</div>
+							</div>
+							<div class="resume-item">
+								<div class="resume-title" id="exp_title">
+									<img class="exp-ico" src="/img/exp_ico.png">工作经历
+									<span class="item-add" ng-if="!onResume.exp.isEdit" ng-click="onResume.exp.add()"></span>
+								</div>
+								<div class="resume-con">
+									<div class="resume-init" ng-if="!onResume.exp.haveData" ng-click="onResume.exp.add()">
+										<i class="add-ico"></i>
+										添加工作经历
+									</div>
+								</div>
+							</div>
+							<div class="resume-item">
+								<div class="resume-title" id="pjt_title">
+									<img class="pjt-ico" src="/img/pro_ico.png">项目经历
+									<span class="item-add" ng-if="!onResume.project.isEdit" ng-click="onResume.project.add()"></span>
+								</div>
+								<div class="resume-con">
+									<div class="resume-init" ng-if="!onResume.project.haveData" ng-click="onResume.project.add()">
+										<i class="add-ico"></i>
+										添加项目经历
+									</div>
+								</div>
+							</div>
+							<div class="resume-item">
+								<div class="resume-title" id="link_title">
+									<img class="link-ico" src="/img/web_ico_l.png"></img>作品链接
+									<span class="item-add" ng-if="!onResume.uiLink.isEdit" ng-click="onResume.uiLink.add()"></span>
+								</div>
+								<div class="resume-con">
+									<div class="resume-init" ng-if="!onResume.uiLink.haveData" ng-click="onResume.uiLink.add()">
+										<i class="add-ico"></i>
+										添加作品链接
+									</div>
+								</div>
+							</div>
+							<div class="resume-item bor-b-n">
+								<div class="resume-title" id="ui_title">
+									<img class="ico-ui" src="/img/ui_show_ico.png"></img>作品展示
+									<span class="item-add" ng-if="!onResume.uiImg.isEdit" ng-click="onResume.uiImg.add()"></span>
+								</div>
+								<div class="resume-con" ng-if="!onResume.uiImg.haveData">
+									<div class="resume-init" ng-click="onResume.uiImg.add()">
+										<i class="add-ico"></i>
+										添加作品
+									</div>
+								</div>
+							</div>				
+						</div>
+						<div class="cv-footer">
+							<div class="btn-wrap">
+								<span class="pre-btn" ng-click="preStep()">上一步</span>
+								<span class="next-btn" ng-click="resumeConfirm()">提交</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="upload-warp box-shadow" style="display: none;">
+					<div class="file-title"><img src="/img/upload_ico.png">上传简历</div>
+					<div class="file-con">
+						<form id="upload_form">
+							<div class="file-group">
+								<input ng-if="!isIe" type="text" ng-model="name" placeholder="上传简历（请上传PDF，或者word格式文件）">
+								<span  ng-if="!isIe" class="slt-file" ng-click="selectFile()">选择文件</span>
+								<input type="file" class="hidden"  name="upload" id="upload" accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf">
+							</div>
+							<div class="file-tip">如果你不是第一次申请，可以使用之前通过审核的简历。</div>
+							<div class="file-btn-wrap">
+								<span class="pre-btn" ng-click="preStep()">上一步</span>
+								<button class="btn sub-btn" ng-click="passNext()">使用之前的简历</button>
+								<button class="btn submit dis" ng-click="next()">提交</button>
+							</div>
+							<div class="t-a-c"><span class="err-tip" ng-if="!!uploadErrText" ng-bind="uploadErrText"></span></div>
+						</form>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

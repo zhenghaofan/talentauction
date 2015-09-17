@@ -1,0 +1,117 @@
+package com.auction.common.web;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.auction.common.util.Util;
+
+@Controller
+@RequestMapping(value = "base")
+public class RouteController {
+	
+	@RequestMapping(value = "index")
+	public ModelAndView index(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/index", null);
+	}
+	
+	@RequestMapping(value = "signin")
+	public ModelAndView signin(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/signin", null);
+	}
+	
+	@RequestMapping(value = "signup")
+	public ModelAndView signup(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/signup", null);
+	}
+	
+	@RequestMapping(value = "mailbox")
+	public ModelAndView mailbox(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/mailbox", null);
+	}
+	
+	@RequestMapping(value = "compindex")
+	public ModelAndView compindex(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/compindex", null);
+	}
+	
+	@RequestMapping(value = "placebid")
+	public ModelAndView placebid(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/placebid", null);
+	}
+	
+	@RequestMapping(value = "placedefault")
+	public ModelAndView placedefault(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/placedefault", null);
+	}
+	
+	@RequestMapping(value = "placedesigner")
+	public ModelAndView placedesigner(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/placedesigner", null);
+	}
+	
+	@RequestMapping(value = "upwd")
+	public ModelAndView upwd(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		if(Util.isVerify(request.getParameter("code"),0,0,"[0-9A-Za-z_]{1,100}")){
+			request.getSession().setAttribute("code", request.getParameter("code"));
+		}
+		return new ModelAndView("views/upwd", null);
+	}
+	
+	@RequestMapping(value = "mailresend")
+	public ModelAndView mailresend(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/mailresend", null);
+	}
+	
+	@RequestMapping(value = "about")
+	public ModelAndView about(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/about", null);
+	}
+	
+	@RequestMapping(value = "question")
+	public ModelAndView question(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/question", null);
+	}
+	
+	@RequestMapping(value = "agreement")
+	public ModelAndView agreement(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/agreement", null);
+	}
+	
+	@RequestMapping(value = "complist")
+	public ModelAndView complist(HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/complist", null);
+	}
+	
+	//候选人加载图片
+	@RequestMapping("chome{path}.html")
+    public ModelAndView getIcon(@PathVariable("path") String path,
+    		HttpServletRequest request,HttpServletResponse response) throws IOException {
+		
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/compdefault", null);
+		
+	}
+	
+}
+

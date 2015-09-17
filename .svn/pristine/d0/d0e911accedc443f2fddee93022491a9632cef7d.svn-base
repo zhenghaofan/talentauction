@@ -1,0 +1,162 @@
+package com.auction.company.web;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.auction.util.Util;
+import com.auction.company.service.CompanyService;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+
+@Controller
+@RequestMapping(value = "company")
+public class CompanyController {
+	@Resource
+	private CompanyService companyService;
+	
+	@RequestMapping(value = "addCompany")//添加公司
+	@ResponseBody
+	public void addCompany(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.addCompany(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "useExistCompany")//使用已有公司
+	@ResponseBody
+	public void useExistCompany(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.useExistCompany(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getSameCompanyList")//获取同邮箱后缀公司列表
+	@ResponseBody
+	public void getSameCompanyList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.getSameCompanyList(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getCompanyInfo")//获取公司基本信息
+	@ResponseBody
+	public void getCompanyInfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.getCompanyInfo(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "saveCompanyInfo")//添加公司基本信息
+	@ResponseBody
+	public void saveCompanyInfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.saveCompanyInfo(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "updateCompanyInfo")//更新公司基本信息
+	@ResponseBody
+	public void updateCompanyInfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.updateCompanyInfo(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "updateProducts")//添加、更新公司产品信息
+	@ResponseBody
+	public void updateProducts(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.updateProducts(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "delProducts")//删除公司产品信息
+	@ResponseBody
+	public void delProducts(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.delProducts(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "updateFounder")//添加、更新公司创始团队信息
+	@ResponseBody
+	public void updateFounder(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.updateFounder(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "delFounder")//删除公司创始团队信息
+	@ResponseBody
+	public void delFounder(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.delFounder(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "updateTalentDemand")//添加、更新公司人才招聘需求
+	@ResponseBody
+	public void updateTalentDemand(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.updateTalentDemand(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "delTalentDemand")//删除公司人才招聘需求
+	@ResponseBody
+	public void delTalentDemand(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.delTalentDemand(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getTalentDemand")//获取公司人才招聘需求
+	@ResponseBody
+	public void getTalentDemand(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.getTalentDemand(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "companyBidLogs")//获取企业拍卖纪录
+	@ResponseBody
+	public void companyBidLogs(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = companyService.companyBidLogs(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "companyAuction")//公司出价竞拍
+	@ResponseBody
+	public void companyAuction(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.companyService.companyAuction(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getContacts")//获取联系方式
+	@ResponseBody
+	public void getContacts(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.companyService.getContacts(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "delOffice")//删除企业环境
+	@ResponseBody
+	public void delOffice(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.companyService.delOffice(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "compProgress")//获取企业资料完善进度
+	@ResponseBody
+	public void compProgress(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.companyService.compProgress(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "getCompMessage")//获取消息条数
+	@ResponseBody
+	public void getCompMessage(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.companyService.getCompMessage(request);
+        new Util().responesWriter(response,result);
+	}
+	
+	@RequestMapping(value = "forwardResume")//简历转发
+	@ResponseBody
+	public void forwardResume(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = this.companyService.forwardResume(request);
+        new Util().responesWriter(response,result);
+	}
+}

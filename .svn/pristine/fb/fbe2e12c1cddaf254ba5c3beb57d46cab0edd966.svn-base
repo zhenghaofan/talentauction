@@ -1,0 +1,370 @@
+package com.auction.company.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.stereotype.Service;
+
+import com.auction.company.dao.FeesDao;
+import com.auction.company.service.FeesService;
+import com.auction.util.Util;
+
+/** 
+ * @author tobber
+ * @version 2015年7月28日
+ */
+@Service
+public class FeesServiceImpl implements FeesService{
+	@Resource
+	private FeesDao feesDao;
+	
+	@Override
+	public String getResumePools(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		int page = 1;
+		int pageSize = 20;
+		String readState = null;
+		String emailStr =null; //邮箱后缀
+		Map<String,Object> params = new HashMap<String, Object>();
+		
+		try {  
+    		if(Util.isVerify(request.getParameter("page"), 0, 0, "[1-9][0-9]{0,3}")){
+    			page = Integer.parseInt(request.getParameter("page"));
+    		}
+    		if(Util.isVerify(request.getParameter("pageSize"), 0, 0, "[1-9][0-9]{0,3}")){
+    			pageSize = Integer.parseInt(request.getParameter("pageSize"));
+    		}
+    		if(Util.isVerify(request.getParameter("education"), 0, 0, "[0-9]")){ //学历
+    			params.put("education",request.getParameter("education"));
+    		}
+    		if(Util.isVerify(request.getParameter("city"),1, 25, null)){ //目标城市
+    			params.put("destination",request.getParameter("city"));
+    		}
+    		if(Util.isVerify(request.getParameter("special"), 0, 0, "[0-9]{0,2}")){ //所属专场
+    			params.put("special",request.getParameter("special"));
+    		}
+    		if(Util.isVerify(request.getParameter("searches"), 1, 25, null) && Util.isVerify(request.getParameter("type"), 0, 0, "[1-3]{1}")){ //搜索内容 jobTitle、skills、details
+    			if(request.getParameter("type").equals("1")){
+    				params.put("searches",Util.getLucene(request.getParameter("searches")));
+    			}else{
+    				params.put("searches",request.getParameter("searches"));
+    			}
+    			params.put("type",request.getParameter("type"));
+    		}
+    		if(Util.isVerify(request.getParameter("jobYear"), 0, 0, "[0-5][,]{0,1}[0-5]{0,1}")){//工作年限
+    			String[] str = request.getParameter("jobYear").split(",");
+    			if(str.length>1){
+    				params.put("minYear",Integer.parseInt(str[0]));
+    				params.put("maxYear",Integer.parseInt(str[1]));
+    			}else if(str.length>0 && str.length<=1){
+    				params.put("minYear",Integer.parseInt(str[0]));
+    			}
+    		}
+    		if(request.getSession().getAttribute("email")!=null){
+    			String email= request.getSession().getAttribute("email").toString().trim();
+    			emailStr = email.substring(email.indexOf("@")+1,email.length());
+    		}
+    		
+    		params.put("page", (page-1)*pageSize);
+    		params.put("pageSize", pageSize);
+    		List<Map<String,Object>> queryMap = null;
+    		if(request.getSession().getAttribute("status")!=null && "1".equals(request.getSession().getAttribute("status").toString())){
+    			params.put("companyId", request.getSession().getAttribute("userId").toString());
+    			params.put("emailStr", emailStr);
+    			params.put("readState", readState);
+    			queryMap = feesDao.getResumePools(params);
+    		}else{
+    			queryMap = feesDao.getResumePools(params);
+    		}
+    		
+    		int rowCount = feesDao.getResumePoolsTotal(params);
+    		if(rowCount%pageSize==0){
+    			json.put("totalPage", rowCount/pageSize);
+    		}else{
+    			json.put("totalPage", (rowCount/pageSize)+1);
+    		}
+    		json.put("page",page);
+    		json.put("pageSize",pageSize);
+    		json.put("bidPools",queryMap);
+    		json.put("code", 200);
+            json.put("message", "获取成功");
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        } 
+		return json.toString();
+	}
+	
+	@Override
+	public String getUserResume(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+    		if(request.getSession().getAttribute("companyId")!=null && request.getParameter("userId")!=null && !"".equals(request.getParameter("userId"))){
+    			
+    			Map<String, Object> resumeParams = new HashMap<String, Object>();
+    			String userId = request.getParameter("userId"); //简历
+    			String companyId = request.getSession().getAttribute("companyId").toString();
+    			resumeParams.put("companyId", companyId);
+	    		resumeParams.put("userId", userId);
+		       
+	    		HashMap<String, Object> resumeMap = feesDao.getResumDetailByUserId(resumeParams);
+		        if(resumeMap!=null && resumeMap.size()>0){
+		        	//添加阅读记录
+	        		Map<String, Object> readParams = new HashMap<String, Object>();
+	        		readParams.put("i_userId", userId);
+	        		readParams.put("i_companyId", companyId);
+	        		feesDao.addReadLogs(readParams);
+	        		
+		        	json.put("resume", resumeMap);
+		        	
+		        	Map<String, Object> params = new HashMap<String, Object>();
+		        	params.put("resumeId", resumeMap.get("resumeId").toString());
+		        	
+		        	//教育经历
+		        	params.put("tableName", "educations");
+		            json.put("educations", feesDao.getEducationsAll(params));
+		            
+		            //项目经验表
+	        		params.put("tableName", "projects");
+		            json.put("projects", feesDao.getProjectsAll(params));
+		            
+		            //工作经验表
+		            params.put("tableName", "work_experiences");
+		            json.put("work_experiences", feesDao.getWorkExpAll(params));
+		            
+		            json.put("code", 200);
+		            json.put("message", "简历获取成功");
+		        }else{
+		        	json.put("code", 301);
+		            json.put("message", "暂无简历信息！");
+		        }
+    		}else{
+	        	json.put("code", 301);
+	            json.put("message", "请选择简历！");
+	        }
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 501);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+	
+	@Override
+	public String interviewInvite(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(request.getSession().getAttribute("userId")!=null){
+				if(request.getSession().getAttribute("status").toString().equals("1") && request.getParameter("userId")!=null){ //判断用户是否为企业用户
+					if(request.getSession().getAttribute("companyId")!=null && request.getSession().getAttribute("isSaveUserInfo")!=null && "1".equals(request.getSession().getAttribute("isSaveUserInfo").toString())){
+						
+						boolean flag = true;
+						String userId = null;
+						String companyId = request.getSession().getAttribute("companyId").toString();
+						
+						Map<String, Object> params = new HashMap<String, Object>();
+						params.put("i_compUserId", request.getSession().getAttribute("userId").toString());
+						params.put("i_companyId", companyId);
+						if(Util.isVerify(request.getParameter("userId"), 0, 0, "[0-9]{0,10}")){
+							userId = request.getParameter("userId");
+							params.put("i_userId", userId);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("minBidPrice"), 0, 0, "[1-9][0-9]{0,1}") && Util.isVerify(request.getParameter("maxBidPrice"), 0, 0, "[1-9][0-9]{0,1}")){
+							if(Float.parseFloat(request.getParameter("minBidPrice"))<Float.parseFloat(request.getParameter("maxBidPrice"))){
+								params.put("i_minBidPrice", Float.parseFloat(request.getParameter("minBidPrice")));
+								params.put("i_maxBidPrice", Float.parseFloat(request.getParameter("maxBidPrice")));
+							}else{
+								flag=false;
+							}
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("isOption"), 0, 0, "[0-1]")){
+							int isOption = Integer.parseInt(request.getParameter("isOption"));
+							params.put("i_isOption", isOption);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("bidCount"), 0, 0, "[0-9]{1,5}")){
+							int bidCount = Integer.parseInt(request.getParameter("bidCount"));
+							params.put("i_bidCount", bidCount);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("workTitle"), 1, 35, null)){
+							String workTitle = request.getParameter("workTitle");
+							params.put("i_workTitle", workTitle);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("special"), 0, 0, "[0-9]{1,5}")){
+							int special = Integer.parseInt(request.getParameter("special"));
+							params.put("i_special", special);
+						}else{
+							flag=false;
+						}
+						if(Util.isVerify(request.getParameter("specialCount"), 0, 0, "[0-9]{1,5}")){
+							int specialCount = Integer.parseInt(request.getParameter("specialCount"));
+							params.put("i_specialCount", specialCount);
+						}else{
+							flag=false;
+						}
+						
+				    	if(flag){
+					    	feesDao.interviewInvite(params);
+					    	if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+					    		json.put("code", 200);
+				    	    	json.put("message", "出价成功");
+					    	}else if(params.get("resultNumber")!=null && "2".equals(params.get("resultNumber").toString())){
+					    		json.put("code", 301);
+				    	    	json.put("message", "你已邀请该候选人，还未回复！");
+					    	}else if(params.get("resultNumber")!=null && "3".equals(params.get("resultNumber").toString())){
+					    		json.put("code", 301);
+				    	    	json.put("message", "同个候选人只能邀请两次！");
+					    	}else{
+					    		json.put("code", 301);
+				    	    	json.put("message", "出价失败！");
+					    	}
+						}else{
+							json.put("code", 302);
+			    	    	json.put("message", "请填写完整信息！");
+						}
+					}else{
+						json.put("code", 303);
+			            json.put("message", "进入“公司主页”填写基本信息后才能参加竞拍！");
+					}
+				}else{
+			    	json.put("code", 304);
+		            json.put("message", "你不是企业用户，无法出价！");
+				}
+			}else{
+				json.put("code", 305);
+		        json.put("message", "请先登入");
+			} 
+		} catch (Exception e) {
+			e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getInviteLogs(HttpServletRequest request) {
+		int page = 1;
+		int pageSize = 20;
+		JSONObject json = new JSONObject();
+		try {
+	    	if(request.getSession().getAttribute("companyId")!=null && request.getSession().getAttribute("status")!=null){
+	    		if(request.getSession().getAttribute("status").toString().equals("1")){
+	    			
+	    			Map<String, Object> params = new HashMap<String, Object>();
+	    			params.put("companyId", request.getSession().getAttribute("userId").toString());
+	    			if(Util.isVerify(request.getParameter("page"), 0, 0, "[0-9]{0,9}")){
+	        			page = Integer.parseInt(request.getParameter("page"));
+	        		}
+	        		if(Util.isVerify(request.getParameter("pageSize"), 0, 0, "[0-9]{0,9}")){
+	        			pageSize = Integer.parseInt(request.getParameter("pageSize"));
+	        		}
+	        		if(Util.isVerify(request.getParameter("reply"), 0, 0, "[0-9]")){
+	        			params.put("reply",request.getParameter("reply"));
+	        		}
+	        		params.put("page",(page-1)*pageSize);
+	        		params.put("pageSize",pageSize);
+	        		
+	        		List<Map<String,Object>> bidLogs = feesDao.getInviteLogs(params);
+	        		int rowCount = feesDao.getInviteLogsTotal(params);
+	        		
+	        		if(rowCount%pageSize==0){
+	        			json.put("totalPage", rowCount/pageSize);
+	        		}else{
+	        			json.put("totalPage", (rowCount/pageSize)+1);
+	        		}
+	        		
+	    			if(bidLogs!=null && bidLogs.size()>0){
+    					//拍卖纪录标记为已读
+	    				feesDao.updateCompRead(request.getSession().getAttribute("userId").toString());
+	    			}
+	    			json.put("page", page);
+	    			json.put("pageSize", pageSize);
+	    	    	json.put("bidLogs", bidLogs);
+		    		json.put("code", 200);
+	                json.put("message", "获取成功！");
+	    		}else{
+	    	    	json.put("code", 301);
+	                json.put("message", "您不是企业用户！");
+	    		}
+	    	}else{
+	    		json.put("code", 302);
+	            json.put("message", "请先登入");
+	    	}
+	            
+		} catch (Exception e) {
+			e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getInviteDetail(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			boolean flag = false;
+			String compUserId = request.getSession().getAttribute("userId").toString();
+			if(Util.isVerify(request.getParameter("userId"), 0, 0, "[0-9]{1,10}")){
+				Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("userId", request.getParameter("userId"));
+				paramMap.put("compUserId", compUserId);
+				if(Util.isVerify(request.getParameter("reply"), 0, 0, "[0-3]")){
+					paramMap.put("isReply", request.getParameter("reply"));
+				}
+				List<Map<String, Object>> logList = feesDao.getInviteInfo(paramMap);
+				if(logList!=null && logList.size()>0){
+					Map<String, Object> resumeMap = feesDao.getInviteDetails(request.getParameter("userId"));
+					for(int i=0;i<logList.size();i++){
+						if(logList.get(i).get("status").toString().equals("1")){
+							if(resumeMap.get("toEmail")!=null && !resumeMap.get("toEmail").toString().equals("")){
+								resumeMap.put("email", resumeMap.get("toEmail").toString());
+								resumeMap.put("telephone", resumeMap.get("toPhone").toString());
+								flag = true;
+							}
+						}
+					}
+					if(!flag){
+						resumeMap.put("email", "");
+						resumeMap.put("telephone", "");
+					}
+					resumeMap.remove("toEmail");
+					resumeMap.remove("toPhone");
+					json.put("resume", resumeMap);
+					json.put("bidLogs", logList);
+					json.put("code", 200);
+			        json.put("message", "获取成功！");
+				}else{
+					json.put("code", 301);
+			        json.put("message", "获取失败！");
+				}
+			}else{
+				json.put("code", 301);
+		        json.put("message", "获取失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+}

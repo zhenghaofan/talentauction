@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.resume.dao.ResumeDao">
+   
+	<resultMap type="com.auction.resume.model.Educations" id="educationsResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="school" column="school"/>
+        <result property="specialty " column="specialty "/>
+    </resultMap>
+    
+	<resultMap type="com.auction.resume.model.Projects" id="projectResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="name" column="name"/>
+        <result property="projectDetails " column="projectDetails "/>
+    </resultMap>
+    
+    <resultMap type="com.auction.resume.model.WorkExperiences" id="workExpResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="jobTitle" column="jobTitle"/>
+        <result property="companyName " column="companyName "/>
+        <result property="workContent" column="workContent"/>
+    </resultMap>
+    
+    <insert id="add_resume" useGeneratedKeys="true" keyProperty="resumeId" parameterType="com.auction.resume.model.Resume">
+    	insert into resume (userId,jobYear,creatTime,surplusTime,cvBidStatus,cvCheckResult,cvCheckStatus,bidCount,sex,education,skills,destination) values (
+    	#{userId},0,#{creatTime},0,0,0,0,0,0,0,#{skills},#{destination})
+    </insert>
+    
+    <!-- 获取简历详细信息 -->
+    <select id="getResumDetailByUserId" resultType="java.util.HashMap" parameterType="map">
+        select  r.*,
+        	b.name specialName,
+        	a.email,
+        	a.telephone phone,
+        	ifnull(d.content,'') content,
+        	ifnull(c.companyNum,0) companyNum 
+        	<if test="companyId != null and companyId != ''">
+            	,ifnull(g.weight,0) weight,
+            	ifnull(g.yearWeight,0) yearWeight,
+            	ifnull(g.salaryWeight,0) salaryWeight,
+            	ifnull(g.jobWeight,0) jobWeight,
+            	h.skills companySkill,
+            	h.minSalary,
+            	h.maxSalary,
+            	h.minJobYear,
+            	h.maxJobYear 
+			</if> 
+        from (
+        	select resumeId,
+	        	userId,
+	        	destination,
+	        	expectedSalary,
+	        	jobTitle,
+	        	jobYear,
+	        	skills,
+	        	surplusTime,
+	        	cvBidStatus,
+	        	cvCheckStatus,
+	        	cvCheckResult,
+	        	bidCount,
+	        	name,
+	        	sex,
+	        	age,
+	        	readCount,
+	        	education,
+	        	rejectReason,
+	        	summary,
+	        	details,
+	        	code,
+	        	special,
+	        	specialCount,
+	        	ifnull(productUrl,"") productUrl,
+	        	ifnull(productImg,"") productImg 
+        	from resume where userId=#{userId} 
+        ) r 
+        left join rigistration a on r.userId=a.userId 
+        left join special b on b.id=r.special 
+        left join shield_logs d on a.userId=d.userId 
+        left join (
+        	select count(*) companyNum,
+        		d.special,
+        		d.specialCount,
+        		d.userId 
+        	from bid_logs d where userId=#{userId} group by special,specialCount 
+        ) c on r.userId=c.userId and r.special=c.special and r.specialCount=c.specialCount 
+        <if test="companyId != null and companyId != ''">
+			left join (
+				select 
+					resumeId,
+					demandId,
+					weight,
+					yearWeight,
+					salaryWeight,
+					jobWeight 
+				from match_talent f 
+				where f.companyId=#{companyId} and f.resumeId=(select resumeId from resume where userId=#{userId}) order by weight desc limit 1
+			) g on g.resumeId=r.resumeId 
+			left join talent_demand h on g.demandId=h.id 
+		</if>
+    </select>
+    
+    <!-- 获取简历详细信息 -->
+    <select id="getBackupResumDetail" resultType="map" parameterType="String">
+        select  r.*,a.email,a.telephone phone from (
+        	select * from b_resume where userId=#{0}) r 
+        left join rigistration a on r.userId=a.userId 
+    </select>
+    
+    <!-- 获取教育经历 -->
+    <select id="getEducationsAll" parameterType="map" resultMap="educationsResult">
+        select id,resumeId,startTime,endTime,school,specialty from ${tableName} where resumeId=#{resumeId}
+    </select>
+    
+    <!-- 获取项目经验 -->
+    <select id="getProjectsAll" parameterType="map" resultMap="projectResult">
+        select id,resumeId,startTime,endTime,name,projectDetails from ${tableName} where resumeId=#{resumeId}
+    </select>
+    
+    <!-- 获取工作经历 -->
+    <select id="getWorkExpAll" parameterType="map" resultMap="workExpResult">
+        select id,resumeId,startTime,endTime,jobTitle,companyName,workContent from ${tableName} where resumeId=#{resumeId}
+    </select>
+    
+    <!-- 获取求职意向 -->
+    <select id="getJobInfo" parameterType="String" resultType="map">
+    	select a.*,ifnull(b.content,"") content from (select userId,jobTitle,expectedSalary,destination,skills from resume where userId=#{0}) a left join shield_logs b on a.userId=b.userId limit 1
+    </select>
+    
+    <!-- 获取拍卖纪录 -->
+    <select id="getBidLogs" parameterType="map" resultType="java.util.HashMap">
+        select a.*,b.nickName,c.name cityName from (
+	        select 
+	        	userId,companyId,minBidPrice,maxBidPrice,isOption,bidTime,isUserRead,workTitle    
+	        from bid_logs 
+	        where userId=#{userId} and isDelete=1 
+	        <if test="isReply != null and isReply == 1">
+				and (isReply=1 or isReply=3) 
+			</if>
+			<if test="isReply != null and isReply != 1">
+				and isReply=#{isReply} 
+			</if>
+			order by bidTime desc  
+			limit ${page},${pageSize}
+        ) a 
+        left join company b on a.companyId=b.companyId 
+        left join cities c on b.city=c.id 
+        group by a.companyId
+    </select>
+    
+    <!-- 获取拍卖纪录 -->
+    <select id="wechatBidLogs" parameterType="map" resultType="java.util.HashMap">
+        select b.*,
+        	c.nickName,
+        	e.name cityName 
+        from (
+        	select id,
+				userId,
+        		companyId,
+        		minBidPrice,
+        		maxBidPrice,
+        		isOption,
+        		workTitle,
+        		bidTime,
+        		isReply,
+        		replyTime,
+        		rejectReason 
+        	from bid_logs 
+        	where isDelete='1' and userId=#{userId} 
+        	<if test="isReply != null and isReply == 1">
+				and (isReply=1 or isReply=3) 
+			</if>
+			<if test="isReply != null and isReply != 1">
+				and isReply=#{isReply} 
+			</if>
+        ) b 
+        left join company c on b.companyId=c.companyId 
+        left join cities e on c.city=e.id 
+		limit ${page},${pageSize}
+    </select>
+    
+    <!-- 获取拍卖纪录 -->
+    <select id="wechatBidLogsTotal" parameterType="map" resultType="Integer">
+        select count(*) Total
+        from bid_logs 
+        where isDelete='1' and userId=#{userId} 
+        <if test="isReply != null and isReply == 1">
+			and (isReply=1 or isReply=3) 
+		</if>
+		<if test="isReply != null and isReply != 1">
+			and isReply=#{isReply} 
+		</if> 
+    </select>
+    
+    <!-- 获取拍卖纪录 -->
+    <select id="getBidLogsTotal" parameterType="map" resultType="Integer">
+        select count(*) from (
+	       	select 
+	        	userId,
+	        	companyId 
+	        from bid_logs 
+	        where userId=#{userId} and isDelete=1 
+	        <if test="isReply != null and isReply == 1">
+				and (isReply=1 or isReply=3) 
+			</if>
+			<if test="isReply != null and isReply != 1">
+				and isReply=#{isReply} 
+			</if>
+			group by companyId 
+		) a
+    </select>
+    
+    <!-- 用户更新求职意向，不更新简历状态 -->
+    <select id="user_update_itent" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call user_update_itent (
+		   		#{i_expectedSalary,mode=IN,jdbcType=VARCHAR},
+		   		#{i_destination,mode=IN,jdbcType=VARCHAR},
+		   		#{i_content,mode=IN,jdbcType=VARCHAR},
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select> 
+	
+    <!-- 用户更新求职意向，不更新简历状态(重新提交审核) -->
+    <select id="user_resubmit_check" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call user_resubmit_check (
+		   		#{i_expectedSalary,mode=IN,jdbcType=VARCHAR},
+		   		#{i_destination,mode=IN,jdbcType=VARCHAR},
+		   		#{i_jobTitle,mode=IN,jdbcType=VARCHAR},
+		   		#{i_skills,mode=IN,jdbcType=VARCHAR},
+		   		#{i_content,mode=IN,jdbcType=VARCHAR},
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select>
+	
+    <update id="resumeUpload" parameterType="String">
+        update resume set status=1,updateTime=#{1},cvCheckResult=0,cvCheckStatus=0,bidCount=bidCount+1,special=0,
+        specialCount=0,isOnline=0,commitTime=#{1},isHired=0,repeatBidTime=commitTime where userId=#{0}
+    </update>
+    
+    <update id="userReply" parameterType="map">
+        update bid_logs set isCompanyRead=0,
+        <if test="isReply != null and isReply ==1">
+           isCompanyRead=0,
+        </if>
+        isReply=#{isReply},rejectReason=#{rejectReason},replyTime=#{replyTime} 
+        where id=#{id} and userId=#{userId}
+    </update>
+    
+    <select id="getWechatInfo" parameterType="String" resultType="map">
+        select a.*,
+        	b.email,
+        	b.openId,
+        	c.jobTitle,
+        	c.destination,
+        	c.code,
+        	c.name,
+        	c.skills,
+        	c.jobYear,
+        	d.companyId,
+        	d.nickName,
+        	d.city,
+        	d.progress,
+        	d.size,
+        	e.name cityName,
+        	f.email userEmail,
+        	f.telephone  
+        from (
+        	select 
+        		userId,
+        		companyId,
+        		minBidPrice,
+        		maxBidPrice,
+        		isOption,
+        		workTitle,
+        		compUserId,
+        		rejectReason 
+        	from bid_logs 
+        	where id=#{0}
+        ) a 
+        left join rigistration b on b.userId=a.compUserId 
+        left join resume c on c.userId=a.userId 
+        left join company d on d.companyId=a.companyId 
+        left join cities e on e.id=d.city left join rigistration f on a.userId=f.userId
+    </select>
+    
+    <!-- 简历再次参加拍卖（不需要审核） -->
+    <select id="resume_direct_Bid" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call resume_direct_Bid (
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select>
+	
+    <select id="getAutomaticCount" parameterType="String" resultType="Integer">
+       select count(*) from bid_logs where userId=#{0} and isAutomatic=1
+    </select>
+    
+    <select id="resumeOffShelves" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call resume_off_shelves (
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_openId,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select>
+    
+    <select id="getSurplusTime" parameterType="String" resultType="java.util.HashMap">
+        select a.*,
+        	b.bidTime,
+        	b.bidStatus,
+        	b.duration 
+        from (
+        	select 
+        		userId,
+        		special,
+        		isNextBide,
+        		specialCount 
+        	from resume 
+        	where cvBidStatus=1 and userId=#{userId}
+        ) a 
+        left join special_logs b on a.special=b.special and a.specialCount=b.specialCount
+    </select>
+    
+    <!-- 继续参加拍卖 -->
+    <select id="continueBid" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call continue_bid (
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select>
+	
+    <select id="getUserMessage" parameterType="String" resultType="java.lang.Integer">
+        select count(*) from bid_logs where isReply=0 and userId=#{0}
+    </select>
+    
+    <select id="addReadLogs" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call add_read_logs (
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_companyId,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select>
+	
+    <select id="getCompanyInfo" parameterType="String" resultType="java.util.HashMap">
+		select a.*,b.name cityName,c.name areaName from 
+		(
+			select companyId,name companyName,city,logoName,progress,size,nickName,area from company where companyId=#{companyId}
+		) a 
+		left join cities b on a.city=b.id 
+		left join areas c on a.area=c.id 
+    </select>
+    
+    <select id="getBidlogList" parameterType="String" resultType="java.util.HashMap">
+	   select a.*,b.toEmail,b.toPhone,b.name,c.email,c.telephone from (
+        	select 
+        		id, 
+        		companyId,
+        		userId,
+	        	isOption,
+	        	workTitle,
+	        	bidTime,
+	        	isReply,
+	        	replyTime,
+	        	rejectReason,
+	        	minBidPrice,
+	        	maxBidPrice,
+	        	acquireTime 
+	        from bid_logs 
+	        where userId=#{0} and companyId=#{1} and isDelete=1 
+		) a 
+		left join resume b on a.userId=b.userId 
+		left join rigistration c on a.userId=c.userId        
+    </select>
+    
+    <update id="updateReadStatus" parameterType="String">
+        update bid_logs set isUserRead=1 where userId=#{0} and companyId=#{1}
+    </update>
+</mapper> 

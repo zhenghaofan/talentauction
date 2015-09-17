@@ -1,0 +1,97 @@
+$(function($) {
+	var status = _getParam('s')? 1 : 0;
+	$('.sign-wrap').show();
+
+	if(status == 1) {
+		$('.sign-wrap .job').hide();
+		$('.sign-wrap .comp').show();
+	}
+	
+	/*注册*/
+	$("#submit").on('click', function(){
+		var param = {
+				userName: $("#email").val(),
+			    password: $("#password").val()
+		};
+		
+		if(!_check(param)) return;
+		
+		$.post('/wechat/userWechatBind ', param, function(res){
+			  res = $.parseJSON(res);
+			  if( res.code == 200 ) {
+				  showTip(status);
+			  } else {
+				  T.alert(res.message);
+			  }
+		});
+	});
+	
+	/*关闭微信浏览器*/
+	$("#close_btn").on('click', function() {
+		 WeixinJSBridge.call('closeWindow');
+	});
+	
+	/*注册提示信息*/
+	function showTip(status) {
+		$('body').css({'background-color': '#fff'});
+		$(".sign-wrap").hide();
+		$('.tip-wrap').show();
+	};
+	
+	/*验证注册*/
+	function _check(data) {
+		if( !data.userName ) {
+			$('#email').focus();
+			T.alert('请输入邮箱');
+			return false;
+		} else if( data.userName.indexOf('@') == -1 ) {
+			$('#email').focus();
+			T.alert('邮箱格式不对');
+			return false;
+		} else if( !data.password ) {
+			$('#pwd').focus();
+			T.alert('请输入密码');
+			return false;
+		} else if( !data.password ) {
+			$('#skill').focus();
+			T.alert('请选择技能');
+			return false;
+		} else if( !data.password ) {
+			$('#city').focus();
+			T.alert('请选择城市');
+			return false;
+		} else if( !data.password ) {
+			$('#name').focus();
+			T.alert('请选择姓名');
+			return false;
+		} else if( !data.password ) {
+			$('#title').focus();
+			T.alert('请选择职位');
+			return false;
+		} else if( !data.password ) {
+			$('#phone').focus();
+			T.alert('请输入手机号');
+			return false;
+		} else if( !data.password ) {
+			$('#code').focus();
+			T.alert('请输入验证码');
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/* 获取参数*/
+	function _getParam( name ) {
+		var query = window.location.search;
+		if (name) {
+			var r = new RegExp("[?&]" + name + "=([^&]*)");
+			var m = r.exec(query);
+			if (m) {
+				return m[1];
+			} else {
+				return null;
+			}
+		} 
+	}
+});

@@ -1,0 +1,30 @@
+.comp-wrap {
+	color: #6B7485;
+	margin: 46px auto 100px;
+}
+.comp-item {
+	
+}
+
+.guide-wrap {
+  height: 400px;
+  margin-top: 46px;
+  overflow: hidden;
+  background: url(../img/comp_banner.jpg) 48% 45% no-repeat;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

@@ -1,0 +1,50 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('upwdCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$('.viewport').show();
+		
+		$scope.emailLock = false;
+		var EMAIL_REGEXP = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		
+		/* 清除提示*/
+		$scope._clearTip = function(ele) {
+			$(ele).text('').hide();
+		};
+		
+		/* 验证更改设置*/
+		function _checkedInputs() {
+			$('.checked label').hide();
+			if(!$scope.email) {
+				$('#email').focus();
+				$('#email_tip').show().text('请输入邮箱！');
+				return false;
+			}
+			return true;
+		}
+		
+		/* 重新发送邮件*/
+		$scope.resendEmail = function() {
+			if(!_checkedInputs()) {
+				return;
+			}else{
+				if(EMAIL_REGEXP.test($scope.email)) {
+					
+				}else {
+					$('.checked label').hide();
+					$('#email_tip').show().text('请输入有效邮箱！');
+					$scope.emailLock = true;
+				}	
+			}	
+		};
+		
+ 	}]);
+	
+	app.bootstrap();
+});

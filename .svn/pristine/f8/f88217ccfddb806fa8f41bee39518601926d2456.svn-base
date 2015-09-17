@@ -1,0 +1,133 @@
+module.exports = function(grunt) {
+
+	// Project configuration.
+	grunt.initConfig({
+		pkg : grunt.file.readJSON('package.json'),
+		jshint: {
+			options: {
+				jshintrc: ".jshintrc",
+				force: false
+			},
+			files: ['Gruntfile.js', 'WebRoot/js/**/*.js']
+		},
+		requirejs: {
+			options: {
+				baseUrl: "WebRoot",
+				name: "js/common/almond",
+				optimize: "none",
+
+				paths: {
+					'$': 'js/common/jquery-1.11.1.min',
+					'angular': 'js/common/angular.min',
+					'app': 'js/angular-module',
+					'cookie' : 'js/common/cookie',
+					'url': 'js/common/url',
+					'upload': 'js/common/upload',
+					'uiservice': 'js/service/uiservice',
+					'info': 'js/service/info',
+					'zebra_datepicker': 'js/common/zebra_datepicker.src',
+					'zero_clipboard': 'js/common/zero_clipboard'
+				},
+
+				shim: {
+					'$': { exports: 'jQuery' },
+					'angular': { exports: 'angular' }
+				},
+				
+				packages: [
+					'controller'
+				]
+			},
+			
+			index: { options: { include: ["js/controller/index"],  out: "./WebRoot/js/controller/built/index-built.js" } },
+			about: { options: { include: ["js/controller/about"],  out: "./WebRoot/js/controller/built/about-built.js" } },
+			question: { options: { include: ["js/controller/question"],  out: "./WebRoot/js/controller/built/question-built.js" } },
+			agreement: { options: { include: ["js/controller/agreement"],  out: "./WebRoot/js/controller/built/agreement-built.js" } },
+			error: { options: { include: ["js/controller/error"],  out: "./WebRoot/js/controller/built/error-built.js" } },
+			bidforward: { options: { include: ["js/controller/bidforward"],  out: "./WebRoot/js/controller/built/bidforward-built.js" } },
+			signin: { options: { include: ["js/controller/signin"],  out: "./WebRoot/js/controller/built/signin-built.js" } },
+			signup: { options: { include: ["js/controller/signup"],  out: "./WebRoot/js/controller/built/signup-built.js" } },
+			upwd: { options: { include: ["js/controller/upwd"],  out: "./WebRoot/js/controller/built/upwd-built.js" } },
+			usetting: { options: { include: ["js/controller/usetting"],  out: "./WebRoot/js/controller/built/usetting-built.js" } },
+			mailbox: { options: { include: ["js/controller/mailbox"],  out: "./WebRoot/js/controller/built/mailbox-built.js" } },
+			mailresend: { options: { include: ["js/controller/mailresend"],  out: "./WebRoot/js/controller/built/mailresend-built.js" } },
+			placepool: { options: { include: ["js/controller/placepool"],  out: "./WebRoot/js/controller/built/placepool-built.js" } },
+			placebid: { options: { include: ["js/controller/placebid"],  out: "./WebRoot/js/controller/built/placebid-built.js" } },
+			jobinvite: { options: { include: ["js/controller/jobinvite"],  out: "./WebRoot/js/controller/built/jobinvite-built.js" } },
+			jobintent: { options: { include: ["js/controller/jobintent"],  out: "./WebRoot/js/controller/built/jobintent-built.js" } },
+			jobinfo: { options: { include: ["js/controller/jobinfo"],  out: "./WebRoot/js/controller/built/jobinfo-built.js" } },
+			jobresult: { options: { include: ["js/controller/jobresult"],  out: "./WebRoot/js/controller/built/jobresult-built.js" } },
+			jobbidlist: { options: { include: ["js/controller/jobbidlist"],  out: "./WebRoot/js/controller/built/jobbidlist-built.js" } },
+			complist: { options: { include: ["js/controller/complist"],  out: "./WebRoot/js/controller/built/complist-built.js" } },
+			compslt: { options: { include: ["js/controller/compslt"],  out: "./WebRoot/js/controller/built/compslt-built.js" } },
+			compinfo: { options: { include: ["js/controller/compinfo"],  out: "./WebRoot/js/controller/built/compinfo-built.js" } },
+			compdefault: { options: { include: ["js/controller/compdefault"],  out: "./WebRoot/js/controller/built/compdefault-built.js" } },
+			compbidlist: { options: { include: ["js/controller/compbidlist"],  out: "./WebRoot/js/controller/built/compbidlist-built.js" } },
+			compindex: { options: { include: ["js/controller/compindex"],  out: "./WebRoot/js/controller/built/compindex-built.js" } }
+		},
+
+		uglify : {
+			options : {
+				//banner : '/*! ver 0.0.1 */\n',
+				// report: "gzip",
+				beautify : false,
+				mangle : true,
+				compress : {
+					global_defs : {
+						"DEBUG" : false
+					},
+					drop_console : true
+				},
+				/*build : {
+					src : 'WebRoot/js/controller/*.js',
+					dest : 'WebRoot/js/controller/*.min.js'
+				}*/
+			},
+			dist : {
+				// compress all '*-built.js' to '*-build.min.js'
+				files : [ {
+					expand : true,
+					cwd : 'WebRoot/js/controller/built',
+					src : '*-built.js',
+					dest : 'WebRoot/js/controller/dist',
+					ext : '.min.js'
+				} ]
+			}
+		},
+		
+		cssmin: {
+		  combine: {
+		    files: {
+		      'WebRoot/css/dist/master.min.css': ['WebRoot/css/common/normalize.css', 'WebRoot/css/common/global.css']
+		    }
+		  },
+		  my_target: {
+			files: [{
+				expand: true,
+				cwd: 'WebRoot/css/common',
+				src: ['*.css', '!*.min.css'],
+				dest: 'WebRoot/css/dist',
+				ext: '.min.css'
+			}]
+		 }
+		}
+	});
+
+	// 加载包含 "uglify" 任务的插件。
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-requirejs');
+	
+	// 默认被执行的任务列表。
+	grunt.registerTask('default', [ 
+        /*'jshint',*/
+        'requirejs',
+        'uglify',
+        'cssmin'
+    ]);
+	
+	/*grunt.registerTask('validate', [
+		'jshint'
+	]);*/
+};

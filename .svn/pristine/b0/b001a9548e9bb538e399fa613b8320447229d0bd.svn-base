@@ -1,0 +1,29 @@
+
+
+body {
+	background-color: #fff;
+}
+
+
+/* 用户登录*/
+.tip-wrap {
+	position: relative;
+}
+.tip-wrap .text {
+	width: 80%;
+	min-height: 100px;
+	color: #333;
+	font-size: 1.2em;
+	margin: 30px auto 20px;
+	word-wrap:break-word ;"
+}
+.tip-wrap .logo {
+	text-align: center;
+	padding: 0 0 20px;
+}
+.tip-wrap .logo .ico {
+	width: 65%;
+	max-width: 280px;
+}
+
+

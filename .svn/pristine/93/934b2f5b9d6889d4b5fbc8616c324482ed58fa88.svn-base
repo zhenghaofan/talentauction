@@ -1,0 +1,33 @@
+
+/**
+ * 注册存储过程
+ */
+DROP PROCEDURE IF EXISTS user_register;
+create procedure user_register(
+	in i_email varchar(50),
+	in i_pwd varchar(50),
+	in i_status int,
+	in i_telephone varchar(11),
+	in i_name varchar(500),
+	in i_jobTitle varchar(500),
+	in i_skills varchar(500),
+	in i_destination varchar(50),
+	out resultNumber int
+)
+begin
+	declare v_user_count int;
+	declare v_user_id int;
+	select count(*) into v_user_count from rigistration where email=i_email;
+	if v_user_count>0 then
+		set resultNumber = v_user_count;
+	else
+		insert into rigistration set email=i_email,password=i_pwd,status=i_status,isNormal=1,rigistraTime=NOW(),name=i_name,jobTitle=i_jobTitle,telephone=i_telephone;
+		if status=0 then 
+			select userId into v_user_id from rigistration where email=i_email limit 1;
+			if v_user_id>0 then
+				insert into resume set userId=v_user_id,jobYear=0,surplusTime=0,cvBidStatus=0,cvCheckResult=0,cvCheckStatus=0,bidCount=0,special='0',specialCount='0',sex=0,education=0,skills=i_skills,destination=i_destination,creatTime=NOW();
+			end if;
+		end if;
+	end if;
+end
+

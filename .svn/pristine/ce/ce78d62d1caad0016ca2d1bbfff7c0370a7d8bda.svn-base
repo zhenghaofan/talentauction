@@ -1,0 +1,316 @@
+package com.auction.resume.service.Impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Service;
+import net.sf.json.JSONObject;
+import com.auction.common.dao.BaseDao;
+import com.auction.common.util.Util;
+import com.auction.resume.dao.CvMakeDao;
+import com.auction.resume.dao.ResumeDao;
+import com.auction.resume.service.ResumeService;
+
+/** 
+ * @author tobber
+ * @version 2015年4月17日
+ */
+
+@Service
+public class ResumeServiceImpl implements ResumeService{
+	@Resource
+	private ResumeDao resumeDao;
+	@Resource
+	private BaseDao baseDao;
+	@Resource
+	private CvMakeDao cvMakeDao;
+	
+	@Override
+	public String getUserResume(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+        	Boolean flag = false;	
+    		String userId = request.getParameter("userId"); //简历
+    		if((userId==null || "".equals(userId)) && request.getSession().getAttribute("userId")!=null){
+    			userId= request.getSession().getAttribute("userId").toString();
+    			flag = true;
+    		}
+    		
+	        Map<String, Object> resumeMap = resumeDao.getResumDetailByUserId(userId);
+	        if(resumeMap!=null && resumeMap.size()>0){
+	        	
+        		//判断是否本人查看简历
+	        	if(request.getSession().getAttribute("userId")== null|| (request.getSession().getAttribute("userId")!=null && !userId.equals(request.getSession().getAttribute("userId").toString()))){ 
+		        	if(resumeMap.get("phone")!=null){
+		        		String strPhone =resumeMap.get("phone").toString(); 
+		        		String telephone = strPhone.substring(0,3)+"*******"+strPhone.substring(strPhone.length()-1);
+		        		resumeMap.put("phone", telephone);
+		        	}
+		        	if(resumeMap.get("email")!=null){
+		        		String strEmail = resumeMap.get("email").toString();
+		        		String email = strEmail.substring(0,3)+"******"+strEmail.substring(strEmail.indexOf("@"));
+		        		resumeMap.put("email", email);
+		        	}
+	        	}
+	        	json.put("resume", resumeMap);
+	        	
+	        	Map<String, Object> params = new HashMap<String, Object>();
+	        	params.put("resumeId", resumeMap.get("resumeId").toString());
+	        	
+	        	params.put("tableName", "educations");
+	            List<Map<String, Object>> educationList = resumeDao.getEducationsAll(params);//教育经历
+	            if(educationList!=null && educationList.size()>0){
+	            	json.put("educations", educationList);
+	            }else{
+	            	json.put("educations", "null");
+	            }
+	           
+	        	if(flag || (request.getSession().getAttribute("userId")!=null && request.getSession().getAttribute("status").toString().equals("1"))){
+		            //项目经验表
+	        		params.put("tableName", "projects");
+		            json.put("projects", resumeDao.getProjectsAll(params));
+		            
+		            //工作经验表
+		            params.put("tableName", "work_experiences");
+		            json.put("work_experiences", resumeDao.getWorkExpAll(params));
+	        	}else{
+	        		json.put("projects", "null");
+	        		json.put("work_experiences", "null");
+	        	}
+	        	
+	            json.put("code", 200);
+	            json.put("message", "简历获取成功");
+	            
+	        }else{
+	        	json.put("code", 301);
+	            json.put("message", "没有简历信息");
+	        }
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 501);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+	
+	@Override
+	public String getUserBackupResume(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+    		String userId = request.getSession().getAttribute("userId").toString();
+	       
+    		Map<String, Object> resumeMap = resumeDao.getBackupResumDetail(userId);
+	        if(resumeMap!=null && resumeMap.size()>0){
+	        	json.put("resume", resumeMap);
+	        	
+	        	Map<String, Object> params = new HashMap<String, Object>();
+	        	params.put("resumeId", resumeMap.get("resumeId").toString());
+	        	//教育经验
+	        	params.put("tableName", "b_educations");
+	        	json.put("educations",resumeDao.getEducationsAll(params));//教育经历
+		        //项目经验
+	        	params.put("tableName", "b_projects");
+	            json.put("projects", resumeDao.getProjectsAll(params));
+	            //工作经验
+	            params.put("tableName", "b_workexp");
+	            json.put("work_experiences", resumeDao.getWorkExpAll(params));
+	            json.put("code", 200);
+	            json.put("message", "简历获取成功");
+	            
+	        }else{
+	        	json.put("code", 301);
+	            json.put("message", "没有简历信息");
+	        }
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 501);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+
+	@Override
+	public String getJobInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+		    if(request.getSession().getAttribute("userId")!=null){
+		    	Map<String, Object> jobInfoMap = resumeDao.getJobInfo(request.getSession().getAttribute("userId").toString());
+		    	if(jobInfoMap!=null && jobInfoMap.size()>0){
+		    		json.put("jobInfo",jobInfoMap.get(0));
+		    	}else{
+		    		json.put("jobInfo","null");
+		    	}
+		    	json.put("code", "200");
+		        json.put("message", "获取成功");
+		    }else{
+		    	json.put("code", "300");
+		        json.put("message", "请先登陆");
+		    }
+	    } catch (Exception e) { 
+	        e.printStackTrace();
+	        json.put("code", "500");
+		    json.put("message", "服务器异常");;  
+	    } 
+		return json.toString();
+	}
+
+	@Override
+	public String getBidLogs(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		int page = 1;
+		int pageSize = 20;
+		String sort ="id";
+		String sortMethod = "desc";
+		String trem = null;
+        try {  
+        	if(request.getSession().getAttribute("userId")!=null){
+        		
+        		if(Util.isVerify(request.getParameter("page"), 0, 0, "[1-9][0-9]{0,10}")){
+        			page = Integer.parseInt(request.getParameter("page"));
+        		}
+        		if(Util.isVerify(request.getParameter("pageSize"), 0, 0, "[1-9][0-9]{0,1}")){
+        			pageSize = Integer.parseInt(request.getParameter("pageSize"));
+        		}
+        		//按时间排序sort＝"id"、按价格排序sort＝"bidPrice"、按规模排序sort＝"size"、按规模排序sort＝"progress"
+        		if(Util.isVerify(request.getParameter("sort"), 0, 0, "[a-zP]{2,8}")){ //
+        			sort = request.getParameter("sort");
+        		}
+        		//降序sortMethod＝"desc"、升序sortMethod＝"asc"
+        		if(Util.isVerify(request.getParameter("sortMethod"), 0, 0, "[a-z]{3,4}")){
+        			sortMethod = request.getParameter("sortMethod");
+        		}
+        		if(Util.isVerify(request.getParameter("reply"), 0, 0, "[0-3]")){
+        			if("1".equals(request.getParameter("reply"))){
+        				trem = "isReply='"+request.getParameter("reply")+"' or isReply='3'";
+        			}else{
+        				trem = "isReply='"+request.getParameter("reply")+"'";
+        			}
+        		}
+        		Map<String, Object> params = new HashMap<String, Object>();
+        		params.put("userId", request.getSession().getAttribute("userId").toString());
+        		params.put("page", (page-1)*pageSize);params.put("pageSize", "pageSize");
+        		params.put("trem", trem);params.put("sort", sort);params.put("sortMethod", sortMethod);
+        		
+        		List<Map<String,Object>> bidLogsList = resumeDao.getBidLogs(params);
+        		int total = resumeDao.getBidLogsTotal(params);
+            	if(bidLogsList!=null){
+                	for(int i=0;i<bidLogsList.size(); i++){ //算天数
+                		Map<String, Object> map = bidLogsList.get(i);
+                		String[] bidStr = map.get("bidTime").toString().split("/");
+                		bidLogsList.get(i).put("bidTime",bidStr[1]+"-"+bidStr[2]+" "+bidStr[3]+":"+bidStr[4]);
+                	}
+                	json.put("bidLogs",bidLogsList);
+            	}
+            	
+        		json.put("page", page);
+        		json.put("pageSize", pageSize);
+        		if(total%pageSize==0){
+        			json.put("totalPage", total/pageSize);
+        		}else{
+        			json.put("totalPage", (total/pageSize)+1);
+        		}
+        		json.put("code", "200");
+                json.put("message", "获取成功");
+                
+        	}else{
+        		json.put("code", "300");
+                json.put("message", "请先登陆");
+        	}
+        } catch (Exception e) { 
+            json.put("code", "500");
+            json.put("message", "服务器异常");
+        } 
+       return json.toString();
+	}
+
+	@Override
+	public String updateJobInfo(final HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+        try {  
+        	
+        	Map<String, Object> params = new HashMap<String, Object>();
+        	params.put("i_userId",request.getSession().getAttribute("userId").toString());
+        	
+        	if(Util.isVerify(request.getParameter("expectedSalary"),0,0,"[1-9][0-9]{0,1}")){
+        		params.put("i_expectedSalary",Integer.parseInt(request.getParameter("expectedSalary")));
+        	}
+        	if(Util.isVerify(request.getParameter("destination"),1,15,null)){
+        		params.put("i_destination",request.getParameter("destination"));
+        	}
+        	if(Util.isVerify(request.getParameter("content"),2,100,null)){
+        		params.put("i_content",request.getParameter("content"));
+        	}
+        	
+        	if(params!=null && params.size()>0){
+        		resumeDao.user_update_itent(params);
+        		if(params.get("resultNumber")!=null && params.get("resultNumber").toString().equals("1")){
+        			 json.put("code", 200);
+                     json.put("message", "更新成功！");
+        		}else{
+        			json.put("code", 200);
+                    json.put("message", "更新失败！");
+        		}
+            }else{
+            	 json.put("code", 301);
+                 json.put("message", "请输入更新信息！");
+            }
+        } catch (Exception e) {
+        	e.printStackTrace();
+            json.put("code", "500");
+            json.put("message", "服务器异常");
+        } 
+       return json.toString();
+	}
+	
+	@Override
+	public String resubmitCheck(final HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+        try {  
+        	
+        	Map<String, Object> params = new HashMap<String, Object>();
+        	params.put("i_userId",request.getSession().getAttribute("userId").toString());
+        	
+        	if(Util.isVerify(request.getParameter("expectedSalary"),0,0,"[1-9][0-9]{0,1}")){
+        		params.put("i_expectedSalary",Integer.parseInt(request.getParameter("expectedSalary")));
+        	}else{
+        		params.put("i_expectedSalary",null);
+        	}
+        	if(Util.isVerify(request.getParameter("destination"),1,15,null)){
+        		params.put("i_destination",request.getParameter("destination"));
+        	}else{
+        		params.put("i_destination",null);
+        	}
+        	if(Util.isVerify(request.getParameter("jobTitle"),1,25,null)){
+        		params.put("i_jobTitle",request.getParameter("jobTitle"));
+        	}else{
+        		params.put("i_jobTitle",null);
+        	}
+        	if(Util.isVerify(request.getParameter("skills"),1,25,null)){
+        		params.put("i_skills",request.getParameter("skills"));
+        	}else{
+        		params.put("i_skills",null);
+        	}
+        	if(Util.isVerify(request.getParameter("content"),2,100,null)){
+        		params.put("i_content",request.getParameter("content"));
+        	}else{
+        		params.put("i_content",null);
+        	}
+        	
+    		resumeDao.user_resubmit_check(params);
+    		if(params.get("resultNumber")!=null && params.get("resultNumber").toString().equals("1")){
+    			 json.put("code", 200);
+                 json.put("message", "更新成功！");
+    		}else{
+    			json.put("code", 200);
+                json.put("message", "更新失败！");
+    		}
+        } catch (Exception e) {
+        	e.printStackTrace();
+            json.put("code", "500");
+            json.put("message", "服务器异常");
+        } 
+       return json.toString();
+	}
+}

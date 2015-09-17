@@ -1,0 +1,88 @@
+
+
+.question-wrap {
+	width: 1024px;
+	color: #6B7485;
+	margin: 106px auto 100px;
+}
+
+.con-title {
+	font-size: 30px;
+	lieng-height: 35px;
+	text-align: center;
+	color: #2D4D7B;
+}
+
+.con-select {
+	margin: 45px 0 50px;
+	text-align: center;
+}
+
+.con-select-btn {
+	color: #535353;
+	cursor: pointer;
+	display: inline-block;
+	line-height: 45px;
+	height: 45px;
+	width: 250px;
+	font-size: 18px;
+	border: 1px solid #DFDFDF;
+	background: #eceef1;
+	margin: 0 8px 0 8px;
+	border-radius: 3px;
+}
+
+.con-btn-select {
+	background-color: #3FA9F5;
+	color: #fff;
+}
+
+.con-wrap {
+	margin: 35px 0;
+}
+
+.ques-ans-item {
+	padding-bottom: 20px;
+	margin: 0 auto;
+	padding:0 80px 45px;
+}
+
+.ques:before {
+	content: '';
+	background: url(../img/Q.png) top left no-repeat transparent;
+	width: 43px;
+	height: 43px;
+	margin-right: 25px;
+	vertical-align: middle;
+	float: left;
+}
+
+.ques {
+	font-size: 20px;
+	color: #2D4D7B;
+	line-height: 43px;
+	height: 43px;
+	margin-bottom: 20px;
+}
+
+.ans:before {
+	content: '';
+	background: url(../img/A.png) top left no-repeat transparent;
+	width: 43px;
+	height: 43px;
+	margin-right: 25px;
+	vertical-align: middle;
+	float: left;
+}
+
+.ans {
+	font-size: 16px;
+	line-height: 30px;
+	color: #535353;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>实力拍-互联网人才拍卖|专场人才拍卖</title>
+	<meta name="keywords" content="实力拍, 互联网人才拍卖, 中高端人才">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/jobinvite.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/jobinvite.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/jobinvite" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/dist/jobinvite-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div> 
+		<div id="main" ng-controller="inviteCtrl">
+			<div class="invite-wrap">
+				<div class="invite-item">
+					<div class="title-wrap">
+						<div class="invite-title">
+							<div>
+								<span class="fz-2 fb">邀请您的朋友注册实力拍</span>
+							</div>
+							<div>
+								<span class="fz-1">邀请朋友参加实力拍专场拍卖，为TA寻找更多更好的机会。一旦您的朋友通过实力拍成功入职，您与TA都将100%获得由实力拍送出的奖金</span>
+							</div>
+							<div>
+								<span class="fz-1 fb">TA将获得</span>
+							</div>
+							<div>
+								<span class="fz-1">您的朋友在实力拍找工作，TA将获得 <em class="fc-1 fb">3000元</em> 人民币入职奖金</span>
+							</div>
+							<div>
+								<span class="fz-1 fb">您将获得</span>
+							</div>
+							<div>
+								<span class="fz-1">您的朋友在实力拍找到工作，您将获得 <em class="fc-1 fb">1500元</em> 人民币介绍奖金</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="invite-item">
+					<div class="inp-wrap">
+						<div class="dot-wrap">
+							<div class="dot-item">
+								<span class="dot" ng-class="{1: 'slt'}[step]">1</span>
+								<span class="line"></span>
+								<span class="dot" ng-class="{2: 'slt'}[step]">2</span>
+							</div>
+							<div class="dot-item">
+								<label ng-class="{1: 'slt'}[step]">申请邀请</label>
+								<label ng-class="{2: 'slt'}[step]">邀请朋友</label>
+							</div>
+						</div>
+						<div class="step-1" ng-if="step == 1">
+							<form ng-submit="joinInvite()" ng-init="initInvite()">
+								<div class="step-1-item">
+									<span class="remarks">姓&nbsp;&nbsp;&nbsp;名</span>
+									<input type="text" id="name" ng-model="userInfo.name" ng-change="_clearTip('#name_tip')" maxlength="12" placeholder="请输入姓名">
+									<div class="checked">
+										<label id="name_tip" class="invalid"></label>
+									</div>
+								</div>
+								<div class="step-1-item">
+									<span class="remarks">邮&nbsp;&nbsp;&nbsp;箱</span>
+									<input type="text" id="email" ng-model="userInfo.email" ng-change="_clearTip('#email_tip')" maxlength="50" placeholder="请输入邮箱">
+									<div class="checked">
+										<label id="email_tip" class="invalid"></label>
+									</div>
+								</div>
+								<div class="step-1-item">
+									<button class="btn">下一步</button>
+									<div class="tip">
+										<span>姓名与邮箱地址将作为您领取奖金的凭据，请慎重填写</span>
+									</div>
+								</div>
+							</form>
+						</div>
+						
+						<div class="step-2" ng-show="step == 2">
+							<div class="step-2-item">
+								<a class="jiathis_button_tsina">微博分享</a>							
+							</div>
+							<div class="step-2-item cp">
+								<span class="remarks">地&nbsp;&nbsp;&nbsp;址</span>
+								<input id="url" type="text" ng-model="joinResult.inviteUrl" placeholder="链接地址">
+								<button id="cpBtn" class="cp-btn">复制</button>
+								<div class="tip">
+									<span>您可以将上面的链接复制粘贴在您的博客、微博上、或QQ发给您的朋友</span>
+								</div>		
+							</div>
+							<div class="step-2-item info">
+								<div>
+									<span>发件人：</span>
+									<span ng-bind="joinResult.email"></span>
+								</div>
+								<div>
+									<span>主&nbsp;&nbsp;&nbsp;题：</span>
+									<span ng-bind="joinResult.name + '邀请您体验shilipai.net'"></span>
+								</div>
+							</div>
+							<form ng-submit="sendInvite()">
+								<div class="step-2-item">
+									<span class="remarks">姓&nbsp;&nbsp;&nbsp;名</span>
+									<input type="text" id="name" ng-model="userInfo.name" ng-change="_clearTip('#name_tip')" maxlength="12" placeholder="朋友的姓名">
+									<div class="checked">
+										<label id="name_tip" class="invalid"></label>
+									</div>								
+								</div>
+								<div class="step-2-item">
+									<span class="remarks">邮&nbsp;&nbsp;&nbsp;箱</span>
+									<input type="text" id="email" ng-model="userInfo.email" ng-change="_clearTip('#email_tip')" maxlength="50" placeholder="朋友的邮箱">
+									<div class="checked">
+										<label id="email_tip" class="invalid"></label>
+									</div>								
+								</div>
+								<div class="step-2-item">
+									<span class="remarks">留&nbsp;&nbsp;&nbsp;言</span>
+									<textarea  id="sms" maxlength="25" ng-model="userInfo.sms" ng-change="_clearTip('#sms_tip')" placeholder="想对朋友说的话"></textarea>
+									<div class="checked">
+										<label id="sms_tip" class="invalid"></label>
+									</div>
+								</div>
+								<div class="step-2-item code">
+									<span class="remarks">验证码</span>
+									<input type="text" id="answer" maxlength="4" ng-model="userInfo.answer" ng-change="_clearTip('#answer_tip')" placeholder="请输入验证码">
+									<span class="panel" ng-click="getCaptcha()" ng-bind="captcha"></span>
+									<div class="checked">
+										<label id="answer_tip" class="invalid"></label>
+									</div>								
+								</div>
+								<div class="step-2-item">
+									<button class="btn">发送邀请</button>
+								</div>
+							</form>
+						</div>					
+					</div>
+				</div>
+				
+				<div class="invite-item" ng-if="step == 2">
+					<div class="list-wrap fz-1">
+						<div class="title">
+							<span>已邀请列表</span>
+						</div>
+						<div class="list-box" ng-init="getInviteList()">
+							<ul>
+								<li>
+									<div class="th">
+										<span class="name">姓名</span>
+										<span class="mail">邮箱</span>
+										<span class="state">状态</span>
+										<span class="time">邀请时间</span>									
+									</div>
+								</li>
+								<li ng-repeat="item in inviteList">
+									<div class="tr">
+										<span class="name" ng-bind="item.name"></span>
+										<span class="mail" ng-bind="item.email"></span>
+										<span class="state" ng-bind="item.progressText"></span>
+										<span class="time" ng-bind="item.inviteTime"></span>										
+									</div>
+									<div class="state-wrap">
+										<div class="text">
+											<span class="rangle"></span>
+											<span class="step-1">注册</span>
+											<span class="step-2">递交简历申请</span>
+											<span class="step-3">参加拍卖</span>
+											<span class="step-4">拍卖结束</span>
+											<span class="step-5">入职</span>
+										</div>
+										<div class="state">
+											<div class="line">
+												<span class="dot step-1" ng-class="{true: 'slt'}[(!!true)]"></span>
+												<span class="dot step-2" ng-class="{true: 'slt'}[(!!item.commitTime)]"></span>
+												<span class="dot step-3" ng-class="{true: 'slt'}[(!!item.shelvesTime)]"></span>
+												<span class="dot step-4" ng-class="{true: 'slt'}[(!!item.offShelvesTime)]"></span>
+												<span class="dot step-5" ng-class="{true: 'slt'}[(!!item.hiredTime)]"></span>
+											</div>
+										</div>
+										<div class="time">
+											<span class="step-1" ng-if="item.rigistraTime" ng-bind="item.rigistraTime"></span>
+											<span class="step-2" ng-if="item.commitTime" ng-bind="item.commitTime"></span>
+											<span class="step-3" ng-if="item.shelvesTime" ng-bind="item.shelvesTime"></span>
+											<span class="step-4" ng-if="item.offShelvesTime" ng-bind="item.offShelvesTime"></span>
+											<span class="step-5" ng-if="item.hiredTime" ng-bind="item.hiredTime"></span>
+										</div>
+									</div>
+								</li>								
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>								
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/placedetail.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<script src="../js/mobile/uiservice.js"></script>
+	<script src="../js/mobile/placedetail.js"></script>
+</head>
+<body>
+	<div class="viewport">
+		<div class="job-wrap">
+			<div class="top-bar">
+				<i class="top-bar-spec"><img class="top-bar-ico" src="/img/app_back.png"/></i>
+				<span>简历详情</span>
+				<div class="clear"></div>
+			</div>
+			<div class="info-item-title">
+				<span class="skill">前端开发</span>
+				<span>[ 20号 ]</span>
+			</div>
+			<div class="info-base-warp">
+				<div class="context">
+					<div>
+						<span class="ico_sex"></span>
+						<span class="ico_clock"></span>
+						<span class="ico_book"></span>
+						<span class="ico_year"></span>						
+					</div>
+					<div>
+						<span class="ico_skills"></span>
+					</div>
+					<div>
+						<span class="ico_addr"></span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="info-detail-warp">
+				<div class="title">
+					<span>教育经历</span>
+				</div>
+				<div class="edu context"></div>
+				<div class="title">
+					<span>工作经历</span>
+				</div>
+				<div class="work context"></div>
+				<div class="title">
+					<span>项目经验</span>
+				</div>
+				<div class="project context"></div>
+				<div class="title">
+					<span>个人总结</span>
+				</div>
+				<div class="summary context">
+					<div><p></p></div>
+				</div>
+				<div class="title">
+					<span>求职意向</span>
+				</div>
+				<div class="intention context">
+					<div><span></span></div>				
+				</div>
+			</div>
+			
+			<a href="" class="button">我要拍价</a>		
+		</div>
+	</div>
+</body>
+</html>

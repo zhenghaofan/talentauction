@@ -1,0 +1,112 @@
+$(function($) {
+	var cityArray = [];
+	
+	$('.sign-wrap').show();
+	bind();
+	
+	/* 获取技能*/
+	function load() {
+		$.post('/common/getSkillsList', {}, function(res){
+			  res = $.parseJSON(res);
+			  
+			  if( res.code == 200 ) {
+				  initEle(res.specialList);
+			  }
+		});
+	};
+	
+	/* 增加技能*/
+	$('#add_city').on('click', function() {
+		var text = $('#city').val();
+		
+		if(cityArray.length > 1) return;
+		
+		if(text) {
+			cityArray.push(text);
+			addCity(text);
+			$('#city').val('');
+		}
+	});
+	
+	/* 增加技能*/
+	function addCity() {
+		var ele = $('.sign-form .tip');
+		var html = [];
+		
+		ele.empty();
+		
+		for ( var i in cityArray) {
+			html.push('<span class="skill-text">' + cityArray[i] +'</span>');
+		}
+		
+		ele.append(html.join(''));
+	}
+	
+	/* 移除技能*/
+	$(document).on('click', '.tip .skill-text', function() {
+		var str = $(this).text();
+		subCity(str);
+		removeCss(str);
+	});
+	
+	/* 移除技能*/
+	function subCity(str) {
+		var ele = $('.sign-form .tip');
+		var html = [];
+		
+		for ( var i in cityArray) {
+			if(str == cityArray[i]) {
+				cityArray.splice(i, 1);
+			}
+		}
+		
+		ele.empty();
+		
+		for ( var i in cityArray) {
+			html.push('<span class="skill-text">' + cityArray[i] +'</span>');
+		}
+		
+		if(!cityArray .length) {
+			html.push('<span class="text">城市限两个</span>');
+		}
+	
+		LocalStorage.set('city', cityArray);
+		ele.append(html.join(''));
+	}
+	
+	/* 移除选中样式*/
+	function removeCss(str) {
+		var ele = $('.city-box .feel-item');
+		
+		ele.each(function(_index) {
+			var _that = $(ele[_index]);
+			
+			if(str ==_that.text()) {
+				_that.removeClass('slt');
+			}
+		});
+	};
+	
+	/* 后退*/
+	$('.bar-back').click(function() {
+		window.location.href="/wap/signup.html";
+	});
+	
+	/* 绑定元素*/
+	function bind() {
+		$('.city-box .feel-item').on('click', function() {
+			var feel = $(this);
+			
+			if(feel.hasClass('slt')) {
+				feel.removeClass('slt');
+				subCity(feel.text());
+			}else {
+				if(cityArray.length > 1) return;
+				feel.addClass('slt');
+				cityArray.push(feel.text());
+				addCity(feel.text());
+				LocalStorage.set('city', cityArray);
+			}
+		});	
+	}
+});

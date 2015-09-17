@@ -1,0 +1,142 @@
+
+body {
+	background-color: #E2E2E2;
+}
+
+
+/* 我的Offer*/
+.job-wrap {
+	padding-bottom: 65px;
+}
+.job-wrap .c_b {
+	color: #3988CD;
+}
+.job-wrap .c_r {
+	color: #E6775C;
+}
+.job-wrap .f_b {
+	font-weight: bold;
+}
+.job-wrap .mg_b16 {
+	margin-bottom: 10px;
+}
+.job-wrap .ico_sex {
+	background: url("/img/app_sex_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .ico_book {
+	background: url("/img/app_book_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .ico_clock {
+	background: url("/img/app_clock_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .ico_msg {
+	background: url("/img/app_msg_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .ico_phone {
+	background: url("/img/app_phone_ico.png") no-repeat;
+	background-size: 10px;
+	background-position: 0 50%;
+}
+.job-wrap .bid-text-warp {
+	border-radius: 3px;
+	border: 1px solid #ccc;
+	margin: 20px 10px 10px;
+	background-color: #fff;
+	overflow: hidden;	
+}
+.job-wrap .title {
+	height: 40px;
+	font-size: 1.3em;
+	line-height: 55px;
+	padding-left: 18px;
+	font-weight: bold;
+}
+.bid-text-warp .con {
+	font-size: 1.1em;
+	line-height: 20px;
+	padding: 15px 18px;
+}
+.bid-text-warp .con span {
+	display: none;
+}
+.info-base-warp {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin: 0 10px 10px 10px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.info-base-warp .context {
+	padding: 6px 18px 12px;
+}
+.info-base-warp .context span {
+	font-size: 1.1em;
+	padding: 4px 22px;
+	display: inline-block;
+}
+.info-base-warp .context span.pading_18 {
+	padding-left: 18px;
+}
+.info-status-warp {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin: 0 10px 10px 10px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.info-status-warp .context {
+	padding: 6px 18px 12px 18px;
+}
+.info-status-warp .context div > span {
+	font-size: 1.1em;
+	padding: 4px 22px 4px 0;
+	display: inline-block;
+}
+.info-detail-warp {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin: 0 10px 10px 10px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.info-detail-warp .title {
+	border-top: 1px solid #ccc;
+}
+.info-detail-warp .title:first-child {
+	border: none;
+}
+.info-detail-warp .context {
+	padding: 6px 18px 12px 18px;
+}
+.info-detail-warp .context div > span {
+	font-size: 1.1em;
+	padding: 4px 0;
+	display: inline-block;
+}
+
+
+
+
+/* 简历状态*/
+.tips-warp .state {
+	width: 90%;
+	max-width: 300px;
+	margin: 30% auto 0;
+	display: none;
+}
+.tips-warp .state span {
+	font-size: 1.4em;
+	line-height: 1.5em;
+}
+.tips-warp .item-text {
+	margin-bottom: 10px;
+}
+

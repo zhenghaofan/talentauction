@@ -1,0 +1,472 @@
+$(function($) {
+	var query = {
+			index: 1,
+			size: 10,
+			totle: 0,
+			exp: '',
+			city: '',
+			edu: '',
+			spec: ''
+	};
+	
+	var time = {
+			day: 0,
+			hour: 0,
+			min: 0,
+			sec: 0,
+			handle: null
+	};
+	
+	var _spec = _getParam('spc');
+	var specialList;
+	
+	
+	if( !!_spec ) {
+		query.spec = _spec;
+		//_getCountTime();
+	} else {
+		T.alert('请选择专场');
+	}
+	
+	//1 显示左侧栏 2 显示主体 3 显示右侧栏
+	var screenState = 2;
+	
+	
+	
+	init();
+	function init() {
+		var screen = getScreen();
+		
+		var side_r_con_h = Number(screen.height) - 40; 
+		$(".side-r-con").css('height', side_r_con_h + 'px');
+		
+		var con_h = Number(screen.height - 40);
+		$("#spec_list").css('height', con_h + 'px');
+		
+		var con_det_h = Number(screen.height - 80);
+		$("#spec_det_l").css('height', con_det_h + 'px');
+		
+		//_getStatus();
+		//_getSpec();
+	}
+	
+	//获取专场
+	function _getSpec() {
+		$.get('/getSpecial', function(res) {
+			if( res.code == 200 ) {
+				var text, list = res.specialList ;
+				for( var i = 0; i < list.length; i++ ) {
+					if( list[i].id == _spec ) {
+						text = list[i].name;
+						break;
+					}
+				}
+				$("#spec_title").text(text);
+				specialList = res.specialList;
+				_getDetialData();
+			} else {
+				 T.alert(res.message);
+			}
+		});
+	}
+	
+	
+	function _getStatus() {
+		$.get('/userStatus', function( res ) {
+			var status;
+			if( res.code == 200 ) {
+				status = res.status;
+			} else {
+				status = 2;
+			}
+			_initMenu(status);
+		});
+	}
+	
+	//个人，游客，公司目录
+	function _initMenu( status ) {
+		var html = [];
+		html.push('<li class="side-l-item b-t0"><a href="/special">专场列表 </a></li>');
+		if( status == 0 ) {
+			html.push('<li class="side-l-item"><a href="/cvupload">我的简历</a></li>');
+			html.push('<li class="side-l-item"><a href="/userbidstate">拍卖记录</a></li>');
+			html.push('<li class="side-l-item b-b0 "><a href="/">退出</a></li>');
+		} else if( status == 1 ) {
+			html.push('<li class="side-l-item"><a href="/companypreview">企业主页</a></li>');
+			html.push('<li class="side-l-item"><a href="/companybidstate">拍卖记录</a></li>');
+			html.push('<li class="side-l-item b-b0 "><a href="/">退出</a></li>');
+		} else {
+			html.push('<li class="side-l-item b-b0"></li>');
+		}
+		
+		$("#menu_list").html(html.join(''));
+	}
+	
+	//获取对应专场数据
+	function _getDetialData() {
+		T.alert('正在加载...');
+		
+		var specList = specialList;
+		var specConut;
+		for( var i = 0; i < specList.length; i++ ) {
+			if( specList[i].id == query.spec  ) {
+				specConut = specList[i].specialCount;
+			}
+		}
+		
+		var params = {
+				index : query.index,
+				pageSize : query.size,
+				education: query.edu == '0' ? '' : query.edu,
+				city: query.city == '0' ? '' : query.city,
+				experience: query.exp == '0' ? '' : query.exp,
+				special:  query.spec,
+				specialCount: specConut
+		};
+		
+		$.post('/queryBidPools', params, function(res) {
+			res = $.parseJSON(res);
+			if( res.code == 200 ) {
+				var list = res.bidPools;
+				if( list.length > 0 ) {
+					var html = _createDetialHtml(list);
+					query.totle = Number(res.totalPage);
+					query.index = Number(res.index);
+				} else {
+					var html = '<li class="spec-det-li no-data">暂无数据</li>';
+				}
+				$("#spec_det_ul").append(html);
+				setTimeout(function() {
+					T.alertClose();
+				}, 500);
+			} else {
+				T.alertClose();
+				T.alert(res.message);
+			}
+		});
+		
+	}
+	
+	// 生成专场简历
+	function _createDetialHtml(list) {
+		var html = [];
+		for( var i = 0; i < list.length; i++ ) {
+			var sums = !!list[i].summary ? list[i].summary.split(',') : ['暂无总结'];
+			
+			html.push('<li class="spec-det-li" data-id="'+ list[i].userId +'">');
+				html.push('<div class="spec-det-box">');
+					html.push('<div class="spec-addr m-t7 ">');
+						html.push('<div class="spec-city">'+ list[i].destination.split(',').join(' ') +'</div>');
+						html.push('<div class="spec-no">'+ list[i].code +'号</div>');
+					html.push('</div>');
+					
+				html.push('<div class="spec-introduct">');
+				
+					if( _spec == 5) {
+						html.push('<div><span class="spec-intro-item m-b5 m-t10">'+ list[i].jobYear +'年工作经验</span></div>');
+					} else {
+						if( sums.length > 1 && !!sums[1] ) {
+							html.push('<div><span class="spec-intro-item m-b5">'+ sums[0] +'</span></div>');
+							html.push('<div><span class="spec-intro-item ">'+ sums[1] +'</span></div>');
+						} else {
+							html.push('<div><span class="spec-intro-item m-b5 m-t10">'+ sums[0] +'</span></div>');
+						}
+					}
+					
+				html.push('</div>');
+				
+				html.push('<div class="spec-price">');
+					if( !!list[i].avgPrice ) { 
+						html.push('<div class="t-a-c"><span class="spec-price-text ">'+ list[i].avgPrice +'K</span></div>');
+					} else {
+						html.push('<div class="t-a-c m-t5">暂无</div>');
+					}
+					
+					html.push('<div class="t-a-c">平均月薪</div>');
+				html.push('</div>');
+				
+				html.push('<div class="clear"></div>');
+				html.push('</div>');
+			html.push('</li>');
+		}
+		
+		return html.join('');
+	}
+	
+	function _getCountTime() {
+		var config = {status: 0, id: query.spec};
+		$.post('countdown', config, function( res ) {
+			res = $.parseJSON(res);
+			if( res.code == 200 ) {
+				time.day = res.day;
+				time.hour = res.hours;
+				time.min = res.minute;
+				time.sec = res.second;
+				_countTime();
+			} else {
+				 T.alert(res.message);
+			}
+		});
+	}
+	
+	function _countTime() {
+		if( time.day < 10 ) {
+			$("#time_day").text('0' + time.day);
+		} else {
+			$("#time_day").text(time.day);
+		}
+		
+		if( time.hour < 10 ) {
+			$("#time_hour").text('0' + time.hour);
+		} else {
+			$("#time_hour").text(time.hour);
+		}
+		
+		if( time.min < 10 ) {
+			$("#time_min").text('0' + time.min);
+		} else {
+			$("#time_min").text(time.min);
+		}
+		
+		if( time.sec < 10 ) {
+			$("#time_sec").text('0' + time.sec);
+		} else {
+			$("#time_sec").text(time.sec);
+		}
+		
+		time.handle = setInterval(function() {
+			if( time.sec >= 1 ) {
+				time.sec --;
+				if( time.sec < 10 ) {
+					$("#time_sec").text('0' + time.sec);
+				} else {
+					$("#time_sec").text(time.sec);
+				}
+			}else if( time.min >= 1 ) {
+				time.min --;
+				time.sec = 59;
+				if( time.min < 10 ) {
+					$("#time_min").text('0' + time.min);
+				} else {
+					$("#time_min").text(time.min);
+				}
+				
+				$("#time_sec").text(time.sec);
+			}else if( time.hour >= 1 ) {
+				time.hour --;
+				time.min = 59;
+				time.sec = 59;
+				
+				if( time.hour < 10 ) {
+					$("#time_hour").text('0' + time.hour);
+				} else {
+					$("#time_hour").text(time.hour);
+				}
+				
+				$("#time_min").text(time.min);
+				$("#time_sec").text(time.sec);
+			} else if( time.day >= 1 ) {
+				time.day --;
+				time.hour = 23;
+				time.min = 59;
+				time.sec = 59;
+				
+				if( time.day < 10 ) {
+					$("#time_day").text('0' + time.day);
+				} else {
+					$("#time_day").text(time.day);
+				}
+				
+				$("#time_hour").text(time.hour);
+				$("#time_min").text(time.min);
+				$("#time_sec").text(time.sec);
+			} else {
+				clearInterval(time.handle);
+			}
+			
+		}, 1000);
+		
+	}
+	
+	function bodyClick() {
+		$("#main_content").append('<div class="main-bg"></div>');
+		
+		$(".main-bg").on('tap', function(e) {
+			if( screenState == 1 ) {
+				var body2Dom = $("#body2");
+				var menuDom = $("#menu_btn");
+				screenState = 2;
+				menuDom.attr('state', '0');
+				body2Dom.css({left: '0'});
+			} else if( screenState == 3 ) {
+				var body2Dom = $("#body2");
+				//var queryDom = $("#query_btn");
+				screenState = 2;
+				//queryDom.attr('state', '0');
+				body2Dom.css({left: '-250px'});
+				query.index = 1;
+				$("#spec_det_ul").html('');
+				_getDetialData();
+			}
+			$(".main-bg").off('tap');
+			$(".main-bg").remove();
+		});
+	}
+	
+	function clearBodyClick() {
+		$("#main_content").off('tap');
+	}
+	
+	_bind();
+	
+	function _bind() {
+		
+		$("#menu_btn").on('tap', function(e) {
+			var body2Dom = $("#body2");
+			var menuDom = $("#menu_btn");
+			var flag = menuDom.attr('state');
+			if( flag == 1 ) {
+				$('#sidebar_r').css({left: '-250px'});
+				screenState = 2;
+				menuDom.attr('state', '0');
+				body2Dom.css({left: '0px'});
+				setTimeout(clearBodyClick, 0);
+			} else {
+				$('#sidebar_r').css({left: 0});
+				screenState = 1;
+				menuDom.attr('state', '1');
+				body2Dom.css({left: '250px'});
+				e.stopPropagation();
+				setTimeout(bodyClick, 0);
+			}
+		});
+		
+//		$("#query_btn").on('tap', function(e) {
+//			var body2Dom = $("#body2");
+//			var queryDom = $("#query_btn");
+//			var flag = queryDom.attr('state');
+//			if( flag == 1 ) {
+//				screenState = 2;
+//				queryDom.attr('state', '0');
+//				body2Dom.css({left: '-250px'});
+//				clearBodyClick();
+//			} else {
+//				screenState = 3;
+//				queryDom.attr('state', '1');
+//				body2Dom.css({left: '-500px'});
+//				e.stopPropagation();
+//				setTimeout(bodyClick, 0);
+//			}
+//		});
+		
+		$("#query_cancle").on('tap', function() {
+			screenState = 2;
+			var body2Dom = $("#body2");
+			//var queryDom = $("#query_btn");
+			//queryDom.attr('state', '0');
+			body2Dom.css({left: '-250px'});
+			clearBodyClick();
+		});
+		
+		$("#query_submit").on('tap', function() {
+			screenState = 2;
+			var body2Dom = $("#body2");
+			//var queryDom = $("#query_btn");
+			//queryDom.attr('state', '0');
+			body2Dom.css({left: '-250px'});
+			clearBodyClick();
+			_getDetialData();
+		});
+		
+		$(".side-r-item-title").on('tap', function() {
+			var t_dom = $(this);
+			var img_dom = t_dom.find('img');
+			var list_dom = t_dom.next();
+			var flag = t_dom.attr('state');
+			if( flag == 1 ) {
+				list_dom.hide();
+				img_dom.attr('src', '/img/app_auction_q_d.png');
+				t_dom.attr('state', '0');
+			} else {
+				list_dom.show();
+				img_dom.attr('src', '/img/app_auction_q_p.jpg');
+				t_dom.attr('state', '1');
+			}
+			
+		});
+		
+		$(".side-exp").on('tap', function() {
+			if( $(this).hasClass('side-r-item-s') ) return;
+			var id = $(this).attr('data-id');
+			var text = $(this).text();
+			query.exp = id;
+			$(".side-exp").removeClass('side-r-item-s');
+			$(this).addClass('side-r-item-s');
+			$("#exp_t").text(text);
+		});
+		
+		$(".side-city").on('tap', function() {
+			if( $(this).hasClass('side-r-item-s') ) return;
+//			var id = $(this).attr('data-id');
+			var text = $(this).text();
+			query.city = text;
+			$(".side-city").removeClass('side-r-item-s');
+			$(this).addClass('side-r-item-s');
+			$("#city_t").text(text);
+		});
+		
+		$(".side-edu").on('tap', function() {
+			if( $(this).hasClass('side-r-item-s') ) return;
+			var id = $(this).attr('data-id');
+			var text = $(this).text();
+			query.edu = id;
+			$(".side-edu").removeClass('side-r-item-s');
+			$(this).addClass('side-r-item-s');
+			$("#edu_t").text(text);
+		});
+		
+		$(document).on('tap', '.spec-det-li', function() {
+			var id = $(this).attr('data-id');
+			window.location.href="/cvlookdetail?userId=" + id;
+		});
+		
+		$(document).on('touchmove', '#spec_det_l', function() {
+			var screenHeight = $(window).height() - 80;
+			var scrollTop = $(this).scrollTop();
+			var height = $("#spec_det_ul").offset().height;
+			
+//			console.log(screenHeight +' '+ scrollTop +' '+ height);
+			if( screenHeight + scrollTop >= height - 70) {
+				if( query.index < query.totle ) {
+					query.index ++;
+					_getDetialData();
+				}
+			}
+			
+		});
+		
+		
+	}
+	
+	function _getParam( name ) {
+		var query = window.location.search;
+		if (name) {
+			var r = new RegExp("[?&]" + name + "=([^&]*)");
+			var m = r.exec(query);
+			if (m) {
+				return m[1];
+			} else {
+				return null;
+			}
+		} 
+	}
+	
+	function getScreen() {
+		var h = $(window).height();
+		var w = $(window).width();
+		
+		return {width: w, height: h}
+	}
+	
+	
+});

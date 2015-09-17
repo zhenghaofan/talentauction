@@ -1,0 +1,165 @@
+
+
+body {
+	background-color: #E2E2E2;
+}
+
+.viewport {
+	display: none;
+}
+
+
+.job-wrap {
+	padding-bottom: 65px;
+}
+.job-wrap .c_b {
+	color: #3988CD;
+}
+.job-wrap .c_r {
+	color: #E6775C;
+}
+.job-wrap .f_b {
+	font-weight: bold;
+}
+.job-wrap .mg_b16 {
+	margin-bottom: 10px;
+}
+.job-wrap .ico_sex {
+	background: url("../img/app_sex_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .ico_book {
+	background: url("../img/app_book_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .ico_year {
+	background: url("../img/app_year_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .ico_clock {
+	background: url("../img/app_clock_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .ico_skills {
+	background: url("../img/app_skill_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .ico_addr {
+	background: url("../img/app_addr_ico.png") no-repeat;
+	background-size: 14px;
+	background-position: 0 50%;
+}
+.job-wrap .top-bar {
+	height: 40px;
+	line-height: 40px;
+	color: #fff;
+	font-size: 1.3em;
+	text-align: center;
+	background-color: #2d4e7b;
+}
+.job-wrap .top-bar span {
+	margin-left: -39px;
+}
+.job-wrap .top-bar-ico {
+	padding-left: 16px;
+	width: 13px;
+	padding-top: 9px;
+	padding-right: 10px;	
+}
+.job-wrap .top-bar-spec {
+	float: left;
+	height: 40px;
+}
+.job-wrap .button {
+	position: fixed;
+	height: 50px;
+	width: 100%;
+	bottom: 12px;
+	line-height: 50px;
+	color: #fff;
+	font-size: 18px;
+	text-align: center;
+	background-color: #3A89CE;
+	display: none;
+}
+.job-wrap .title {
+	height: 40px;
+	font-size: 18px;
+	line-height: 55px;
+	padding-left: 18px;
+	font-weight: bold;
+}
+.info-item-title {
+	height: 45px;
+	line-height:55px;
+	padding-left: 18px;
+}
+.info-item-title .skill{
+	color: #3988CD;
+	font-size: 18px;
+	font-weight: bold;
+}
+.info-item-title .num {
+	
+}
+.info-base-warp {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin: 0 10px 10px 10px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.info-base-warp .context {
+	padding: 12px 18px;
+}
+.info-base-warp .context span {
+	font-size: 1.1em;
+	padding: 4px 10px 4px 18px;
+	display: inline-block;
+}
+.info-base-warp .context span.pading_18 {
+	padding-left: 18px;
+}
+.info-status-warp {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin: 0 10px 10px 10px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.info-status-warp .context {
+	padding: 6px 18px 12px 18px;
+}
+.info-status-warp .context div > span {
+	font-size: 1.1em;
+	padding: 4px 22px 4px 0;
+	display: inline-block;
+}
+
+.info-detail-warp {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin: 0 10px 10px 10px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.info-detail-warp .title {
+	border-top: 1px solid #ccc;
+}
+.info-detail-warp .title:first-child {
+	border: none;
+}
+.info-detail-warp .context {
+	padding: 6px 18px 12px 18px;
+}
+.info-detail-warp .context div > span {
+	font-size: 1.1em;
+	padding: 4px 0;
+	display: inline-block;
+}
+

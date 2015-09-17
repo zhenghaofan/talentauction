@@ -1,0 +1,35 @@
+
+.viewport {
+	padding-top: 100px;
+	background-color: #ECEEF1;
+}
+
+
+.fc-1 {
+	  color: #4281c6;
+}
+.fz-1 {
+	font-size: 16px;
+}
+.fz-2 {
+	font-size: 18px;
+}
+.remarks {
+	color: #6B7485;
+	font-size: 16px;
+	margin-right: 6px;
+}
+
+
+.pwd-wrap {
+	width: 650px;
+	min-height: 400px;
+	color: #6B7485;
+	margin: 0 auto 80px;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.resume.dao.CvMakeDao">
+   
+    <!-- 获取简历当前状态 --> 
+    <select id="getResumeStatus" resultType="map" parameterType="String">
+        select cvCheckResult,cvCheckStatus,cvBidStatus,rejectReason,status,isOnline,bidCount from resume where userId=#{0}
+    </select>
+    
+    <!-- 获取用户信息 --> 
+    <select id="getUserInfoByUserId" resultType="map" parameterType="String">  
+        select userId,status,isSuccess,companyId,isSaveUserInfo from rigistration where userId=#{0} 
+    </select>
+    
+    <!-- 屏蔽公司 -->
+    <insert id="addShieldLogs" useGeneratedKeys="true" keyProperty="id" parameterType="com.auction.resume.model.ShieldLogs">
+    	insert into shield_logs (userId,content,shieldTime) values (#{userId},#{content},#{shieldTime})
+    </insert>
+    
+    <!-- 添加教育经历 -->
+    <insert id="addEducations" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+    	insert into educations (resumeId,startTime,endTime,school,specialty) values (#{resumeId},#{startTime},#{endTime},#{school},#{specialty})
+    </insert>
+    
+    <!-- 添加工作经历 -->
+    <insert id="addWorkExperiences" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+    	insert into work_experiences (resumeId,startTime,endTime,companyName,jobTitle,workContent) values (#{resumeId},#{startTime},#{endTime},#{companyName},#{jobTitle},#{workContent})
+    </insert>
+    
+    <!-- 添加项目经历 -->
+    <insert id="addProjects" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+    	insert into projects (resumeId,startTime,endTime,name,projectDetails) values (#{resumeId},#{startTime},#{endTime},#{name},#{projectDetails})
+    </insert>
+    
+    <!-- 获取简历ID -->
+    <select id="getResumeIdByUserId" resultType="map" parameterType="String">
+    	select resumeId,commitTime from resume where userId=#{0}
+    </select>
+    
+    <!-- 获取产品链接、产品图片名称 -->
+    <select id="getProductUrlByUserId" resultType="map" parameterType="String">
+    	select userId,productUrl,productImg from resume where userId=#{0}
+    </select>
+    
+    <update id="updateProduntImg" parameterType="String">
+    	update resume set productImg=#{0} where userId=#{1}
+    </update>
+    
+    <update id="updateProduntUrl" parameterType="map">
+    	update resume set productUrl=#{productUrl} where userId=#{userId}
+    </update>
+    
+    <update id="updateWorkExperiences" parameterType="map">
+    	update work_experiences 
+    	<set>
+    	    <if test="startTime != null">
+    	        startTime=#{startTime},
+    	    </if>
+    	    <if test="endTime != null">
+    	        endTime=#{endTime},
+    	    </if>
+    	    <if test="companyName != null">
+    	        companyName=#{companyName},
+    	    </if>
+    	    <if test="jobTitle != null">
+    	        jobTitle=#{jobTitle},
+    	    </if>
+    	    <if test="workContent != null">
+    	        workContent=#{workContent},
+    	    </if>
+    	    resumeId=#{resumeId} 
+    	</set>
+    	where id=#{id} and resumeId=#{resumeId}
+    </update>
+    
+    <!-- 获取简历完善进度 -->
+    <select id="getSpeedOfProgress" resultType="map" parameterType="String">
+    	select a.*,b.school,c.companyName,d.name perojectName from (select resumeId,userId,name,age,sex from resume where resumeId=#{0}) a 
+    	left join (select resumeId,school from educations where resumeId=#{0} limit 0,1) b on a.resumeId=b.resumeId 
+    	left join (select resumeId,companyName from work_experiences where resumeId=#{0} limit 0,1) c on a.resumeId=c.resumeId 
+		left join (select resumeId,name from projects where resumeId=#{0} limit 0,1) d on a.resumeId=d.resumeId
+    </select>
+    
+    <!-- 用户提交简历审核时候，数据备份 -->
+    <select id="user_backup" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call user_backup (
+		   		#{i_resumeId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_commitTime,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select> 
+	
+    <!-- 删除（删除教育经历、工作经历、项目经历） -->
+    <select id="resume_base_del" statementType="CALLABLE" resultType="String">  
+		<![CDATA[  
+		   {call resume_base_del (
+		   		#{i_tableName,mode=IN,jdbcType=VARCHAR},
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_id,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=VARCHAR})}  
+		]]>
+	</select>
+	
+    <!-- 简历上传（使用之前的简历） -->
+    <update id="usePastResume" parameterType="String">
+        update resume set status=1,updateTime=#{1},cvBidStatus=0,cvCheckStatus=0,cvCheckResult=0,
+        bidCount=bidCount+1,special=0,specialCount=0,isOnline=0,repeatBidTime=commitTime,isHired=0,commitTime=#{1} 
+        where userId=#{0}
+    </update>
+    
+</mapper> 

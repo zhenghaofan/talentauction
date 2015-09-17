@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.resume.dao.ResumeDao">
+   
+	<resultMap type="com.auction.resume.model.Educations" id="educationsResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="school" column="school"/>
+        <result property="specialty " column="specialty "/>
+    </resultMap>
+    
+	<resultMap type="com.auction.resume.model.Projects" id="projectResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="name" column="name"/>
+        <result property="projectDetails " column="projectDetails "/>
+    </resultMap>
+    
+    <resultMap type="com.auction.resume.model.WorkExperiences" id="workExpResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="jobTitle" column="jobTitle"/>
+        <result property="companyName " column="companyName "/>
+        <result property="workContent" column="workContent"/>
+    </resultMap>
+    
+    
+    <insert id="add_resume" useGeneratedKeys="true" keyProperty="resumeId" parameterType="com.auction.resume.model.Resume">
+    	insert into resume (userId,jobYear,creatTime,surplusTime,cvBidStatus,cvCheckResult,cvCheckStatus,bidCount,sex,education,skills,destination) values (
+    	#{userId},0,#{creatTime},0,0,0,0,0,0,0,#{skills},#{destination})
+    </insert>
+    
+    <!-- 获取简历详细信息 -->
+    <select id="getResumDetailByUserId" resultType="map" parameterType="String">
+        select  r.*,b.name specialName,a.email,a.telephone phone from (
+        	select resumeId,
+        	userId,
+        	destination,
+        	expectedSalary,
+        	jobTitle,
+        	jobYear,
+        	skills,
+        	surplusTime,
+        	cvBidStatus,
+        	cvCheckStatus,
+        	cvCheckResult,
+        	bidCount,
+        	name,
+        	sex,
+        	age,
+        	education,
+        	rejectReason,
+        	summary,
+        	details,
+        	code,
+        	special,
+        	specialCount 
+        	from resume where userId=#{0} 
+        ) r 
+        left join rigistration a on r.userId=a.userId 
+        left join special b on b.id=r.special
+    </select>
+    
+    <!-- 获取教育经历 -->
+    <select id="getEducationsAll" parameterType="String" resultMap="educationsResult">
+        select id,resumeId,startTime,endTime,school,specialty from educations where resumeId=#{0}
+    </select>
+    
+    <!-- 获取项目经验 -->
+    <select id="getProjectsAll" parameterType="String" resultMap="projectResult">
+        select id,resumeId,startTime,endTime,name,projectDetails from projects where resumeId=#{0}
+    </select>
+    
+    <!-- 获取工作经历 -->
+    <select id="getWorkExpAll" parameterType="String" resultMap="workExpResult">
+        select id,resumeId,startTime,endTime,jobTitle,companyName,workContent from work_experiences where resumeId=#{0}
+    </select>
+    
+    
+</mapper> 

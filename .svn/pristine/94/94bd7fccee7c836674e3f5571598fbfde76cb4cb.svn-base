@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>全局变量配置文件</comment>
+<!-- cookie 最大超时时间 -->
+<entry key="MAX_COOKIE">360000000</entry>
+
+<!-- 邮件配置 -->
+<!-- <entry key="MAIL_HOST">smtp.qq.com</entry> -->
+<entry key="MAIL_HOST">smtp.ym.163.com</entry>
+<entry key="MAIL_USERNAME">shilipai1@shilipai.net</entry>
+<entry key="MAIL_PASSWORD">123456/</entry>
+<entry key="MAIL_SENDADDRESS">shilipai1@shilipai.net</entry>
+
+<entry key="MAIL_TITLE">账户激活</entry>
+<entry key="MAIL_CONTENT">请点击下面地址激活用户：</entry>
+
+
+<!-- 用户激活 -->
+<entry key="MAIL_URL">http://localhost:8080/talents/emailActivation</entry>
+<!-- 密码找回 -->
+<entry key="PWD_RETRIEVE_URL">http://www.shilipai.net/editUser</entry>
+<entry key="SERVICE_URL">http://www.shilipai.net</entry>
+
+
+<!-- 简历上传 保存路径 -->
+<entry key="UPLOAD_URL">/Users/tobber/Desktop/upload/resume/</entry>
+<!-- 公司logo上传路经 -->
+<entry key="UPLOAD_COMPANY_LOGO_URL">/Users/tobber/Desktop/upload/company/companyLogo/</entry>
+<!-- 公司产品logo上传路径 -->
+<entry key="UPLOAD_PRODUCTS_LOGO_URL">upload/company/productsLogo/</entry>
+<!-- 公司创始人头像上传路径 -->
+<entry key="UPLOAD_FOUNDER_LOGO_URL">upload/company/founderLogo/</entry>
+<!-- 公司环境上传路径 -->
+<entry key="UPLOAD_ENVIRONMENT_LOGO_URL">upload/company/environment/</entry>
+
+<!-- UI设计，产品原始图片保存路经 -->
+<entry key="UPLOAD_USER_ORIGINAL_URL">/Users/tobber/Desktop/upload/user/original/</entry>
+<!-- UI设计，产品压缩图片保存路经 -->
+<entry key="UPLOAD_USER_COMPRESSION_URL">/Users/tobber/Desktop/upload/user/compression/</entry>
+
+<!-- 微信APPID  -->
+<entry key="WECHAT_APPID">wx449e2ac176e07615</entry>
+<!-- 微信APPSECRET -->
+<entry key="WECHAT_APPSECRET">86331767adf5336b4b02e6e7a402d077</entry>
+
+<!-- 拍卖池事件监听，拍卖倒计时 -->
+<!-- <entry key="SQL_URL">jdbc:mysql://120.24.52.194:3306/bidme</entry>-->
+<entry key="SQL_URL">jdbc:mysql://192.168.1.108:3306/bidme</entry>
+<entry key="SQL_USER">root</entry>
+<entry key="SQL_PWD">root</entry>
+
+<!-- OpenOffice 安装目录 -->
+<entry key="OPEN_OFFICE_URL">D:/Program Files (x86)/OpenOffice 4</entry>
+<!-- OpenOffice 启动命令Window -->
+<entry key="OPEN_OFFICE_WINDOW_START">program/soffice.exe -headless -accept=\"socket,host=127.0.0.1,port=8100;urp;\"</entry>
+<!-- OpenOffice 启动命令Linux -->
+<entry key="OPEN_OFFICE_LINUX_START">program/startup.sh -headless -accept=\"socket,host=127.0.0.1,port=8100;urp;\"</entry>
+<!-- OpenOffice ip -->
+<entry key="OPEN_OFFICE_IP">127.0.0.1</entry>
+<!-- OpenOffice 启动命令Linux -->
+<entry key="OPEN_OFFICE_PORT">8100</entry>
+
+<!-- 拍卖天数 -->
+<entry key="BID_DAY">12</entry>
+<!-- 拍卖结束后预留处理时间 -->
+<entry key="BID_END_DAY">2</entry>
+<!-- 管理员 -->
+<entry key="ADMIN_USER">hlj</entry>
+
+</properties>

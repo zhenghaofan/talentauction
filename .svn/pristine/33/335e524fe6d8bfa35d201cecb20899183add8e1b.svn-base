@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/mobile/signcity.css">
+	
+	<script src="../js/common/zepto.min.js"></script>
+	<script src="../js/mobile/uiservice.js"></script>
+	<script src="../js/mobile/signcity.js"></script>
+</head>
+<body>
+	<div class="viewport">
+		<div class="city-wrap">
+			<div class="top-bar">
+				<i class="bar-back"><img class="back-ico " src="../css/img/app_back.png"></i>
+				<span class="bar-title">城市</span>
+				<div class="clear"></div>
+			</div>
+			<div class="sign-form">
+				<div class="city-box">
+					<span class="feel-item slt">北京</span>
+					<span class="feel-item">上海</span>
+					<span class="feel-item mgn-1">广州</span>
+					<span class="feel-item">深圳</span>
+					<span class="feel-item">成都</span>
+					<span class="feel-item mgn-1">杭州</span>
+					<div class="inp-item">
+						<input type="text" class="email" id="email" placeholder="请输入注册邮箱"/>
+					</div>
+				</div>
+			</div>
+			<div class="btn-group">
+				<span class="btn mgn" id="submit">保存</span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

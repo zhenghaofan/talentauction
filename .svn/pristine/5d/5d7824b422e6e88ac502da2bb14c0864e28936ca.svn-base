@@ -1,0 +1,151 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('bidlistCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$('.viewport').show();
+		
+		return;
+		$rootScope.tabIndex = 6;
+		$rootScope.oldFooter = false;
+		$scope.sort = 'id';
+		$scope.sortMethod = 'desc';
+		$scope.pageIndex = !!url.get('page') ? url.get('page') : 1 ;
+		$scope.replayState = !!url.get('replayState') ? url.get('replayState') : 0 ;
+		
+		function $safeApply($scope, fn) {
+			var phase = $scope.$$phase;
+			if (phase == '$apply' || phase == '$digest') {
+				$scope.$eval(fn);
+			} else {
+				$scope.$apply(fn);
+			}
+		}
+		
+		$scope.changeReplay = function(no) {
+			if( $scope.replayState != no) {
+				var _tempUrl = window.location.href;
+				var _url = url.replace(_tempUrl, {'replayState': no});
+				window.location.href = _url;
+			}
+		};
+		
+		
+		$scope.changeTabItem = function(type) {
+			$scope.sort = type;
+			load();
+		};
+
+//		user.getMyBidTime()
+//			.then(function(data) {
+//				$scope.cvBidStatus = data.cvBidStatus;
+//				$scope.bidDay = data.bidDay;
+//			}, function(err) {
+//				console.error(err.message);
+//			});
+		
+		$scope.changeRejectReason = function( no, index ) {
+			if( no == 0 ) {
+				$scope.listData[index].showRejectIn = true;
+			} else {
+				$scope.listData[index].showRejectIn = false;
+			}
+		};
+		
+		$scope.showReason = function(no) {
+			var reject_btn_dom = $(".con-r-item").eq(no).find('.detial-opt-reject');
+			var reject_reason_dom = $(".con-r-item").eq(no).find('.con-r-reject-box');
+			if( reject_btn_dom.hasClass('detial-opt-reject-l') ) {
+				reject_btn_dom.removeClass('detial-opt-reject-l');
+				reject_reason_dom.slideUp();
+			} else {
+				reject_btn_dom.addClass('detial-opt-reject-l');
+				reject_reason_dom.slideDown();
+			}
+			
+		};
+		
+		$scope.showReasonText = function(no) {
+			var reject_btn_dom = $(".con-r-item").eq(no).find('.detial-opt-replay');
+			var reject_reason_dom = $(".con-r-item").eq(no).find('.con-r-reject-box');
+			if( reject_btn_dom.hasClass('detial-opt-replay-l') ) {
+				reject_btn_dom.removeClass('detial-opt-replay-l');
+				reject_reason_dom.slideUp();
+			} else {
+				reject_btn_dom.addClass('detial-opt-replay-l');
+				reject_reason_dom.slideDown();
+			}
+		};
+		
+		$scope.apply = function(id, isReply, companyId, index) {
+			var config = {id: id, isReply: isReply, companyId: companyId};
+			if( isReply == 2 ) {
+				var rejectReason, rejectReasonText;
+				rejectReason = $('input[name="reject_reason_'+index+'"]:checked').val();
+				rejectReason = Number(rejectReason);
+				if( rejectReason == 0 ) {
+					rejectReasonText = $("#reject_other_text_"+index).val();
+					if( !rejectReasonText ) {
+						alert('请填写其他理由');
+						return;
+					}
+				} else {
+					switch(rejectReason) {
+						case 1:
+							rejectReasonText = '薪资条件不合适';
+							break;
+						case 2: 
+							rejectReasonText = '地点不合适';
+							break;
+						case 3: 
+							rejectReasonText = '已有更好的机会';
+							break;
+					}
+				}
+				
+				config.rejectReason = rejectReasonText;
+			}
+			
+			user.interview(config)
+				.then(function(data){
+					load();
+				}, function(err){
+					console.error(err.message);
+					if(err.code == 320) {
+						window.location.href = '/loginpage';
+						return;
+					}
+				});
+		};
+		
+		load();
+		$scope.load = load;
+		
+		function load(){
+			var _replayState = '';
+			if( $scope.replayState != 0 ) _replayState = $scope.replayState;
+			var config = {index: $scope.pageIndex,  pageSize: $scope.pageSize, sort: $scope.sort, sortMethod: $scope.sortMethod, reply: _replayState};
+			user.getPersonBidList(config)
+			.then(function(data){
+				$scope.listData = data.bidLogs;
+				if($scope.listData && $scope.listData.length != 0) {
+					var pagerHtml = pager.creatHtml($scope, data);
+					$("#pagerBox").html(pagerHtml);
+				}
+			}, function(err){
+				console.error(err.message);
+				if(err.code == 320) {
+					window.location.href = '/loginpage';
+					return;
+				}
+			});
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

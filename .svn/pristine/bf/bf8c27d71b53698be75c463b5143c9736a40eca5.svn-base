@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.company.dao.CompanyDao">
+    
+	<select id="getForwardResume" parameterType="String" resultType="java.util.HashMap">
+	    select * from forward_resume where id=#{0}
+	</select>
+   
+	 <!-- 获取简历详细信息 -->
+    <select id="getResumInfo" resultType="java.util.HashMap" parameterType="String">
+        select  r.*,
+        	b.name specialName,
+        	a.email,
+        	a.telephone phone 
+        from (
+        	select resumeId,
+	        	userId,
+	        	destination,
+	        	expectedSalary,
+	        	jobTitle,
+	        	jobYear,
+	        	skills,
+	        	surplusTime,
+	        	cvBidStatus,
+	        	cvCheckStatus,
+	        	cvCheckResult,
+	        	bidCount,
+	        	name,
+	        	sex,
+	        	age,
+	        	readCount,
+	        	education,
+	        	rejectReason,
+	        	summary,
+	        	details,
+	        	code,
+	        	special,
+	        	specialCount,
+	        	ifnull(productUrl,"") productUrl,
+	        	ifnull(productImg,"") productImg 
+        	from resume where userId=#{userId} and cvBidStatus=1 
+        ) r 
+        left join rigistration a on r.userId=a.userId 
+        left join special b on b.id=r.special 
+    </select>
+    
+</mapper> 

@@ -1,0 +1,33 @@
+package com.auction.resume.web;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.auction.common.util.Util;
+import com.auction.resume.service.ResumeService;
+
+/** 
+ * @author tobber
+ * @version 2015年4月17日
+ */
+
+@Controller
+@RequestMapping(value = "resume")
+public class ResumeController {
+	
+	@Resource
+	private ResumeService resumeService; 
+	
+	@RequestMapping(value = "getUserResume")//候选人查看简历
+	public void getUserResume(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		String result = resumeService.getUserResume(request);
+		new Util().responesWriter(response,result);
+	}
+	
+}
+
+

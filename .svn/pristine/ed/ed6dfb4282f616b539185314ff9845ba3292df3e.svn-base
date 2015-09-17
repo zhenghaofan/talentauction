@@ -1,0 +1,107 @@
+
+
+body {
+	background-color: #E2E2E2;
+}
+
+
+
+.query-bar {
+	background-color: #fff;
+	padding-top: 10px;
+	width: 100%;
+}
+.query-item {
+	display: inline-block;
+	width: 32%;
+	height: 24px;
+	line-height: 24px;
+	text-align: center;
+	font-size: 16px;
+	padding-bottom: 7px;
+	border-bottom: 3px solid #fff;
+}
+.query-item i {
+	display: block;
+	border-right: 1px solid #dbdbdb;
+}
+.query-bar .b-r0 {
+	border-right: 0;
+}
+.query-item-s {
+	border-bottom-color: #3a89ce;
+}
+
+.con {
+	margin: 10px;
+}
+.con-li {
+	border-radius: 3px;
+	margin-bottom: 10px;
+	background-color: #fff;
+}
+.li-title {
+	border-bottom: 1px solid #dbdbdb;
+	width: 100%;
+	padding: 10px 0;
+}
+.li-title-name {
+	font-size: 16px;
+	color: #3b8acf;
+	padding-left: 5%;
+	width: 65%;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+}
+.li-title-name a {
+	color: #3b8acf;
+}
+.f-c-b {
+	color: #727272;
+	font-size: 14px;
+}
+.li-title-state {
+	float: right;
+	padding-right: 5%;
+	line-height: 22px;
+	width: 25%;
+	text-align: right;
+}
+.li-state {
+	padding: 0 5%;
+}
+.li-state-no {
+	color: #398acc;
+}
+.li-state-tiem {
+	float: right;
+	color: #727272;
+}
+.li-con {
+	padding: 10px 5%;
+	line-height: 24px;
+}
+.li-con-text-b {
+	font-size: 16px;
+	font-weight: bold;
+}
+.li-con-text {
+	font-size: 15px;
+}
+.li-con-btn-box {
+	padding: 15px 0 5px;
+	text-align: center;
+}
+.li-con-btn {
+	display: inline-block;
+	color: #3a89ce;
+	border: 1px solid #3a89ce;
+	border-radius: 3px;
+	padding: 5px 10px;
+}
+.no-data {
+	line-height: 50px;
+	text-align: center;
+}

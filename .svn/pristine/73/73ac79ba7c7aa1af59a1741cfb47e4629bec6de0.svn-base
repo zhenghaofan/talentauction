@@ -1,0 +1,48 @@
+
+
+
+.viewport {
+	padding-top: 100px;
+	background: url("../img/bg-error.jpg");
+}
+
+
+.err-wrap {
+	width: 1024px;
+	min-height: 500px;
+	color: #6B7485;
+	margin: 0 auto 80px;
+}
+.err404-con {
+	position: relative;
+	height: 500px;
+	background: url("../img/bg-error-404.png");
+}
+.err404-con a {
+	position: absolute;
+	left: 447px;
+	bottom: 77px;
+	width: 138px;
+	height: 35px;
+	display: block;
+}
+
+.err500-con {
+	position: relative;
+	height: 500px;
+	background: url("../img/bg-error-500.png") no-repeat;	
+}
+.err500-con a {
+	position: absolute;
+	left: 447px;
+	bottom: 77px;
+	width: 138px;
+	height: 35px;
+	display: block;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

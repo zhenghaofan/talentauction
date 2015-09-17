@@ -1,0 +1,77 @@
+
+
+body {
+	background-color: #2d4e7b;
+}
+
+
+/* 用户登录*/
+.sign-wrap {
+	position: relative;
+	display: none;
+}
+.sign-wrap input {
+	width: 85%;
+	max-width: 300px;
+	height: 36px;
+	color: #3B3B3B;
+	padding: 5px 10px;
+	border: 0;
+}
+.sign-wrap input.email {
+	border-radius: 3px 3px 0 0;
+}
+.sign-wrap input.pwd {
+	border-top: 1px solid #dbdbdb;
+	border-radius: 0 0 3px 3px;
+}
+.sign-wrap .logo {
+	text-align: center;
+	padding: 50px 0 20px;
+}
+.sign-wrap .logo .ico {
+	width: 65%;
+	max-width: 280px;
+}
+.sign-wrap .sign-form {
+	margin: 20px 0;
+	text-align: center;
+}
+.sign-wrap .btn {
+	width: 85%;
+	max-width: 300px;
+	padding: 5px 10px;
+	height: 36px;
+	color: #fff;
+	line-height: 36px;
+	border-radius: 3px;
+	background-color: #3a89ce;
+	display: inline-block;
+	cursor: pointer;
+}
+.sign-wrap .btn.mgn {
+	margin-top: 25px;
+}
+.sign-wrap .btn:active {
+	background-color: #337BBA;
+}
+
+
+/* 绑定成功*/
+.success {
+	color: #fff;
+	padding-top: 40px;
+	text-align: center;
+}
+.success .msg {
+	font-size: 30px;
+	margin-bottom: 20px;
+}
+.success .text {
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+.success .close {
+	color: #557FED;
+	text-decoration: underline;
+}

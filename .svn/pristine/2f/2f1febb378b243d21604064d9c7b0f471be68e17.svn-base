@@ -1,0 +1,106 @@
+
+
+.fz-1 {
+	font-size: 16px;
+}
+.fz-2 {
+	font-size: 18px;
+}
+
+.usetting-wrap {
+	width: 650px;
+	color: #6B7485;
+	margin: 130px auto 100px;
+}
+.usetting-wrap input {
+	height: 42px;
+	color: #3B3B3B;
+	text-indent: 12px;
+	border-radius: 3px;
+	border: 1px solid #F3F1F1;
+	background-color: #eceef1;
+}
+.usetting-wrap .btn {
+	color: #fff;
+	font-size: 16px;
+	text-align: center;
+	letter-spacing: 5px;
+	border-radius: 3px;
+	background-color: #71a8e0;
+	display: inline-block;
+	cursor: pointer;
+}
+.usetting-wrap .con-item {
+	border-radius: 3px;
+	margin-bottom: 30px;
+	background-color: #fff;	
+}
+.usetting-wrap .remarks {
+	font-size: 16px;
+	margin-right: 6px;
+}
+.usetting-wrap .item-title {
+	font-size: 18px;
+	height: 70px;
+	line-height: 70px;
+	padding-left: 40px;
+	border-bottom: 1px solid #eceef1;
+}
+.usetting-wrap .item-content {
+	padding-left: 130px;
+	padding-bottom: 20px;
+}
+.item-title i {
+	width: 20px;
+	height: 22px;
+	display: inline-block;
+}
+.con-item-div {
+	line-height: 40px;
+	margin: 10px 0;
+	padding: 5px 0;
+}
+
+
+.user-warp .btn {
+	width: 70px;
+	height: 42px;
+}
+.user-warp input {
+	width: 200px;
+}
+.item-title i.user-icon {
+  background: url("../img/usertting-icon.png") no-repeat;
+  background-position: -20px -8px;
+}
+
+.mail-wrap .btn {
+	width: 70px;
+	height: 42px;
+}
+.mail-wrap input {
+	width: 200px;
+}
+.item-title i.mail-icon {
+	background: url("../img/usertting-icon.png") no-repeat;
+	background-position: -20px -35px;
+}
+
+.pwd-wrap input {
+	width: 250px;
+}
+.pwd-wrap .btn {
+	width: 100px;
+	height: 42px;
+	margin-left: 145px;
+}
+.item-title i.lock-icon {
+	background: url("../img/usertting-icon.png") no-repeat;
+	background-position: -19px -58px;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

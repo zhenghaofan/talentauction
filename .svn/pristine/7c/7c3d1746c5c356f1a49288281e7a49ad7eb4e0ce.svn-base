@@ -1,0 +1,137 @@
+
+
+.slt-wrap {
+	width: 720px;
+	color: #6B7485;
+	margin: 130px auto 100px;
+	border-radius: 3px;
+	background-color: #fff;
+}
+
+
+.nav-warp {
+	text-align: center;
+	padding-top: 30px;
+}
+.nav-warp .tab-item {
+	width: 92px;
+	text-align: center;
+	vertical-align: top;
+	margin-left: -34px;
+	margin-top: 3px;
+	display: inline-block;
+}
+.nav-warp .line {
+	width: 120px;
+	height: 7px;
+	vertical-align: top;
+	margin-top: 10px;
+	margin-left: -32px;
+	background-color: #d8dbe0;
+	display: inline-block;
+}
+.nav-warp .tab-step {
+	width: 20px;
+	height: 20px;
+	color: #fff;
+	font-size: 14px;
+	text-align: center;
+	line-height: 20px;
+	border-radius: 25px;
+	border: 1px solid #d8dbe0;
+	margin-bottom: 5px;
+	background-color: #d8dbe0;
+	display: inline-block;
+}
+.nav-warp .tab-text {
+	color: #d8dbe0;
+}
+.nav-warp .slt {
+	color: #6B7485;
+	font-size: 15px;
+}
+.nav-warp .slt .tab-step {
+	width: 23px;
+	height: 23px;
+	font-size: 15px;
+	line-height: 23px;
+	margin-bottom: 8px;
+	border-radius: 15px;
+	border: 1px solid #71A8E0;
+	background-color: #71A8E0;
+}
+.nav-warp .slt .tab-text {
+	color: #6B7485;
+	font-size: 15px;
+}
+
+
+.con-inp {
+	padding-top: 20px;
+}
+.con-inp div {
+	text-align: center;
+	margin-bottom: 40px;
+}
+.con-inp input {
+	width: 250px;
+	height: 42px;
+	color: #6B7485;
+	font-size: 14px;
+	text-indent: 12px;
+	border: 1px solid #F3F1F1;
+	display: inline-block;
+	background-color: #eceef1;
+	border-radius: 3px;  
+}
+.con-inp input.min {
+	width: 230px;
+}
+.con-inp input.max {
+	width: 380px;
+}
+.con-inp .inp-item {
+	margin-bottom: 20px;
+}
+.con-inp .inp-item:first-child {
+	margin-left: -140px;
+}
+.con-inp .inp-item:last-child {
+	margin-bottom: 30px;
+}
+.con-inp .remarks {
+	font-size: 16px;
+	margin-right: 6px;	
+}
+.con-add {
+	width: 380px;
+	text-align: center;
+	padding: 20px 0;
+	border: 1px dashed #ccc;
+	margin: 0 0 30px 200px;
+}
+.con-add span {
+	color: #71a8e0;
+	padding-left: 18px;
+	background: url(../img/icon-add.png) 0 50% no-repeat;
+	display: inline-block;
+	cursor: pointer;
+}
+.con-btn button {
+	color: #fff;
+	padding: 10px 30px;
+	border: none;
+	border-radius: 3px;
+	margin-left: 200px;
+	background-color: #71A8E0;
+}
+
+
+.footer-warp {
+	height: 60px;
+	text-align: center;
+	line-height: 40px;
+}
+
+
+

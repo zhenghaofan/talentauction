@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.company.dao.CompanyDao">
+    
+    <!-- 企业拍卖纪录 -->
+    <sql id="companyLogs">
+        select a.id,
+        	a.userId,
+			b.email userEmail,
+			a.companyId,
+			a.bidPrice myBidPrice,
+			a.monthCount,
+			a.isOption,
+			a.optionStart,
+			a.optionEnd,
+			a.bidTime,
+			a.workTitle,
+			a.isReply,
+			a.replyTime,
+			a.rejectReason,
+			r.name,
+			r.jobTitle,
+			r.cvBidStatus,
+			r.code,
+			r.destination,
+			b.telephone 
+		from (
+			select d.* from bid_logs d where isDelete='1' and d.companyId=#{companyId} order by d.id desc
+		) a 
+		left join resume r on r.userId=a.userId 
+		left join rigistration b on r.userId=b.userId 
+		<where>
+		    <if test="reply != null and reply != ''">
+				and a.isReply != #{reply} 
+        	</if>
+        	<if test="status != null and status != ''">
+				and r.cvBidStatus = #{status} 
+        	</if>
+		</where>
+    </sql>
+    
+    <!-- 添加阅读记录 -->
+    <insert id="addCompany" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+    	insert into read_logs (companyId,name,creatTime) values (#{companyId},#{name},#{creatTime})
+    </insert>
+    
+    <select id="getSameCompanyList" parameterType="String" resultType="map">
+        select a.*,c.name from (
+        	select r.companyId from rigistration r where r.status='1' and r.companyId is not null and r.email like '%@shilipai.net'
+        ) a left join company c on a.companyId=c.companyId where c.name is not null
+    </select>
+    
+    <select id="getCompanyInfo" parameterType="String" resultType="map">
+        select r.*,
+        	d.name provinceName,
+        	a.name cityName,
+        	b.name areaName 
+        from (
+        	select c.id,
+        		c.companyId,
+        		c.name,
+        		c.nickName,
+        		c.province,
+        		c.city,
+        		c.addr,
+        		c.phone,
+        		c.logoName,
+        		c.dateOfRegist,
+        		c.website,
+        		c.area,
+        		c.progress,
+        		c.size,
+        		c.companyIntro,
+        		c.welfare,
+        		c.environment 
+        	from company c where c.companyId=#{0}
+        ) r 
+        left join cities a on a.id=r.city 
+        left join cities d on d.id=r.province 
+        left join areas b on b.id=r.area
+    </select>
+    
+    <update id="isSaveUserInfo" parameterType="String">
+        update rigistration set isSaveUserInfo=1 where userId=#{0}
+    </update>
+    
+    <update id="updateProducts" parameterType="map">
+        update products set id=#{id} 
+        <if test="imgName != null and imgName != ''">
+			,imgName = #{imgName} 
+        </if>
+        <if test="progress != null and progress != ''">
+			,progress = #{progress} 
+        </if>
+        <if test="productName != null and productName != ''">
+			,productName = #{productName} 
+        </if>
+        <if test="website != null and website != ''">
+			,website = #{website} 
+        </if>
+        <if test="brief != null and brief != ''">
+			,brief = #{brief} 
+        </if>
+        where id=#{id} and companyId=#{companyId}
+    </update>
+    
+    <insert id="addProducts" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+        insert into products (
+        	companyId,productName,imgName,progress,website,brief
+        ) values (
+        	#{companyId},#{productName},#{imgName},#{progress},#{website},#{brief}
+        )
+    </insert>
+    
+    <update id="updateFounder" parameterType="map">
+        update products set id=#{id} 
+        <if test="imgName != null and imgName != ''">
+			,imgName = #{imgName} 
+        </if>
+        <if test="jobName != null and jobName != ''">
+			,jobName = #{jobName} 
+        </if>
+        <if test="name != null and name != ''">
+			,name = #{name} 
+        </if>
+        <if test="website != null and website != ''">
+			,website = #{website} 
+        </if>
+        <if test="brief != null and brief != ''">
+			,brief = #{brief} 
+        </if>
+        where id=#{id} and companyId=#{companyId}
+    </update>
+    
+    <insert id="addFounder" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+        insert into products (
+        	companyId,jobName,name,imgName,progress,website,brief
+        ) values (
+        	#{companyId},#{jobName},#{name},#{imgName},#{website},#{brief}
+        )
+    </insert>
+    
+    <update id="updateTalentDemand" parameterType="map">
+        update products set id=#{id} 
+        <if test="skills != null and skills != ''">
+			,skills = #{skills} 
+        </if>
+        <if test="website != null and website != ''">
+			,website = #{website} 
+        </if>
+        <if test="updateTime != null and updateTime != ''">
+			,updateTime = #{updateTime} 
+        </if>
+        where id=#{id} and companyId=#{companyId}
+    </update>
+    
+    <insert id="addTalentDemand" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+        insert into talent_demand (
+        	companyId,skills,website,updateTime
+        ) values (
+        	#{companyId},#{skills},#{website},#{updateTime} 
+        )
+    </insert>
+    
+    <select id="companyBidLogs" parameterType="map" resultType="java.util.HashMap">
+		select a.id,
+        	a.userId,
+			b.email userEmail,
+			a.companyId,
+			a.bidPrice,
+			a.monthCount,
+			a.isOption,
+			a.bidTime,
+			a.workTitle,
+			a.isReply,
+			a.replyTime,
+			a.rejectReason,
+			r.name,
+			r.jobTitle,
+			r.cvBidStatus,
+			r.code,
+			r.destination,
+			b.telephone 
+		from (
+			select d.* from bid_logs d where isDelete='1' and d.companyId=#{companyId} order by d.id desc
+		) a 
+		left join resume r on r.userId=a.userId 
+		left join rigistration b on r.userId=b.userId 
+		<where>
+		    <if test="reply != null and reply ==1">
+				and a.isReply != 0 
+        	</if>
+        	<if test="reply != null and reply ==0">
+				and a.isReply = #{reply} 
+        	</if>
+        	<if test="status != null and status != ''">
+				and r.cvBidStatus = #{status} 
+        	</if>
+		</where>
+        order by a.id desc limit #{page},#{pageSize}
+    </select>
+    
+    <select id="companyBidLogsTotal" parameterType="map" resultType="java.lang.Integer">
+        select count(*) 
+		from (
+			select d.companyId,d.userId,d.isReply from bid_logs d where isDelete='1' and d.companyId=#{companyId} 
+		) a 
+		left join resume r on r.userId=a.userId 
+		left join rigistration b on r.userId=b.userId 
+		<where>
+		    <if test="reply != null and reply ==1">
+				and a.isReply != 0 
+        	</if>
+        	<if test="reply != null and reply ==0">
+				and a.isReply = #{reply} 
+        	</if>
+        	<if test="status != null and status != '0'">
+				and r.cvBidStatus = #{status} 
+        	</if>
+		</where>
+    </select>
+    
+    <select id="companyAuction" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call company_auction (
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_companyId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_bidPrice,mode=IN,jdbcType=DECIMAL},
+		   		#{i_monthCount,mode=IN,jdbcType=DECIMAL},
+		   		#{i_isOption,mode=IN,jdbcType=DECIMAL},
+		   		#{i_workTitle,mode=IN,jdbcType=VARCHAR},
+		   		#{i_bidCount,mode=IN,jdbcType=DECIMAL},
+		   		#{i_special,mode=IN,jdbcType=DECIMAL},
+		   		#{i_specialCount,mode=IN,jdbcType=DECIMAL},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL})}  
+		]]>
+    </select>
+    
+    <!-- 获取联系方式 -->
+    <select id="getContacts" parameterType="String" resultType="map">
+        select a.*,r.email,r.telephone from (select b.userId from bid_logs b where b.id=#{0} and b.companyId=#{1} and b.isReply=1) a left join rigistration r on r.userId=a.userId
+    </select>
+    
+    <!-- 判断是否已获取联系方式 -->
+    <select id="isGetContacts" parameterType="String" resultType="Integer">
+        select count(*) from bid_logs where userId=#{0} and companyId=#{1} and isReply=3
+    </select>
+</mapper> 

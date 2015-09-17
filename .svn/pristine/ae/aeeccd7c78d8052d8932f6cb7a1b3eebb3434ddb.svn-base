@@ -1,0 +1,28 @@
+package com.auction.common.service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public interface UserService {  
+	
+	/**
+     * 用户注册
+     * @param request
+     * @return
+     */
+    public String userRegister(HttpServletRequest request,HttpServletResponse response); 
+    
+    /**
+     * 邮箱验证（判断邮箱是否已存在）
+     * @param request
+     * @return
+     */
+    public String emailVerify(HttpServletRequest request,HttpServletResponse response);
+    
+    /**
+     * 用户登录
+     * @param request
+     * @return
+     */
+    public String userLogin(HttpServletRequest request,HttpServletResponse response);
+}

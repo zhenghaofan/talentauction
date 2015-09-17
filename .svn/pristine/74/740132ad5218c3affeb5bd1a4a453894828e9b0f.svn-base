@@ -1,0 +1,140 @@
+
+
+.sign-warp {
+	width: 670px;
+	color: #6B7485;
+	margin: 130px auto 100px;
+	border-radius: 3px;
+	overflow: hidden;
+	background-color: #fff;	
+}
+.sign-warp .sign-title {
+	height: 85px;
+	line-height: 85px;
+	color: #6B7485;
+	font-size: 20px;
+	padding-left: 50px;
+	border-bottom: 1px solid #eceef1;
+}
+.sign-warp .con-l {
+	width: 360px;
+	margin: 30px 20px 40px 50px;
+	display: inline-block;
+}
+.sign-warp .in-item .remarks {
+	color: #6B7485;
+	font-size: 16px;
+	margin-right: 6px;
+}
+.sign-warp .in-item input {
+	width: 265px;
+	height: 42px;
+	color: #6B7485;
+	font-size: 14px;
+	text-indent: 12px;
+	border: 1px solid #F3F1F1;
+	display: inline-block;
+	background-color: #eceef1;
+	border-radius: 3px;
+}
+.sign-warp .err-wrap {
+	min-height: 25px;
+}
+.sign-warp .err-wrap label {
+	width: 260px;
+	height: 25px;
+	color: #FF1414;
+	line-height: 25px;
+	text-indent: 20px;
+	padding-left: 18px;
+	margin-left: 40px;
+	display: none;
+}
+.sign-warp .err-wrap .ico-invalid {
+	background: url(../img/icon-error.png) 0 45% no-repeat;
+}
+.sign-warp .status {
+	height: 30px;
+	width: 265px;
+	color: #141414;
+	font-size: 16px;
+	line-height: 30px;
+	text-align: left;
+	padding-left: 43px;
+	margin: 0 0 10px;
+}
+.sign-warp .status label {
+	height: 30px;
+	color: #6B7485;
+	line-height: 30px;
+	display: inline-block;
+}
+.sign-warp .status input {
+	height: 16px;
+	width: 16px;
+	vertical-align: middle;
+}
+.sign-warp .status a {
+	float: right;
+	color: #6B7485;
+	text-decoration: underline;
+	display: inline-block;
+}
+.sign-warp .status .msg {
+	height: 25px;
+	color: #FF1414;
+	line-height: 25px;
+	padding-left: 18px;
+	margin-left: 5px;
+	background: url(../img/icon-error.png) 0 45% no-repeat;
+	display: none;
+}
+.sign-warp .sign-btn {
+	margin-left: 43px;
+}
+.sign-warp .sign-btn button {
+	width: 265px;
+	height: 46px;
+	color: #fff;
+	font-size: 20px;
+	letter-spacing: 5px;
+	border: none;
+	border-radius: 3px;
+	background-color: #70a7df;
+	cursor: pointer;
+	outline: 0;	
+}
+.sign-warp .sign-btn button:hover {
+	background-color: #4182c6;
+}
+.sign-warp .con-r {
+	font-size: 20px;
+	vertical-align: top;
+	margin: 30px 0;
+	display: inline-block;
+}
+.sign-warp .sign-text {
+	color: #6B7485;
+	text-align: center;
+	margin: 30px 0;
+}
+.sign-warp .signup-btn {
+	width: 173px;
+	height: 55px;
+	color: #fff;
+	border-radius: 3px;
+	border: 0;
+	background-color: #38b5e2;
+	display: inline-block;
+	text-align: center;
+	line-height: 55px;
+}
+.sign-warp .mail-text {
+	text-align: center;
+	margin: 30px 0;
+	font-size: 16px;
+}
+.sign-warp .mail-text a {
+	color: #6B7485;
+	text-decoration: underline;
+}

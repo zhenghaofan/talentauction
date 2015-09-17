@@ -1,0 +1,53 @@
+package com.auction.common.web;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.auction.common.service.InviteService;
+import com.auction.common.util.Util;
+
+
+/** 
+ * @author tobber
+ * @version 2015年5月25日
+ */
+@Controller
+@RequestMapping(value = "invite")
+public class InviteController {
+	
+	private InviteService inviteService;
+	
+	@RequestMapping(value = "getCityList") //加入朋友推荐
+	public String joinInvite(HttpServletRequest request,HttpServletResponse response) throws IOException { 
+		String json = inviteService.joinInvite(request);
+    	new Util().responesWriter(response,json);
+        return null;
+	}
+	
+	@RequestMapping(value = "getCaptcha") //获取验证码
+	public String getCaptcha(HttpServletRequest request,HttpServletResponse response) throws IOException { 
+		String json = inviteService.getCaptcha(request);
+    	new Util().responesWriter(response,json);
+        return null;
+	}
+	
+	@RequestMapping(value = "sendInvite") //发送朋友邀请
+	public String sendInvite(HttpServletRequest request,HttpServletResponse response) throws IOException { 
+		String json = inviteService.sendInvite(request);
+    	new Util().responesWriter(response,json);
+        return null;
+	}
+	
+	@RequestMapping(value = "getInviteList") //获取邀请列表
+	public String getInviteList(HttpServletRequest request,HttpServletResponse response) throws IOException { 
+		String json = inviteService.getInviteList(request);
+    	new Util().responesWriter(response,json);
+        return null;
+	}
+	
+}

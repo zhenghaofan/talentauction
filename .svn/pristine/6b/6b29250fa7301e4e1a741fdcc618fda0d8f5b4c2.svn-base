@@ -1,0 +1,255 @@
+package com.auction.common.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import net.sf.json.JSONObject;
+import org.springframework.stereotype.Service;
+import com.auction.common.dao.InviteDao;
+import com.auction.common.service.InviteService;
+import com.auction.util.SendCloudThread;
+import com.auction.util.SysConfig;
+import com.auction.util.Util;
+
+/** 
+ * @author tobber
+ * @version 2015年5月25日
+ */
+@Service
+public class InviteServiceLmpl implements InviteService {
+	@Resource
+	private InviteDao inviteDao;
+	
+	@Override
+	public String joinInvite(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			String name = null;
+			String email = null;
+			String inviteCode = null;
+			if(Util.isVerify(request.getParameter("name"), 1, 25, null)){
+				name = request.getParameter("name").trim();
+			}
+			if(Util.isVerify(request.getParameter("email"), 0, 0,"^([a-z0-9A-Z]+[-|_\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")){
+				email = request.getParameter("email").trim();
+			}
+			if(name!=null && email!=null){
+				List<String> params = new ArrayList<String>();
+				params.add("inviteCode");
+				String codeStr = inviteDao.queryInvite(name,email);
+				if(codeStr!=null && !codeStr.equals("")){
+					inviteCode = codeStr;
+				}else{
+					SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+					inviteCode = Util.getCharAndNumr(8);
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("name", name);
+					paramMap.put("email", email);
+					paramMap.put("inviteCode", inviteCode);
+					paramMap.put("joinTime", df.format(new Date()));
+					inviteDao.joinInvite(paramMap);
+				}
+				json.put("name", name);
+				json.put("email", email);
+				json.put("inviteUrl", SysConfig.getValue("INVITE_URL").toString()+inviteCode);
+				json.put("inviteCode", inviteCode);
+				json.put("code", 200);
+	            json.put("message", "添加成功！");
+				
+			}else{
+				json.put("code", 301);
+	            json.put("message", "姓名或邮箱输入有误！");
+			}
+    		
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getCaptcha(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		String captcha = Util.getCharAndNumr(4);
+		request.getSession().setAttribute("captcha", captcha);
+		json.put("captcha", captcha);
+		json.put("code", 200);
+        json.put("message", "获取成功！");
+		return json.toString();
+	}
+
+	@Override
+	public String sendInvite(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(request.getParameter("answer")!=null && request.getSession().getAttribute("captcha")!=null && 
+					request.getParameter("answer").trim().equalsIgnoreCase(request.getSession().getAttribute("captcha").toString())){
+				
+				request.getSession().setAttribute("captcha", Util.getCharAndNumr(4));
+				Boolean flag = true;
+				String inviteCode = null;
+				Map<String, Object> params = new HashMap<String, Object>();
+				if(Util.isVerify(request.getParameter("name"),1,25,null)){
+					params.put("name",request.getParameter("name"));
+				}else{
+					flag = false;
+				}
+				if(Util.isVerify(request.getParameter("email"), 0, 0,"^([a-z0-9A-Z]+[-_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$")){
+					params.put("email",request.getParameter("email"));
+				}else{
+					flag = false;
+				}
+				if(Util.isVerify(request.getParameter("sms"), 0, 25, null)){
+					params.put("sms",request.getParameter("sms"));
+				}
+				if(Util.isVerify(request.getParameter("inviteCode"), 0, 0,"[0-9a-zA-Z]{8}")){
+					inviteCode=request.getParameter("inviteCode");
+				}else{
+					flag = false;
+				}
+				
+				if(flag){
+					Map<String, Object> inviteMap = inviteDao.getInviteUser(inviteCode);
+					if(inviteMap!=null && !request.getParameter("email").equals(inviteMap.get("email").toString())){
+						
+						Map<String, Object> invite_logs = inviteDao.getInviteLogsUser(inviteMap.get("id").toString(),request.getParameter("email"));
+						if(invite_logs!=null && invite_logs.size()>0){
+							inviteDao.updateInviteLogs(inviteMap.get("id").toString());
+						}else{
+							SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+							params.put("inviteId", inviteMap.get("id").toString());
+							params.put("inviteTime", df.format(new Date()));
+							inviteDao.insertInviteLogs(params);
+							String substitution_vars = "{\"to\": [\""+request.getParameter("email")+"\"], \"sub\" : { "
+									+ "\"%invitedName%\" : [\""+request.getParameter("name")+"\"], "
+									+ "\"%senderName%\" : [\""+inviteMap.get("name")+"\"], "
+									+ "\"%message%\" : [\""+request.getParameter("sms")+"\"], "
+									+ "\"%url%\" : [\""+SysConfig.getValue("INVITE_URL")+request.getParameter("inviteCode")+"\"]}}";
+					        new Thread(new SendCloudThread("new_invite", substitution_vars, "您的朋友邀请您体验实力拍",true)).start();
+						}
+				        
+				        json.put("code", 200);
+			            json.put("message", "邀请成功！");
+					}else{
+						json.put("code", 301);
+			            json.put("message", "邀请用户失败！");
+					}
+				}else{
+					json.put("code", 302);
+		            json.put("message", "请输入完整信息！");
+				}
+				
+			}else{
+				json.put("code", 303);
+	            json.put("message", "验证码错误！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getInviteList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			List<Map<String, Object>> queryList = null;
+			if(Util.isVerify(request.getParameter("inviteCode"), 0, 0,"[0-9a-zA-Z]{8}")){
+				queryList = inviteDao.getInviteList(request.getParameter("inviteCode"));
+				if(queryList!=null && queryList.size()>0){
+					for(int i=0;i<queryList.size();i++){
+						queryList.get(i).put("progressText", "入职");
+						if(queryList.get(i).get("isHired")==null || !queryList.get(i).get("isHired").toString().equals("1")){
+							queryList.get(i).put("hiredTime", "");
+							queryList.get(i).put("progressText", "拍卖结束");
+							if(queryList.get(i).get("cvBidStatus")==null || !queryList.get(i).get("cvBidStatus").toString().equals("2")){
+								queryList.get(i).put("offShelvesTime", "");
+								queryList.get(i).put("progressText", "参加拍卖");
+								if(queryList.get(i).get("cvBidStatus")==null || !queryList.get(i).get("cvBidStatus").toString().equals("1")){
+									queryList.get(i).put("shelvesTime", "");
+									queryList.get(i).put("progressText", "提交简历申请");
+									if(queryList.get(i).get("status")==null || !queryList.get(i).get("status").toString().equals("1")){
+										queryList.get(i).put("commitTime", "");
+										queryList.get(i).put("progressText", "注册");
+										if(queryList.get(i).get("userId")==null || queryList.get(i).get("userId").toString().equals("")){
+											queryList.get(i).put("progressText", "未注册");
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			if(queryList!=null){
+				json.put("queryList", queryList);
+			}else{
+				json.put("queryList", "");
+			}
+			json.put("code", 200);
+            json.put("message", "获取成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getUserName(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			String userName = null;
+			if(request.getSession().getAttribute("userId")!=null){
+				Map<String,Object> userMap = inviteDao.getUserName(request.getSession().getAttribute("userId").toString());
+				if(userMap!= null && userMap.get("name")!=null){
+					userName = userMap.get("name").toString();
+				}
+			}
+			json.put("userName", userName);
+			json.put("code", 200);
+            json.put("message", "获取成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String getInviteName(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(Util.isVerify(request.getParameter("inviteCode"), 0, 0, "[0-9A-Za-z]{8}")){
+				
+				String userName = inviteDao.getInviteName(request.getParameter("inviteCode"));
+				if(userName!= null){
+					json.put("userName", userName);
+				}else{
+					json.put("userName", "");
+				}
+				json.put("code", 200);
+	            json.put("message", "获取成功！");
+			}else{
+				json.put("code", 301);
+	            json.put("message", "邀请码错误！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+            json.put("message", "服务器异常");
+		}
+		return json.toString();
+	}
+}

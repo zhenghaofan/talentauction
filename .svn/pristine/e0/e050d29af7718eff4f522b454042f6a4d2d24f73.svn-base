@@ -1,0 +1,114 @@
+$(function($) {
+	var userId = _getParams('userId');
+	var isOption = 0;
+	var bidCount = _getParams('bidCount');
+	var special = _getParams('special');
+	var specialCount = _getParams('specialCount');
+	
+	$('.top-bar-spec').click(function() {
+		window.history.back();
+	});	
+	
+	$('.info-status-warp .radio').click(function(_event) {
+		if($(this).hasClass('disabled')) {
+			$(this).removeClass("disabled").siblings('.radio').addClass("disabled");
+			if($(this).hasClass('opt_0')) {
+				isOption = 0;
+			}else {
+				isOption = 1;
+			}
+		}
+	});
+	
+	$('.button').click(function() {
+		_formatAuction();
+	});	
+	
+	var jump = function() {
+		var userId = _getParams('userId');
+		var time = 3;
+		
+		setInterval(function() {
+			if(time == 0) window.location.href =  '/cvlookdetail?userId=' + userId;
+			$('i').text(time--);
+		}, 1000);
+		
+		$('a').attr('href', '/cvlookdetail?userId=' + userId);
+	}
+	
+	var _formatAuction = function() {
+		var bidPrice = $('#bidPrice').val();
+		var monthCount = $('#monthCount').val();
+		var workTitle = $('#workTitle').val();
+		var reg = /^[1-9]{1}[0-9]{0,2}([.]{1}[0-9]{1,2})?$/;
+		
+		if( !reg.test(bidPrice) || bidPrice > 50) {
+			T.alert('输入的工资不太合理，应该不大于50K！');
+			$('#bidPrice').val('');
+			return;
+		}else if( monthCount < 12 || monthCount > 20 ) {
+			T.alert('月数应该为12到20个月哦！');
+			$('#monthCount').val('');
+			return;
+		}else if( !workTitle || workTitle == '') {
+			T.alert('请正确输入职位！');
+			$('#workTitle').val('');
+			return;
+		} 
+		
+		var config = {
+				'userId': userId,
+				'bidPrice': bidPrice,
+				'monthCount': monthCount,
+				'workTitle': workTitle,
+				'isOption': isOption,
+				'bidCount': bidCount,
+				'special': special,
+				'specialCount': specialCount				
+		}
+		
+		_doPost('/companyAuction', config, function(result) {
+			window.location.href = '/appcallback?userId=' + userId;
+		}, function(err) {
+			console.log('companyAuction', err);
+		});
+	};
+});
+
+function _getParams(name) {
+	var query = window.location.search;
+	if (name) {
+		var r = new RegExp("[?&]" + name + "=([^&]*)");
+		var m = r.exec(query);
+		if (m) {
+			return m[1];
+		} else {
+			return null;
+		}
+	} else {
+		return this.parseQueryString(query);
+	}	
+}
+
+function _doPost(url, params, callback, error) {
+	_ajax(url, 'post',callback, error, params);
+}
+
+function _doGet(url, callback, error) {
+	_ajax(url, 'get', callback, error);
+}
+
+function _ajax(_url, _type, _callback, _error, _params) {
+	$.ajax({
+		url: _url,
+		type: _type,
+		dataType: 'json',
+		data: _params,
+		success: function(result) {
+			_callback(result);
+		},
+		error: function(err) {
+			_error(err);
+		}
+	});
+}

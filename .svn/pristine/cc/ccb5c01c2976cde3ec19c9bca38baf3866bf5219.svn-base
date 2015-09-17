@@ -1,0 +1,148 @@
+package com.auction.common.web;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.auction.common.dao.BaseDao;
+import com.auction.common.dao.UserDao;
+import com.auction.common.util.Base64Util;
+import com.auction.common.util.SendCloudThread;
+import com.auction.common.util.SysConfig;
+import com.auction.common.util.Util;
+
+/** 
+ * @author tobber
+ * @version 2015年4月15日
+ */
+@Controller
+@RequestMapping(value = "talents")
+public class SendEmail {
+
+	@Resource  
+    private UserDao userDao;
+	@Resource  
+    private BaseDao baseDao;
+	
+	@RequestMapping(value = "sendEmail")//邮件发送
+	public String sendEmail(HttpServletRequest request,HttpServletResponse response) throws IOException { 
+    	//创建json对象
+        JSONObject json = new JSONObject();
+    	try {  
+    		final String email = request.getParameter("email");
+    		String state = request.getParameter("state");
+    		if(email!=null && !"".equals(email.trim())){
+    			Map<String, Object> userMap = userDao.getUserInfoByEmail(email);
+    			if(userMap!=null && userMap.size()>0){
+    				String url = null;
+    				String statusStr=null;
+    				
+                    if(userMap.get("status")!=null && "1".equals(userMap.get("status").toString())){
+                    	statusStr="企业交流q群：345580895";
+                    }else{
+                    	statusStr = "人才交流q群：338403574";
+                    }
+                    DateFormat dateDf=new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+    				if(state!=null && !"".equals(state.trim())){
+    					url = SysConfig.getValue("PWD_RETRIEVE_URL").toString()+"?email="+Base64Util.getBase64(email);
+                        String substitution_vars = "{\"to\": [\""+email+"\"], \"sub\" : { \"%email%\" : [\""+email+"\"], \"%rigistUrl%\" : [\""+url+"\"], \"%url%\" : [\""+url+"\"], \"%date%\" : [\""+dateDf.format(new Date())+"\"], \"%userQQ%\" : [\""+statusStr+"\"]}}";
+                        new Thread(new SendCloudThread("passwordReset", substitution_vars, "实力拍密码重置")).start();
+                        
+    					json.put("code", "200");
+        	            json.put("message", "发送成功");
+    				}else{
+    					if(userMap.get("isSuccess")!=null && "0".equals(userMap.get("isSuccess").toString())){
+    						url = SysConfig.getValue("MAIL_URL").toString()+"?code="+Base64Util.getBase64(email);
+	                        String substitution_vars = "{\"to\": [\""+email+"\"], \"sub\" : { \"%email%\" : [\""+email+"\"], \"%rigistUrl%\" : [\""+url+"\"], \"%url%\" : [\""+url+"\"], \"%date%\" : [\""+dateDf.format(new Date())+"\"], \"%userQQ%\" : [\""+statusStr+"\"]}}";
+	                        new Thread(new SendCloudThread("userActivation", substitution_vars, "实力拍激活邮件")).start();
+        					json.put("code", "200");
+            	            json.put("message", "发送成功");
+    					}else{
+    						json.put("code", "301");
+    	    	            json.put("message", "当前账号已激活，不需要重新激活！");
+    					}
+    				}
+    			}else{
+    				json.put("code", "302");
+    	            json.put("message", "该邮箱还没有注册！");
+    			}
+    		}else{
+    			json.put("code", "302");
+	            json.put("message", "该邮箱还没有注册！");
+    		}
+        } catch (Exception e) { 
+        	e.printStackTrace();
+        	json.put("code", "500");
+            json.put("message", "服务器异常！");
+        }  
+    	
+    	new Util().responesWriter(response,json.toString());
+		return null;
+    }
+		
+	
+	@RequestMapping(value = "emailActivation")//邮箱验证激活
+	public String emailActivation(HttpServletRequest request,HttpServletResponse response) throws IOException { 
+		JSONObject json = new JSONObject();
+		try {  
+        	String email=request.getParameter("email");
+        	int flag = 0;
+        	if(email!=null && !"".equals(email.trim())){
+        		Map<String, Object> params = new HashMap<String, Object>();
+        		Map<String, Object> paramsMap = new HashMap<String, Object>();
+        		params.put("tableName", "rigistration");
+        		params.put("trem", "email='"+Base64Util.getFromBase64(email.trim())+"'");
+        		paramsMap.put("isSuccess", 1);
+        		params.put("paramsMap", paramsMap);
+        		flag = baseDao.baseUpdate(params);
+        	}
+        	if(flag>0){
+        		List<String> params = new ArrayList<String>();
+        		params.add("email");params.add("status");params.add("userId");params.add("isSuccess");params.add("isSaveUserInfo");
+        		Map<String, Object> userMap = userDao.getUserInfoByEmail(Base64Util.getFromBase64(email));
+        		request.getSession().setAttribute("email", request.getParameter("email"));
+                request.getSession().setAttribute("status", userMap.get("status").toString());
+                request.getSession().setAttribute("userId", userMap.get("userId").toString());
+                request.getSession().setAttribute("isSuccess", userMap.get("isSuccess").toString());
+                request.getSession().setAttribute("isSaveUserInfo",userMap.get("isSaveUserInfo").toString());
+                if(userMap.get("companyId")!=null && !"".equals(userMap.get("companyId").toString())){
+                	request.getSession().setAttribute("companyId", userMap.get("companyId").toString());
+                }
+                String _useName = request.getParameter("email").replace("@", "&");
+                Cookie c= new Cookie("userEmail",_useName); 
+                c.setPath("/");
+                response.addCookie(c);
+                Cookie s= new Cookie("status",userMap.get("status").toString()); 
+                s.setPath("/");
+                response.addCookie(s);
+                
+        		json.put("code", "200");
+        		json.put("message", "激活成功");
+        	}else{
+        		json.put("code", "301");
+        		json.put("message", "激活失败");
+        	}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", "500");
+            json.put("message", "服务器异常");
+        }  
+		new Util().responesWriter(response,json.toString());
+		return null;
+    }
+}

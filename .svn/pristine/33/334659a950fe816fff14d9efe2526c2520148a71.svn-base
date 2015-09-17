@@ -1,0 +1,353 @@
+
+/**
+ * 注册存储过程
+ */
+DROP PROCEDURE IF EXISTS user_register;
+create procedure user_register(
+	in i_email varchar(50),
+	in i_pwd varchar(50),
+	in i_status int,
+	in i_telephone varchar(11),
+	in i_name varchar(500),
+	in i_jobTitle varchar(500),
+	in i_skills varchar(500),
+	in i_destination varchar(50),
+	out resultNumber int
+)
+begin
+	declare v_user_count int;
+	declare v_user_id int;
+	select count(*) into v_user_count from rigistration where email=i_email;
+	if v_user_count>0 then
+		set resultNumber = v_user_count;
+	else
+		insert into rigistration set email=i_email,password=i_pwd,status=i_status,isNormal=1,rigistraTime=NOW(),name=i_name,jobTitle=i_jobTitle,telephone=i_telephone;
+		if i_status=0 then 
+			select userId into v_user_id from rigistration where email=i_email limit 1;
+			if v_user_id>0 then
+				insert into resume set userId=v_user_id,jobYear=0,surplusTime=0,cvBidStatus=0,cvCheckResult=0,cvCheckStatus=0,bidCount=0,special='0',specialCount='0',sex=0,education=0,skills=i_skills,destination=i_destination,creatTime=NOW();
+			end if;
+		end if;
+	end if;
+end
+
+
+
+/**
+ * 备份创表语句
+ */
+CREATE TABLE `b_educations` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `resumeId` varchar(20) NOT NULL,
+  `startTime` varchar(50) NOT NULL,
+  `endTime` varchar(50) NOT NULL,
+  `school` varchar(500) NOT NULL,
+  `specialty` varchar(500) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=640 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `b_projects` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `resumeId` varchar(20) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `startTime` varchar(50) DEFAULT NULL,
+  `endTime` varchar(50) DEFAULT NULL,
+  `projectDetails` varchar(1600) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1605 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `b_resume` (
+  `resumeId` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(10) DEFAULT NULL,
+  `destination` varchar(50) DEFAULT NULL,
+  `expectedSalary` varchar(10) DEFAULT NULL,
+  `skills` varchar(500) DEFAULT NULL,
+  `jobTitle` varchar(200) DEFAULT NULL,
+  `jobYear` int(3) DEFAULT '0',
+  `name` varchar(50) DEFAULT NULL,
+  `sex` int(1) DEFAULT '0',
+  `age` varchar(50) DEFAULT NULL,
+  `education` int(1) DEFAULT '0',
+  `summary` varchar(300) DEFAULT NULL,
+  `productUrl` varchar(2500) DEFAULT NULL,
+  `productImg` varchar(1600) DEFAULT NULL,
+  `isOxcoder` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`resumeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `b_workexp` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `resumeId` varchar(20) DEFAULT NULL,
+  `startTime` varchar(50) DEFAULT NULL,
+  `endTime` varchar(50) DEFAULT NULL,
+  `companyName` varchar(200) DEFAULT NULL,
+  `jobTitle` varchar(100) DEFAULT NULL,
+  `workContent` varchar(800) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1423 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `talent_demand`;
+CREATE TABLE `talent_demand` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `companyId` varchar(20) NOT NULL,
+  `skills` varchar(50) NOT NULL,
+  `website` varchar(500) DEFAULT NULL,
+  `updateTime` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+
+/**
+ * 简历提交审核 存储过程
+ */
+DROP PROCEDURE IF EXISTS user_backup;
+create procedure user_backup(
+	in i_resumeId varchar(50),
+	in i_userId varchar(50),
+	in i_commitTime varchar(50),
+	out resultNumber varchar(1)
+)
+begin
+	update resume set updateTime=NOW(),status=1,isOnline=1,isHired=0,special=0,specialCount=0,cvCheckResult=0,cvCheckStatus=0,cvBidStatus=0,commitTime=NOW(),repeatBidTime=i_commitTime,bidCount=bidCount+1 where userId=i_userId;
+	if row_count()>0 then 
+		delete from b_resume where resumeId=i_resumeId;
+		delete from b_educations where resumeId=i_resumeId;
+		delete from b_projects where resumeId=i_resumeId;
+		delete from b_workexp where resumeId=i_resumeId;
+		insert into b_resume (resumeId,userId,destination,expectedSalary,skills,jobTitle,jobYear,name,sex,age,education,summary,productUrl,productImg,isOxcoder) 
+			select resumeId,userId,destination,expectedSalary,skills,jobTitle,jobYear,name,sex,age,education,summary,productUrl,productImg,isOxcoder from resume where resumeId=i_resumeId;
+		insert into b_workexp (id,resumeId,startTime,endTime,companyName,jobTitle,workContent) 
+			select id,resumeId,startTime,endTime,companyName,jobTitle,workContent from work_experiences where resumeId=i_resumeId;
+		insert into b_projects (id,resumeId,name,startTime,endTime,projectDetails) 
+			select id,resumeId,name,startTime,endTime,projectDetails from projects where resumeId=i_resumeId;
+		insert into b_educations (id,resumeId,startTime,endTime,school,specialty) 
+			select id,resumeId,startTime,endTime,school,specialty from educations where resumeId=i_resumeId;
+		set resultNumber = '1';
+	else 
+		set resultNumber = '0';
+	end if;
+end
+
+
+/**
+ * 更新求职意向 （不更新简历状态）
+ */
+DROP PROCEDURE IF EXISTS user_update_itent;
+create procedure user_update_itent(
+	in i_expectedSalary varchar(50),
+	in i_destination varchar(50),
+	in i_content varchar(50),
+	in i_userId varchar(50),
+	out resultNumber varchar(1)
+)
+begin
+	set resultNumber = '0';
+	if i_expectedSalary is not null then
+		update resume set expectedSalary=i_expectedSalary where userId=i_userId;
+		set resultNumber = '1';
+	end if;
+	if i_destination is not null then
+		update resume set destination=i_destination where userId=i_userId;
+		set resultNumber = '1';
+	end if;
+	if i_content is not null then
+		delete from shield_logs where userId=i_userId;
+		insert into shield_logs (userId,content,shieldTime) values(i_userId,i_content,NOW());
+		set resultNumber = '1';
+	end if;
+end
+
+
+/**
+ * 更新求职意向（更改简历重新上传）
+ */
+DROP PROCEDURE IF EXISTS user_resubmit_check;
+create procedure user_resubmit_check(
+	in i_expectedSalary varchar(50),
+	in i_destination varchar(50),
+	in i_jobTitle varchar(50),
+	in i_skills varchar(50),
+	in i_content varchar(50),
+	in i_userId varchar(50),
+	out resultNumber varchar(1)
+)
+begin
+	declare sqlstr varchar(1000) DEFAULT '';
+	set resultNumber = '0';
+	set sqlstr = concat(sqlstr,'update resume set isHired=0,status=2,cvBidStatus=0,cvCheckStatus=0,cvCheckResult=0');
+	if i_expectedSalary is not null then
+		set sqlstr = concat(sqlstr,',expectedSalary=',i_expectedSalary);
+	end if;
+	
+	if i_destination is not null then
+		set sqlstr = concat(sqlstr,",destination='",i_destination,"'");
+	end if;
+	
+	if i_jobTitle is not null then
+		set sqlstr = concat(sqlstr,",jobTitle='",i_jobTitle,"'");
+	end if;
+	
+	if i_skills is not null then
+		set sqlstr = concat(sqlstr,",skills='",i_skills,"'");
+	end if;
+	
+	set sqlstr = concat(sqlstr,' where userId=',i_userId,';');
+	set @v_sql = sqlstr;
+	prepare stmt from @v_sql;
+	EXECUTE stmt;
+	deallocate prepare stmt;
+	set resultNumber = '1';
+	if i_content is not null then
+		delete from shield_logs where userId=i_userId;
+		insert into shield_logs (userId,content,shieldTime) values(i_userId,i_content,NOW());
+		set resultNumber = '1';
+	end if;
+end
+
+
+/**
+ * 候选人删除（公共）存储过程
+ */
+DROP PROCEDURE IF EXISTS resume_base_del;
+create procedure resume_base_del(
+	in i_tabelName varchar(50),
+	in i_userId varchar(50),
+	in i_id varchar(100),
+	out resultNumber int
+)
+begin
+	declare v_resumeId varchar(50);
+	declare sqlstr varchar(1000) DEFAULT '';
+	set resultNumber = '0';
+	select resumeId into v_resumeId from resume where userId=i_userId;
+	if v_resumeId is not null then
+		set sqlstr = concat(sqlstr,"delete from ",i_tabelName," where resumeId = ",v_resumeId," and id=",i_id);
+		set @v_sql = sqlstr;
+		prepare stmt from @v_sql;
+		EXECUTE stmt;
+		deallocate prepare stmt;
+		set resultNumber = '1';
+	end if;
+end
+
+/**
+ * 简历再次参加拍卖，不需要审核
+ */
+DROP PROCEDURE IF EXISTS resume_direct_Bid;
+create procedure resume_direct_Bid(
+	in i_userId varchar(50),
+	out resultNumber int
+)
+begin
+	declare v_bidStatus int(1);
+	declare v_special varchar(10);
+	declare v_specialCount varchar(10);
+	set resultNumber = '0';
+	select cvBidStatus into v_bidStatus from resume where userId=i_userId;
+	if v_bidStatus=2 then
+		select special into v_special from resume where userId=i_userId;
+		select specialCount into v_specialCount from special where id=v_special;
+		if v_specialCount is not null then
+			update resume set updateTime=NOW(),cvBidStatus=3,isHired=0,specialCount=v_specialCount,commitTime=NOW() where userId=i_userId;
+			if row_count()>0 then
+				set resultNumber ='1';
+			end if;
+		end if;
+	end if;
+end
+
+/**
+ * 公司竞拍
+ */
+DROP PROCEDURE IF EXISTS company_auction;
+create procedure company_auction(
+	in i_userId varchar(50),
+	in i_companyId varchar(50),
+	in i_bidPrice float(5,1),
+	in i_monthCount int(3),
+	in i_isOption int(1),
+	in i_workTitle varchar(100),
+	in i_bidCount int(3),
+	in i_special int(5),
+	in i_specialCount int(5),
+	out resultNumber int
+)
+begin
+	declare v_max_pricel float(5,1);
+	declare v_read_count int(10);
+	set resultNumber = 0;
+	select max(bidPrice) into v_max_pricel from bid_logs where userId=i_userId and companyId=i_companyId;
+	if v_max_pricel is null or i_bidPrice>v_max_pricel then
+		select count(*) into v_read_count from read_logs where userId=i_userId and companyId=i_companyId;
+		if v_read_count>0 then
+			update read_logs set status=1,readTime=NOW() where userId=i_userId and companyId=i_companyId;
+		else
+			insert into read_logs (userId,companyId,status,readTime) values (i_userId,i_companyId,1,NOW());
+		end if;
+		insert into bid_logs (userId,companyId,bidPrice,monthCount,isOption,workTitle,bidTime,bidCount,special,specialCount,isReply) 
+		values (i_userId,i_companyId,i_bidPrice,i_monthCount,i_isOption,i_workTitle,NOW(),i_bidCount,i_special,i_specialCount,0);
+		set resultNumber = 1;
+	else
+		set resultNumber = 2; --拍卖价低于上次拍卖价
+	end if;
+end
+
+
+update special s,(select date_format(bidTime,'%Y-%m-%d %T') as t,id from special) a set s.bidTime=a.t where a.id=s.id;
+
+update bid_logs s,(select date_format(bidTime,'%Y-%m-%d %T') as t,id from bid_logs) a set s.bidTime=a.t where a.id=s.id;
+
+update bid_logs s,(select date_format(replyTime,'%Y-%m-%d %T') as t,id from bid_logs) a set s.replyTime=a.t where a.id=s.id;
+
+update read_logs s,(select date_format(readTime,'%Y-%m-%d %T') as t,id from read_logs) a set s.readTime=a.t where a.id=s.id;
+
+update resume s,(select date_format(checkTime,'%Y-%m-%d %T') as t,resumeId from resume) a set s.checkTime=a.t where a.resumeId=s.resumeId;
+
+update resume s,(select date_format(creatTime,'%Y-%m-%d %T') as t,resumeId from resume) a set s.creatTime=a.t where a.resumeId=s.resumeId;
+
+update resume s,(select date_format(updateTime,'%Y-%m-%d %T') as t,resumeId from resume) a set s.updateTime=a.t where a.resumeId=s.resumeId;
+
+update resume s,(select date_format(commitTime,'%Y-%m-%d %T') as t,resumeId from resume) a set s.commitTime=a.t where a.resumeId=s.resumeId;
+
+update resume s,(select date_format(shelvesTime,'%Y-%m-%d %T') as t,resumeId from resume) a set s.shelvesTime=a.t where a.resumeId=s.resumeId;
+
+update special_logs s,(select date_format(bidTime,'%Y-%m-%d %T') as t,id from special_logs) a set s.bidTime=a.t where a.id=s.id;
+
+update special_logs s,(select date_format(collectTime,'%Y-%m-%d %T') as t,id from special_logs) a set s.collectTime=a.t where a.id=s.id;
+
+update talent_demand s,(select date_format(updateTime,'%Y-%m-%d %T') as t,id from talent_demand) a set s.updateTime=a.t where a.id=s.id;
+
+
+alter table bid_logs add column acquireTime varchar(50) default null;
+alter table resume add column previous int(1) default 0;
+alter table rigistration add column activaCode varchar(50) default null;
+
+alter table resume add column isExced int(1) default 0;
+alter table resume add column toEmail varchar(50) default null;
+alter table resume add column toPhone varchar(20) default null;
+
+alter table resume drop column telephone;
+alter table resume drop column expectedProvince;
+alter table resume drop column nowSalary;
+alter table resume drop column languages;
+alter table resume drop column certificates;
+alter table resume drop column educations;
+alter table resume drop column entryTime;
+alter table resume drop column province;
+alter table resume drop column city;
+alter table resume drop column idCard;
+alter table resume drop column companyProgress;
+alter table resume drop column companySize;
+alter table resume drop column companyArea;
+alter table resume drop column userEmail;
+alter table work_experiences drop column companyArea;
+alter table work_experiences drop column companyType;
+alter table work_experiences drop column companySize;
+alter table projects drop column softwares;
+alter table projects drop column hardwares;
+alter table projects drop column responsibilities;
+alter table projects drop column applicationTechnology;
+alter table bid_logs drop column optionStart;
+alter table bid_logs drop column optionEnd;
+
+
+

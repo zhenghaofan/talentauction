@@ -1,0 +1,181 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('defaultCtrl', ['$scope', '$rootScope', '$http', '$q',
+   		function($scope, $rootScope, $http, $q) {
+		$('.viewport').show();
+		$rootScope.tabIndex = 4;
+		$scope.context = {};
+		$scope.compInfo = {};
+		$scope.jdInfo = {};
+		$scope.teamInfo = {};
+		$scope.pdtInfo = {};
+		
+		/*图片上传*/
+		$scope.imgUpload = function() {
+			
+		};
+
+		/*信息完整度*/
+		$scope.getProgress = function() {
+			
+		};		
+		
+		/* 获取公司信息*/
+		$scope.getCompInfo = function() {
+			
+		};
+		
+		 /*修改公司信息*/
+		$scope.upCompInfo = function() {
+			
+		};
+		
+		 /*增加人才需求*/
+		$scope.addJd = function() {
+			
+		};
+		
+		 /*删除人才需求*/
+		$scope.delJd = function() {
+			
+		};		
+		
+		 /*增加创始团队*/
+		$scope.addTeam = function() {
+			
+		};
+		
+		 /*删除创始团队*/
+		$scope.delTeam = function() {
+			
+		};
+		
+		 /*修改创始团队*/
+		$scope.upTeam = function() {
+			
+		};
+		
+		 /*增加公司产品*/
+		$scope.addPdt = function() {
+			
+		};
+		
+		 /*删除公司产品*/
+		$scope.delPdt = function() {
+			
+		};
+		
+		 /*修改公司产品*/
+		$scope.upPdt = function() {
+			
+		};
+		
+		 /*增加公司环境*/
+		$scope.addOffice = function() {
+			
+		};
+		
+		 /*删除公司环境*/
+		$scope.delOffice = function() {
+			
+		};
+		
+		 /*增加公司介绍*/
+		$scope.addIntro = function() {
+			
+		};
+		
+		
+		
+		/* 验证公司信息*/
+		function _checkCompInfo(data) {
+			$scope._clearTip();
+			if(!data.skills) {
+				$('#jdInfo_name').focus();
+				$('#jdInfo_name_tip').show().text('职位输入有误！');
+				return false;
+			}else if(!data.website) {
+				$('#jdInfo_url').focus();
+				$('#jdInfo_url_tip').show().text('职位链接输入有误！');
+				return false;				
+			}
+			
+			return true;			
+		}
+		
+		/* 验证人才需求*/
+		function _checkJdInfo(data) {
+			$scope._clearTip();
+			if(!data.skills) {
+				$('#jdInfo_name').focus();
+				$('#jdInfo_name_tip').show().text('职位输入有误！');
+				return false;
+			}else if(!data.website) {
+				$('#jdInfo_url').focus();
+				$('#jdInfo_url_tip').show().text('职位链接输入有误！');
+				return false;				
+			}
+			
+			return true;			
+		}
+		
+		/* 验证创始团队*/
+		function _checkTeamInfo(data) {
+			$scope._clearTip();
+			if(!data.skills) {
+				$('#jdInfo_name').focus();
+				$('#jdInfo_name_tip').show().text('职位输入有误！');
+				return false;
+			}else if(!data.website) {
+				$('#jdInfo_url').focus();
+				$('#jdInfo_url_tip').show().text('职位链接输入有误！');
+				return false;				
+			}
+			
+			return true;			
+		}
+		
+		/* 验证公司产品*/
+		function _checkPdtInfo(data) {
+			$scope._clearTip();
+			if(!data.skills) {
+				$('#jdInfo_name').focus();
+				$('#jdInfo_name_tip').show().text('职位输入有误！');
+				return false;
+			}else if(!data.website) {
+				$('#jdInfo_url').focus();
+				$('#jdInfo_url_tip').show().text('职位链接输入有误！');
+				return false;				
+			}
+			
+			return true;			
+		}
+		
+		/* 格式化简历信息*/
+		function _fomartCompInfo(data) {
+        	if(data.resume.productUrl) {
+        		data.productUrl = data.resume.productUrl.split(',');
+        	}
+        	
+        	if(data.resume.productImg) {
+        		data.productImg = data.resume.productImg.split(',');
+        	}        	
+        	
+        	for(var i in $scope.edus) {
+        		if($scope.edus[i].id == data.resume.education)
+        			data.resume.educationStr = $scope.edus[i].value;
+        	}
+        	
+			return data;
+		}		
+		
+ 	}]);
+	
+	app.bootstrap();
+});

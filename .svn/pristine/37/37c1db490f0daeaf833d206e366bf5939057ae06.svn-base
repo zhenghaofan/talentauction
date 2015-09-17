@@ -1,0 +1,402 @@
+
+/* 注册选中*/
+.prompt a:first-child {
+	color: #1e95ea !important;
+}
+
+
+.fz-1 {
+	font-size: 14px;
+}
+.fz-2 {
+	font-size: 16px;
+}
+
+
+.main-content {
+	padding-top: 76px;
+}
+.signup-wrap {
+	width: 800px;
+	color: #6B7485;
+	margin: 130px auto 100px;
+	border-radius: 3px;
+	overflow: hidden;
+	background-color: #fff;
+}
+.signup-title-box {
+	height: 85px;
+	line-height: 85px;
+	color: #6B7485;
+	font-size: 20px;
+	padding-left: 50px;
+	border-bottom: 1px solid #eceef1;
+}
+.register-title-tag {
+	font-size:14px;
+	background-color:#4fcdfa;
+	color:white;
+	padding:8px;
+}
+.signup-l {
+	margin: 0 45px;
+	overflow: hidden;
+}
+.signup-l .remarks {
+	color: #6B7485;
+	font-size: 16px;
+	margin-right: 6px;
+}
+.signup-l .checked {
+	min-height: 25px;
+}
+.signup-l > label, .checked label {
+	height: 25px;
+	line-height: 25px;
+	width: 260px;
+	color: #FF1414;
+	text-indent: 20px;
+	padding-left: 18px;
+	margin-left: 40px;
+	display: none;
+}
+.signup-l > label.invalid, .checked label.invalid {
+	background: url(../img/icon-error.png) no-repeat transparent;
+	background-position: 0 45%;
+}
+.signup-l label.valid {
+	background: url(../img/icon-prompt-green.png) no-repeat transparent;
+	color: #22C837;
+	background-position: 0 46%;
+}
+.signup-l .send-code-btn {
+	height: 44px;
+	line-height: 44px;
+	width: 100px;
+	color: #fff;
+	font-size: 14px;
+	border: none;
+	display: inline-block;
+	background-color: #38b5e2;
+	cursor: pointer;
+	border-radius: 3px;
+	text-align: center;
+	margin-left: 3px;
+}
+.signup-l .btn {
+	width: 260px;
+	height: 46px;
+	color: #fff;
+	font-size: 20px;
+	letter-spacing: 5px;
+	border: none;
+	margin-left: 42px;
+	display: block;
+	background-color: #70a7df;
+	cursor: pointer;
+	border-radius: 3px;
+}
+.signup-l .btn:hover {
+	background-color: #4182c6;
+}
+.signup-input {
+	width: 258px;
+	height: 42px;
+	color: #6B7485;
+	font-size: 14px;
+	text-indent: 12px;
+	border: 1px solid #F3F1F1;
+	display: inline-block;
+	background-color: #eceef1;
+	border-radius: 3px;
+}
+.signup-wrap .tel {
+	width: 150px;
+	display: inline-block;
+}
+.in-warp-l {
+	float: left;
+	width: 355px;
+	padding: 30px 0 20px;
+}
+.in-warp-l .type {
+	color: #6B7485;
+	margin-bottom: 25px;
+	padding-left: 43px;
+}
+.in-warp-l .type div {
+	width: 118px;
+	height: 44px;
+	font-size: 16px;
+	line-height: 44px;
+	text-align: center;
+	margin-right: 18px;
+	border-radius: 5px;
+	background-color: #eceef1;
+	display: inline-block;
+	cursor: pointer;
+}
+.in-warp-l .reg-type-range {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border-radius: 11px;
+	border: 1px solid #a2a8b3;
+	vertical-align: middle;
+	margin-top: -4px;
+}
+.in-warp-l .reg-type-range-selected {
+	width: 22px;
+	height: 22px;
+	border: 0;
+	background: url(../img/register_check.png) center center no-repeat;
+}
+.in-warp-l .reg-type-text {
+	display: inline-block;
+	margin-left: 10px;
+}
+.in-warp-r {
+	float: left;
+	width: 304px;
+	padding: 30px 0 24px 50px;
+	border-left: 1px solid #eceef1;
+}
+.in-warp-r .agreement {
+	width: auto;
+	padding-left: 42px;
+	margin: 0 0 15px;
+}
+.in-warp-r .agreement label {
+	color: #141414;
+	font-size: 16px;
+	line-height: 20px;
+	display: inline-block;
+}
+.in-warp-r .agreement a {
+	color: #696e71;
+}
+.in-warp-r .agreement input[type=checkbox] {
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+}
+.in-warp-r .agreement .invalid {
+	color: #FF1414;
+	font-size: 14px;
+	padding-left: 18px;
+	background: url(../img/icon-error.png) no-repeat transparent;
+	background-position: 0 45%;
+	display: none;
+}
+.in-warp-r .code {
+	width: 104px;
+	margin-left: 42px;
+	margin-bottom: 10px;
+	display: none;
+}
+.in-warp-r .onsubmit-btn {
+	background-color: #ccc;
+	cursor: default;
+}
+.correct-ico, .err-ico {
+	display: inline-block;
+	height: 14px;
+	font-style: normal;
+	padding-left: 16px;
+	margin-left: 5px;
+	display: none;
+}
+.correct-ico {
+	background: url(../img/icon-prompt-green.png) top left no-repeat transparent;
+	color: #37B306;
+}
+.err-ico {
+	background: url(../img/icon-error.png) top left no-repeat transparent;
+	color: red;
+}
+.bottom-tip {
+	margin: 10px 0;
+	font-size: 16px;
+	text-align: center;
+	margin-top: 20px;
+}
+.email-link {
+	text-decoration: underline;
+	color: #696e71;
+	margin-right: 10px;
+}
+.login-link {
+	color: #4283c7;
+}
+
+
+
+/* 城市弹出框*/
+.city-modal {
+	display: none;
+}
+.city-modal input[type="text"]:focus {
+	border-color: red;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px
+		rgba(102, 175, 233, 0.6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px
+		rgba(102, 175, 233, 0.6);
+}
+.city-modal .modal-dialog {
+	width: 385px;
+	margin-top: 10%;
+}
+.city-modal .modal-header {
+	font-size: 18px;
+	padding: 20px 25px;
+	border-bottom: 1px solid #eceef1;
+	background-size: 30px;
+	background-position: 6px 50%;
+}
+.city-modal .modal-title {
+	color: #6B7485;
+}
+.city-modal .close {
+	font-weight: normal;
+	background-color: #fff;
+}
+.city-wapr {
+	width: 332px;
+	padding: 20px 0 0 20px;
+	border-radius: 3px;
+	overflow: hidden;
+}
+.city-wapr .feel-item {
+	float: left;
+	width: 90px;
+	height: 25px;
+	color: #797979;
+	line-height: 25px;
+	text-align: center;
+	margin: 0 15px 20px 0;
+	border: 2px solid #fff;
+	border-radius: 2px;
+	background-color: #eceef1;
+	cursor: pointer;
+}
+.city-wapr .feel-slt {
+	border-color: #71A8E0;
+	background: url(../img/icon-check-c.png) top right no-repeat #fff;
+	background-position: 103% -110%;
+}
+.city-wapr .other-city-in {
+	width: 193px;
+	height: 21px;
+	line-height: 25px;
+	padding: 3px 5px;
+	border-radius: 2px;
+	border: 1px solid #71A8E0;
+	display: none;
+}
+.city-modal .modal-footer {
+	text-align: center;
+	padding-top: 0;
+	padding-bottom: 30px;
+	border-top: none;
+}
+.city-modal .btn-primary {
+	padding: 6px 25px;
+	border-radius: 2px;
+}
+
+/* 专业技能弹出框*/
+.skill-modal {
+	display: none;
+}
+.skill-modal .modal-dialog {
+	width: 650px;
+	margin-top: 10%;
+}
+.skill-modal .modal-header {
+	font-size: 18px;
+	padding: 20px 25px;
+	border-bottom: 1px solid #eceef1;
+	background-size: 30px;
+	background-position: 6px 50%;
+}
+.skill-modal .modal-title {
+	color: #6B7485;
+	display: inline-block;
+}
+.skill-modal .close {
+	font-weight: normal;
+	background-color: #fff;
+}
+.skill-modal .slt-warp {
+	display: inline-block;
+}
+.skill-modal .slt-warp .slt-item {
+	height:30px;
+	color: #fff;
+	font-size: 14px;
+	line-height: 30px;
+	padding: 0 6px;
+	margin-left: 5px;
+	background-color: #71A8E0;
+	display: inline-block;
+	cursor: pointer;
+}
+.slt-warp .slt-item:after {
+	content: 'x';
+	margin-left: 10px;
+}
+.skill-modal .modal-body {
+	padding: 20px 50px 15px;
+}
+.skill-warp {
+	color: #6B7485;
+	overflow: hidden;
+}
+.skill-warp .sideBar {
+	float: left;
+	width: 140px;
+	font-size: 16px;
+	padding-right: 20px;
+}
+.skill-warp .sideBar ul li {
+	line-height: 35px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	cursor: pointer;
+}
+.skill-warp .sideBar .slt {
+	color: #70a7df;
+}
+.skill-warp .main {
+	float: left;
+	width: 385px;
+	padding-top: 8px;
+}
+.main .skill-item {
+	float: left;
+	height: 25px;
+	color: #797979;
+	line-height: 25px;
+	text-align: center;
+	padding: 0 8px;
+	border: 1px solid #ccc;
+	margin: 0 10px 10px 0;
+	border: 2px solid #fff;
+	border-radius: 2px;
+	background-color: #eceef1;
+	cursor: pointer;
+}
+.main .skill-slt {
+	border-color: #71A8E0;
+}
+.skill-modal .modal-footer {
+	text-align: right;
+	padding: 0 25px 30px;
+	border-top: none;
+}
+.skill-modal .btn-primary {
+	padding: 6px 25px;
+	border-radius: 2px;
+}

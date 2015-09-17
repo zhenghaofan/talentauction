@@ -1,0 +1,93 @@
+package com.auction.common.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.stereotype.Service;
+
+import com.auction.common.dao.CommonDao;
+import com.auction.common.service.CommonService;
+import com.auction.common.util.Util;
+import com.auction.resume.dao.CvMakeDao;
+
+/** 
+ * @author tobber
+ * @version 2015年4月15日
+ */
+
+@Service
+public class CommonServiceLmpl implements CommonService{
+
+	@Resource  
+    private CommonDao commonDao;
+	@Resource
+	private CvMakeDao cvMakeDao;
+
+	@Override
+	public String getCityList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		if(Util.isVerify(request.getParameter("superId"), 0, 0, "[0-9]{0,9}")){
+    		List<Map<String, Object>> cityList = commonDao.getCityList(request.getParameter("superId"));
+    		if(cityList!=null && cityList.size()>0){
+    			json.put("cityList", cityList);
+    			json.put("code", 200);
+    			json.put("message", "获取成功！");
+    		}
+    	}else{
+			json.put("code", 301);
+			json.put("message", "获取失败！");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getAreasList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		List<Map<String, Object>> areasList = commonDao.getAreasList();
+		if(areasList!=null && areasList.size()>0){
+			json.put("areasList", areasList);
+			json.put("code", 200);
+			json.put("message", "获取成功！");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String talentRoute(HttpServletRequest request) {
+		String viewName = "base/signin"; //登录页面
+		try {  
+        	if(request.getSession().getAttribute("userId")!=null){
+        		Map<String, Object> userMap = cvMakeDao.getUserInfoByUserId(request.getSession().getAttribute("userId").toString());
+        		if(userMap!=null && userMap.size()>0){
+        			if(userMap.get("isSuccess")!=null && userMap.get("isSuccess").toString().equals("0")){
+        				viewName = "base/mailbox";
+            		}else if(userMap.get("isSuccess").toString().equals("1")){
+            			if(userMap.get("status")!=null && userMap.get("status").toString().equals("0")){ //候选人路由
+            				 Map<String, Object> resumeStatusMap = cvMakeDao.getResumeStatus(request.getSession().getAttribute("userId").toString());
+            			        if(resumeStatusMap!=null && resumeStatusMap.size()>0 ){
+            			        	if("0".equals(resumeStatusMap.get("status"))){
+            			        		viewName = "talentform/jobintent";//填写求职意向页面
+            			        	}else if("1".equals(resumeStatusMap.get("status"))){
+            			        		viewName = "talentform/jobinfo";//简历编辑页面
+            			        	}else{
+            			        		viewName = "talentform/jobresult";//简历状态
+            			        	}
+            			     }
+            			}else if(userMap.get("status")!=null && userMap.get("status").toString().equals("1")){ //企业路由
+            				
+            			}
+            		}
+        		}
+        	}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            viewName="404";
+        }  
+		return viewName;
+	}
+}

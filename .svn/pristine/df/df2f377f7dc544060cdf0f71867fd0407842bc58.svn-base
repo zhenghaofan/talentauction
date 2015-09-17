@@ -1,0 +1,59 @@
+package com.auction.wechat.service.impl;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import com.auction.wechat.Util.CoreService;
+import com.auction.wechat.Util.SignUtil;
+import com.auction.wechat.dao.WechatDao;
+import com.auction.wechat.service.WechatService;
+
+/** 
+ * @author tobber
+ * @version 2015年5月29日
+ */
+
+@Service
+public class WechatServiceImpl implements WechatService{
+	@Resource
+	private WechatDao wechatDao;
+	@Override
+	public String wechatServlet(HttpServletRequest request) {
+		
+		String result = null;
+		if("GET".equals(request.getMethod())){  //验证url和token
+			// 微信加密签名
+			String signature = request.getParameter("signature");
+			// 时间戳
+			String timestamp = request.getParameter("timestamp");
+			// 随机数
+			String nonce = request.getParameter("nonce");
+			// 随机字符串
+			String echostr = request.getParameter("echostr");
+			// 通过检验 signature 对请求进行校验，若校验成功则原样返回 echostr，表示接入成功，否则接入失败
+			if (SignUtil.checkSignature(signature, timestamp, nonce)) {
+				result = echostr;
+			}else{
+				result="验证失败";
+			}
+			return result;
+		}else{
+			// 接收参数微信加密签名、 时间戳、随机数
+			String signature = request.getParameter("signature");
+			String timestamp = request.getParameter("timestamp");
+			String nonce = request.getParameter("nonce");
+
+			// 请求校验
+			if (SignUtil.checkSignature(signature, timestamp, nonce)) {
+				// 调用核心服务类接收处理请求
+				result = CoreService.processRequest(request,wechatDao);
+			}else{
+				result ="验证失败";
+			}
+			return result;
+		}
+	}
+
+}

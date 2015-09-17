@@ -1,0 +1,61 @@
+package com.auction.resume.web;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.auction.resume.dao.CvMakeDao;
+import com.auction.resume.service.ResumeRouteService;
+
+/** 
+ * @author tobber
+ * @version 2015年4月21日
+ */
+
+@Controller
+@RequestMapping(value = "talentform")
+public class ResumeRouteController {
+	@Resource 
+	private ResumeRouteService resumeRouteService;
+	@Resource
+	private CvMakeDao cvMakeDao;
+	
+	@RequestMapping(value = "jobintent")//简历状态页面跳转
+	public ModelAndView jobintent(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		
+		String viewName = "base/signin";
+		Map<String, Object> resumeStatusMap = cvMakeDao.getResumeStatus(request.getSession().getAttribute("userId").toString());
+		if(resumeStatusMap!=null && resumeStatusMap.size()>0 && "0".equals(resumeStatusMap.get("status").toString())){
+        	if("0".equals(resumeStatusMap.get("status").toString())){
+        		viewName = "view/jobintent";//填写求职意向页面
+        	}else if("2".equals(resumeStatusMap.get("status").toString())){
+        		viewName = "talentform/jobinfo";//简历编辑页面
+        	}else{
+        		viewName = "talentform/jobresult";//简历状态
+        	}
+        }
+		if(resumeStatusMap.get("status")!=null && "0".equals(resumeStatusMap.get("status").toString())){
+			
+		}else{}
+		return new ModelAndView(viewName, null);
+	}
+	
+	@RequestMapping(value = "jobinfo")//简历状态页面跳转
+	public ModelAndView jobinfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/jobinfo", null);
+	}
+	
+	@RequestMapping(value = "jobresult")//简历状态页面跳转
+	public ModelAndView jobresult(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/jobresult", null);
+	}
+}

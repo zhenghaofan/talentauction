@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/complist.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/complist.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/complist" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/dist/complist-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="listCtrl">
+			<div class="list-wrap" ng-init="getCompList()">
+				<dl class="containter">
+					<dt >入驻企业</dt>
+					<!-- <dd ng-repeat="item in dataList"> -->
+					
+					<div class="com-item-box" ng-repeat="item in dataList">
+						<dd class="com-item">
+							<div class="com-item-l">
+								<a ng-href="/base/chome{{item.companyId}}.html">
+									<img ng-if="!!item.logoName" ng-src="/upload/company/companyLogo/{{item.logoName}}"/>
+									<div ng-if="!item.logoName"  class="no-logo">LOGO</div>
+								</a>
+							</div>
+							<div class="com-item-r">
+								<div class="item-r-title text-hide"><a ng-href="/base/chome{{item.companyId}}.html" target="_Parent">{{item.nickName}}</a></div>
+								<div class="item-r-text">
+									<span>{{item.cityName}}</span>
+									<span>{{item.sizeText}}</span>
+								</div>
+								<div class="item-r-text">
+									<span>{{item.areaName}}</span>
+									<span>{{item.progressText}}</span>
+								</div>
+							</div>
+							<div class="clear"></div>
+						</dd>
+						
+						<div ng-if=" ($index+1) % 3 != 0" class="split-line"></div>
+					</div>
+				</dl>
+				
+				<div id="page-warp" ng-if="dataList.length">
+					<div class="list-pager">
+						<span class="list-pager-btn" ng-if="pageIndex > 1" ng-click="turnPage($event, '-')">上一页</span>
+						<a class="list-pager-btn" ng-class="{true: 'slt'}[(pageIndex == item)]" ng-repeat="item in _pageCount" ng-bind="item" ng-click="turnPage($event, item)"></a>
+						<span class="list-pager-btn" ng-if="(pageIndex < totalPage) && totalPage" ng-click="turnPage($event, '+')">下一页</span>
+					</div>
+				</div>				
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

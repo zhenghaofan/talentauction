@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/compbidlist.css">
+	
+	<!-- <link rel="stylesheet" type="../text/css" href="css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/compbidlist.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/compbidlist" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/compbidlist-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div> 
+		<div id="main" ng-controller="bidlistCtrl">
+			<div class="bid-wrap" ng-init="getBidLogs()">
+				<div class="sidebar">
+					<div class="qrcode-box box-shadow">
+						<div class="qrcode-img"><img src="/img/qrcode.jpg" /></div>
+						<div class="qrcode-title">答应一个面试，送50元助你打车去面试</div>
+						<div class="qrcode-con">扫描实力拍微信二维码，添加公众号：shilipai_official后，发送您的邮箱地址和打车票据（照相）给我们，经核实后我们会有专员加你并通过微信支付把50元转给你，谢谢！</div>
+					</div>
+					
+					<div class="hr-box box-shadow" ng-if="$root.status == 0">
+						<div>加入实力拍人才交流QQ群</div>
+						<div>和同行聊聊</div>
+						<div class="hr-text">338403574</div>
+					</div>
+				</div>
+				
+				<div class="leftbar">
+					<div class="list-nav box-shadow">
+						 <a class="nav-tab" ng-class="{2: 'slt'}[replayState]" ng-click="sltSort(2)">全部</a><span class="line"></span>
+						 <a class="nav-tab" ng-class="{1: 'slt'}[replayState]" ng-click="sltSort(1)">已回复</a><span class="line"></span>
+						 <a class="nav-tab" ng-class="{0: 'slt'}[replayState]" ng-click="sltSort(0)">未回复</a>
+					</div>
+					
+					<div class="list-box">
+						<div class="con-item" ng-repeat="item in listData">
+							<div class="item-main box-shadow">
+								<div class="item-title">
+									<div class="item-name"><a ng-href="/base/placebid?userId={{item.userId}}" target="_blank" ng-bind="item.jobTitle"></a></div>
+									<div class="item-city">[&nbsp;<span class="fc-2" ng-bind="item.destination"></span>&nbsp;]</div>
+									<div class="item-money">出价记录:（{{item.bidPrice}}k x {{item.monthCount}}个月）<span ng-if="item.isOption != 0">提供期权</span></div>
+									<div class="item-time"><span ng-bind="item.bidTime"></span></div>
+								</div>
+								<div class="item-detial">
+									<div class="detial-text">邀请信（希望TA担任）：<span ng-bind="item.workTitle"></span></div>
+									
+									<div class="detial-opt">
+										<div ng-switch="item.isReply">
+											<span ng-switch-when="0">未回复</span>
+											<span class="fc-1" ng-switch-when="1">对方答应</span>
+											<span ng-switch-when="2">对方拒绝</span>
+											<span ng-switch-when="3">已获取电话</span>
+										</div>
+										<div ng-if="item.isReply == 3">
+											<a ng-href="/download/companyDownloadResume?userId={{item.userId}}" target="_blank">下载简历</a>
+										</div>
+										<div ng-if="item.isReply == 1">
+											<botton class="replay-concat ico-pull" ng-click="getReplay(item)">点击获取电话</botton>
+										</div>										
+									</div>
+									
+									<div class="clear"></div>
+								</div>
+							</div>
+							
+							<div class="reject-box box-shadow" ng-if="item.isReply == 2 || item.isReply == 3">
+								<div ng-switch="item.isReply">
+									<span ng-switch-when="2" ng-bind-template="原因：{{item.rejectReason}}"></span>
+									<span ng-switch-when="3">
+										<span ng-bind-template="姓名：{{item.name}}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+										<span ng-bind-template="手机号：{{item.telephone}}"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+										<span ng-bind-template="邮箱号：{{item.userEmail}}"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+						
+						<div class="list-con-filling box-shadow" ng-if="!listData || listData.length == 0">
+     						<h1>暂无数据</h1>
+    					</div>
+    					
+						<div id="page-warp" class="box-shadow" ng-if="listData.length">
+							<div class="list-pager">
+								<span class="list-pager-btn" ng-if="pageIndex > 1" ng-click="turnPage($event, '-')">上一页</span>
+								<a class="list-pager-btn" ng-class="{true: 'slt'}[(pageIndex == item)]" ng-repeat="item in _pageCount" ng-bind="item" ng-click="turnPage($event, item)"></a>
+								<span class="list-pager-btn" ng-if="(pageIndex < totalPage) && totalPage" ng-click="turnPage($event, '+')">下一页</span>
+							</div>
+						</div>						
+					</div>					
+				</div>
+				<div class="clear"></div>			
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,552 @@
+
+
+.result-wrap {
+	width: 1024px;
+  	color: #6B7485;
+  	margin: 130px auto 100px;
+  	overflow: hidden;
+}
+.result-title {
+	text-align: center;
+	padding: 25px 40px;
+	border-radius: 3px;
+	background: #fff;
+}
+.result-body {
+	margin-top: 30px;
+}
+.result-title span {
+	font-size: 20px !important;
+	line-height: 36px;
+}
+.result-title .attend {
+	width: 100px;
+	height: 36px;
+	color: #fff;
+	font-size: 14px;
+	border: none;
+	border-radius: 3px;
+	margin-left: 25px;
+	background-color: #70a7df;
+	cursor: pointer;
+	outline: 0;	
+}
+.result-title .dis {
+	background-color: #c8ceda;
+}
+.result-title .attend:hover {
+	background-color: #4182c6;
+}
+
+/****** 左侧栏******/
+.box-l {
+	float: left;
+	width: 720px;
+	border-radius: 3px;
+	margin-bottom: 30px;
+	overflow: hidden;
+}
+/****** 左侧二维码******/
+.box-l .qrcode {
+	text-align: center;
+	padding: 30px 0 40px;
+	background: #fff;
+}
+.box-l .qrcode span {
+	font-size: 16px;
+	display: block;
+}
+
+/****** 简历信息******/
+.box-l .l-item {
+	color: #6B7485;
+	border-bottom: 1px dashed #D1D2D7;
+	background-color: #fff;
+}
+.box-l .l-item:last-child {
+	border-bottom: 0;
+}
+.box-l .item-title {
+	height: 60px;
+	font-size: 20px;
+	line-height: 70px;
+	padding-left: 40px;
+}
+.box-l .item-con {
+	font-size: 16px;
+	line-height: 30px;
+	padding: 10px 40px 30px;
+}
+.box-l .item-img {
+	width: 20px;
+	margin-bottom: -1px;
+}
+.box-l .l-item a {
+	color: #6B7485;
+	word-break: break-all;
+}
+.box-l .l-item a:hover {
+	color: #3fa9f5;
+}
+.box-l .l-item .fb {
+	font-weight: bold;
+}
+.box-l .l-item .mgn-1 {
+	margin: 0 5px;
+}
+.box-l .l-item .mgn-2 {
+  margin-right: 10px;
+}
+.box-l .l-item .img-1 {
+	width: 25px;
+	margin-right: -3px;
+}
+.box-l .l-item .img-2 {
+	width: 16px;
+}
+.box-l .resume-ui-box {
+	padding: 10px;
+	max-height: 400px;
+	text-align: center;
+}
+.box-l .resume-ui-box .resume-ui-img {
+	max-width: 600px;
+	max-height: 400px;
+	cursor: -moz-zoom-in;
+	cursor: -webkit-zoom-in;
+	cursor: zoom-in;
+}
+
+/****** 基本信息******/
+.box-l .info-box {
+	font-size: 16px;
+	padding: 30px 40px;
+}
+.box-l .info-box .name {
+	color: #3fa9f5;
+	font-size: 20px;
+}
+.box-l .info-box ul li {
+	line-height: 30px;
+}
+
+
+/****** 右侧栏******/
+.box-r {
+	float: right;
+	width: 275px;
+	color: #6B7485;
+	margin-right: 2px;
+}
+/****** 求职意向******/
+.box-r .itt-box {
+	min-height: 251px;
+	border-radius: 5px;
+	background: #fff;
+}
+.box-r .itt-title {
+	height: 60px;
+	font-size: 18px;
+	line-height: 60px;
+	padding: 0 20px 0 45px;
+	border-bottom: 1px solid #ccc;
+	background: url("../img/ico_tips.png") no-repeat 20px 50%;
+}
+.box-r .itt-title img {
+	float: right;
+	margin-top: 20px;
+	cursor: pointer;
+}
+.box-r .itt-con {
+	padding: 20px 25px;
+}
+.box-r .itt-con span {
+	font-size: 16px;
+	line-height: 30px;
+	display: block;
+}
+/****** 操作简历******/
+.box-r .opt-box {
+	margin-top: 30px;
+	border-radius: 5px;
+	background: #fff;
+	overflow: hidden;
+}
+.box-r .opt-box a {
+	float: left;
+	width: 137px;
+	height: 71px;
+	color: #6B7485;
+	font-size: 16px;
+	text-align: center;
+	outline: white;
+	display: block;
+}
+.box-r .opt-box span {
+	margin-top: 40px;
+	display: block;
+}
+.box-r .opt-box .bg-l-1:hover {
+	color: #fff;
+	background: #75A9E2 url("../img/ico_dl_3.png") no-repeat 50% 16px;
+}
+.box-r .opt-box .bg-l-1 {
+	border-right: 1px solid #ccc;
+	background: url("../img/ico_dl_1.png") no-repeat 50% 16px;
+	cursor: pointer;
+}
+.box-r .opt-box .bg-l-2 {
+	border-right: 1px solid #ccc;
+	color: #ccc;
+	background: url("../img/ico_dl_2.png") no-repeat 50% 16px;
+}
+.box-r .opt-box .bg-r-1:hover {
+	color: #fff;
+	background: #75A9E2 url("../img/ico_up_3.png") no-repeat 50% 16px;
+}
+.box-r .opt-box .bg-r-1 {
+	background: url("../img/ico_up_1.png") no-repeat 50% 16px;
+	background-size: 24px 20px;
+	cursor: pointer;
+}
+.box-r .opt-box .bg-r-2 {
+	color: #ccc;
+	background: url("../img/ico_up_2.png") no-repeat 50% 16px;
+}
+/****** 右侧二维码******/
+.box-r .code {
+	height: 326px;
+	font-size: 16px;
+	text-align: center;
+	padding: 15px 0 10px;
+	margin-top: 30px;
+	border-radius: 5px;
+	background: #fff;
+}
+.box-r .code img {
+	width: 100%;
+}
+
+/*求职意向弹出框*/
+.itt-modal {
+	display: none;
+}
+.itt-modal .fz-1 {
+	font-size: 16px;
+}
+.itt-modal .err-wrap {
+	min-height: 25px;
+}
+.itt-modal .err-wrap label {
+	height: 25px;
+	color: #FF1414;
+	line-height: 25px;
+	text-indent: 20px;
+	padding-left: 18px;
+	margin-left: 78px;
+	display: none;
+}
+.itt-modal .err-wrap .ico-invalid {
+	background: url(../img/icon-error.png) 0 45% no-repeat;
+}
+.itt-modal .modal-dialog {
+	width: 400px;
+	margin-top: 8%;
+}
+.itt-modal .modal-header {
+	color: #6B7485;
+	font-size: 18px;
+	padding: 20px 25px;
+	border-bottom: 1px solid #eceef1;
+	background-size: 30px;
+	background-position: 6px 50%;
+}
+.itt-modal .modal-title {
+	display: inline-block;
+}
+.itt-modal .close {
+	font-weight: normal;
+	background-color: #fff;
+}
+.itt-modal .modal-body {
+	color: #6B7485;
+	padding: 20px 40px 15px;
+}
+.itt-modal .ipt-item > input {
+	width: 200px;
+	height: 34px;
+	color: #6B7485;
+	font-size: 14px;
+	text-indent: 12px;
+	display: inline-block;
+	background-color: #eceef1;
+	border-radius: 3px;	
+}
+.itt-modal .ipt-item {
+/* 	margin-bottom: 16px; */
+}
+.itt-modal .ipt-item.mgn-1 {
+	margin-bottom: 24px;
+}
+.itt-modal .ipt-item.mgn-2 {
+	margin-bottom: 30px;
+}
+.itt-modal .ipt-item.pdg-1 {
+	padding-left: 79px;
+}
+.itt-modal .ipt-item .remarks {
+	font-size: 16px;
+	margin-right: 10px;
+	display: inline-block;
+}
+.itt-modal .ipt-item .yuan {
+	font-size: 12px;
+	vertical-align: bottom;
+}
+
+.itt-modal .ipt-item img {
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+.itt-modal .modal-footer {
+	text-align: center;
+	padding: 0 25px 30px;
+	border-top: none;
+}
+.itt-modal .btn-primary {
+	padding: 6px 25px;
+	border-radius: 2px;
+}
+
+/* 专业技能弹出框*/
+.skill-modal {
+	display: none;
+}
+.skill-modal .modal-dialog {
+	width: 650px;
+	margin-top: 10%;
+}
+.skill-modal .modal-header {
+	font-size: 18px;
+	padding: 20px 25px;
+	border-bottom: 1px solid #eceef1;
+	background-size: 30px;
+	background-position: 6px 50%;
+}
+.skill-modal .modal-title {
+	color: #6B7485;
+	display: inline-block;
+}
+.skill-modal .close {
+	font-weight: normal;
+	background-color: #fff;
+}
+.skill-modal .slt-warp {
+	display: inline-block;
+}
+.skill-modal .slt-warp .slt-item {
+	height:30px;
+	color: #fff;
+	font-size: 14px;
+	line-height: 30px;
+	padding: 0 6px;
+	margin-left: 5px;
+	background-color: #71A8E0;
+	display: inline-block;
+	cursor: pointer;
+}
+.slt-warp .slt-item:after {
+	content: 'x';
+	margin-left: 10px;
+}
+.skill-modal .modal-body {
+	padding: 20px 50px 15px;
+}
+.skill-warp {
+	color: #6B7485;
+	overflow: hidden;
+}
+.skill-warp .sideBar {
+	float: left;
+	width: 140px;
+	font-size: 16px;
+	padding-right: 20px;
+}
+.skill-warp .sideBar ul li {
+	line-height: 35px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	cursor: pointer;
+}
+.skill-warp .sideBar .slt {
+	color: #70a7df;
+}
+.skill-warp .main {
+	float: left;
+	width: 385px;
+	padding-top: 8px;
+}
+.main .skill-item {
+	float: left;
+	height: 25px;
+	color: #797979;
+	line-height: 25px;
+	text-align: center;
+	padding: 0 8px;
+	border: 1px solid #ccc;
+	margin: 0 10px 10px 0;
+	border: 2px solid #fff;
+	border-radius: 2px;
+	background-color: #eceef1;
+	cursor: pointer;
+}
+.main .skill-slt {
+	border-color: #71A8E0;
+}
+.skill-modal .modal-footer {
+	text-align: right;
+	padding: 0 25px 30px;
+	border-top: none;
+}
+.skill-modal .btn-primary {
+	padding: 6px 25px;
+	border-radius: 2px;
+}
+
+/* 城市弹出框*/
+.city-modal {
+	position: absolute;
+	left: 88px;
+	background-color: #fff;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	border: 1px solid #999;
+	border: 1px solid rgba(0, 0, 0, .2);
+	border-radius: 6px;
+	outline: 0;
+	-webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+	box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+	display: none;
+}
+.city-modal input[type="text"]:focus {
+	border-color: red;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px
+		rgba(102, 175, 233, 0.6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px
+		rgba(102, 175, 233, 0.6);
+}
+.city-modal .city-body {
+	padding: 0 15px 15px 20px;
+	text-align: center;
+	border-top: none;
+}
+.city-modal .city-header {
+	min-height: 16.43px;
+	font-size: 18px;
+	padding: 8px 10px;
+}
+.city-modal .close {
+	font-weight: normal;
+	background-color: #fff;
+}
+.city-wapr {
+	width: 224px;
+	border-radius: 3px;
+	overflow: hidden;
+}
+.city-wapr .feel-item {
+	float: left;
+	width: 65px;
+	height: 25px;
+	color: #797979;
+	line-height: 25px;
+	text-align: center;
+	margin: 0 5px 5px 0;
+	border: 2px solid #fff;
+	border-radius: 2px;
+	background-color: #eceef1;
+	cursor: pointer;
+}
+.city-wapr .feel-slt {
+	border-color: #71A8E0;
+}
+.city-modal .city-inp {
+	width: 127px;
+	height: 21px;
+	line-height: 25px;
+	padding: 3px 5px;
+	margin-right: 5px;
+	border-radius: 2px;
+	border: 1px solid #71A8E0;
+	display: none;
+}
+.city-modal .city-footer {
+	text-align: center;
+	padding-top: 0;
+	padding-bottom: 15px;
+	border-top: none;
+}
+.city-modal .btn-primary {
+	padding: 3px 16px;
+	border-radius: 2px;
+}
+
+/* 确认弹出框*/
+.confirm-modal {
+	display: none;
+}
+.confirm-modal .fc-1 {
+	color: #F20807;
+}
+.confirm-modal .modal-dialog {
+	width: 420px;
+	margin-top: 10%;
+}
+.confirm-modal .modal-header {
+	font-size: 18px;
+	padding: 20px 20px 0;
+	border-bottom: 0;
+}
+.confirm-modal .close {
+	font-weight: normal;
+	background-color: #fff;
+}
+.confirm-modal .prompt-warp {
+	font-size: 18px;
+	padding: 0 20px 10px;
+}
+
+.confirm-modal .btn-item {
+	text-align: center;
+	margin-bottom: 20px;
+}
+.confirm-modal .btn-item:last-child {
+	margin-bottom: 0;
+}
+
+.confirm-modal .modal-footer {
+	text-align: center;
+	padding-top: 0;
+	padding-bottom: 30px;
+	border-top: none;
+}
+.confirm-modal .btn-primary {
+	padding: 12px 25px;
+	border-radius: 2px;
+	border: 0;
+	background-color: #17b487
+}
+.confirm-modal .btn-primary.bg-1 {
+	border-color: #77B7FA;
+	background-color: #ef6464;
+}
+
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

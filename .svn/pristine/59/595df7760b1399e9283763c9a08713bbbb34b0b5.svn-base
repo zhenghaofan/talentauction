@@ -1,0 +1,254 @@
+
+.viewport {
+	padding-top: 146px;
+	background-color: #ECEEF1;
+}
+
+
+.bid-wrap {
+	width: 1024px;
+	color: #6B7485;
+	margin: 0 auto 100px;
+}
+
+/****** 左侧栏******/
+.sidebar {
+	float: left;
+	width: 229px;
+}
+.qrcode-box {
+	padding: 20px 15px;
+	background-color: #fff;
+	border-radius: 3px;
+}
+.qrcode-img img {
+	width: 200px;
+}
+.qrcode-title {
+	color: #4182c5;
+	font-size: 18px;
+	text-align: center;
+	margin-bottom: 15px;
+}
+.qrcode-con {
+	font-size: 14px;
+	line-height: 24px;
+	margin-top: 5px;
+}
+.hr-box {
+	line-height: 30px;
+	padding: 20px;
+	border-radius: 3px;
+	border-top: 4px solid #4182C6;
+	margin-top: 20px;
+	background-color: #fff;
+}
+hr-text {
+	font-size: 18px;
+}
+
+
+/****** 右侧栏******/
+.list-box .err-wrap {
+	min-height: 20px;
+}
+.list-box .err-wrap label {
+	height: 20px;
+	line-height: 20px;
+	width: 260px;
+	color: #FF1414;
+	text-indent: 20px;
+	padding-left: 18px;
+	margin-left: 54px;
+	display: none;
+}
+.list-box .err-wrap label.invalid {
+  background: url(../img/icon-error.png) no-repeat transparent;
+  background-position: 0 45%;
+}
+
+.leftbar {
+	width: 750px;
+	margin-left: 40px;
+	display: inline-block;
+}
+.list-nav {
+	height: 65px;
+	font-size: 16px;
+	line-height: 65px;
+	padding-left: 35px;
+	border-radius: 3px;
+	margin-bottom: 20px;
+	background-color: #fff;
+}
+.list-nav .nav-tab {
+	margin-right: 30px;
+	display: inline-block;
+	cursor: pointer;
+}
+.list-nav .nav-tab:hover {
+	color: #4182c5;
+}
+.list-nav .nav-tab.slt {
+	color: #4182c5;
+}
+.list-nav .line {
+	border-right: 1px solid #ddd;
+	margin-right: 30px;
+}
+
+
+/****** 数据内容******/
+.con-item {
+	margin-bottom: 20px;
+}
+.font-c-b {
+	color: #747b7f;
+}
+.m-t10 {
+	margin-top: 10px;
+}
+.item-main {
+	min-height: 85px;
+	padding: 20px;
+	border-radius: 3px 3px 0 0;
+	border-left: 3px solid #93d2fe;
+	background-color: #fff;
+}
+.item-title {
+	margin-bottom: 20px;
+}
+.item-name {
+	font-size: 18px;
+	margin-right: 5px;
+	display: inline-block;
+}
+.item-name a {
+	color: #558dca;
+}
+.item-city {
+	color: #737b7e;
+	font-size: 16px;
+	display: inline-block;
+}
+.item-money {
+	font-size: 16px;
+	color: #38b5e2;
+	display: inline-block;
+}
+.item-time {
+	float: right;
+	color: #949899;
+}
+/****** 拒绝理由******/
+.detial-text {
+	float: left;
+	width: 450px;
+	font-size: 15px;
+	line-height: 20px;
+}
+.detial-opt {
+	float: right;
+}
+.detial-send {
+	color: #4083c7;
+	margin-bottom: 8px;
+	cursor: pointer;
+}
+.detial-reject {
+	color: #4083c7;
+	cursor: pointer;
+}
+.detial-reject i {
+	width: 11px;
+	height: 7px;
+	margin-left: 5px;
+	background: url(/img/bidstate_lock.png) top left no-repeat transparent;
+	background-position-y: -12px;
+	display: inline-block;
+}
+.detial-reject-l i {
+	background-position-y: -2px;
+}
+.detial-disagree {
+	cursor: pointer;
+}
+.detial-disagree i {
+	width: 11px;
+	height: 7px;
+	margin-left: 5px;
+	background: url(/img/bidstate_lock_b.png) top left no-repeat transparent;
+	background-position-y: -12px;
+	display: inline-block;
+}
+/****** 拒绝理由******/
+.reject-box {
+	padding: 20px;
+	border-radius: 0 0 3px 3px;	
+	background: #7f8ea5;
+}
+.reject-box-option {
+	width: 450px;
+	float: left;
+}
+.reject-opt-item {
+	color: #fff;
+	line-height: 25px;
+	margin-right: 40px;
+	margin-bottom: 10px;
+	display: inline-block;
+}
+.reject-inp {
+	width: 345px;
+	height: 30px;
+	color: #494f53;
+	font-size: 16px;
+	line-height: 30px;
+	text-indent: 10px;
+	border-radius: 3px;
+	background-color: #eceef1;
+}
+.reject-text {
+	color: #fff;
+}
+.reject-box-btn {
+	float: right;
+	width: 80px;
+	height: 30px;
+	color: #fff;
+	line-height: 30px;
+	text-align: center;
+	border-radius: 3px;
+	background-color: #71a8e0;
+	cursor: pointer;
+}
+.reject-box-btn:hover {
+	background-color: #4182c6;
+}
+.reject-other {
+	margin-bottom: 5px;
+	margin-right: 5px;
+}
+/****** 暂无数据******/
+.list-box  .list-con-filling {
+	height: 150px;
+	color: #616268;
+	text-align: center;
+	padding-top: 100px;
+	border-radius: 0px;
+	background-color: #fff;
+}
+/****** 翻页******/
+.list-pager {
+	height: 38px;
+	text-align: center;
+	padding-top: 10px;
+	border-radius: 0px;
+	background-color: #fff;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

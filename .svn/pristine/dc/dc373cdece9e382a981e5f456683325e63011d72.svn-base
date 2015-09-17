@@ -1,0 +1,449 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'info'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('jobresultCtrl', ['$scope', '$rootScope', '$http', '$q', 'info',
+   		function($scope, $rootScope, $http, $q, info) {
+		$rootScope.tabIndex = 4;
+		$scope.edus = info.getEducation();
+		var specialName = '';
+		
+		/* 打开弹出框*/
+		$scope.show = function(ele) {
+			$(ele).show();
+		};
+
+		/* 关闭弹出框*/
+		$scope.close = function(ele) {
+			$(ele).hide();
+			$scope._clearTip();
+			if(ele != '.city-modal') $scope.ittStatus = 0;
+		};
+		
+		/* 清除提示*/
+		$scope._clearTip = function() {
+			$('.err-wrap label').text('').hide();
+		};		
+		
+		/* 获取简历当前状态*/
+		$scope.getResumeStatus = function() {
+            $q.when($http.post('/cvmake/getResumeStatus'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.resumeStatus = data.resumeStatusMap;
+            	if(!$scope.resumeStatus.isOnline) $('.viewport').show();
+            	$scope.initResume();
+            }, function(err) {
+            	console.error('getResumeStatus', err);
+            });
+		};
+
+		/* 获取求职意向*/
+		$scope.getJobInfo = function() {
+            $q.when($http.post('/resume/getJobInfo'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.jobInfo = _fomartJobInfo(data.jobInfo);
+            }, function(err) {
+            	console.error('getJobInfo', err);
+            });
+		};
+		
+		/* 初始化简历信息*/
+		$scope.initResume = function() {
+			var resumeStatus = $scope.resumeStatus;
+			if(resumeStatus.cvCheckResult == 0 || resumeStatus.cvCheckResult == 3)
+				$scope.getBuResume();
+			else
+				$scope.getResume();
+		};
+		
+		/* 获取简历信息*/
+		$scope.getResume = function() {
+            $q.when($http.post('/common/getUserResume'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.userInfo = _fomartResume(data);
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getUserResume', err);
+            });
+		};
+		
+		/* 获取备份简历信息*/
+		$scope.getBuResume = function() {
+            $q.when($http.post('/resume/getUserBackupResume'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.userInfo = _fomartResume(data);
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getUserBackupResume', err);
+            });
+		};
+		
+		/* 使用之前的简历*/
+		$scope.oldCv = function() {
+            $q.when($http.post('/resume/resumeDirectBid'))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$('.confirm-modal').hide();
+            	}
+            }, function(err) {
+            	console.error('resumeDirectBid', err);
+            });
+		};
+		
+		/*初始化求职意向*/
+		$scope.init_ittInfo = function(str) {
+			var resume = $scope.jobInfo;
+			$scope.ittInfo = {
+					skills: resume.skills,
+					jobTitle: resume.jobTitle,
+					destination: resume.destination,
+					expectedSalary: resume.expectedSalary*1000,
+					shield: resume.content? resume.content.split(',') : ['']
+			};
+			
+			if(str == 'edit') { //编辑意向
+				$('.itt-modal').show();
+			}else if(str == 'current') { //使用当前简历拍卖
+				$('.confirm-modal').hide();
+				$('.itt-modal').show();
+			}else if(str == 'up') {
+				$scope.ittStatus = 1;
+				$('.confirm-modal').hide();
+				$('.itt-modal').show();
+			}else if(resume.cvCheckResult == 2 && resume.cvBidStatus == 2) {   //再次拍卖
+				$('.confirm-modal').show();
+			}else { //更新简历, 审核失败
+				$scope.ittStatus = 1;
+				$('.confirm-modal').hide();
+				$('.itt-modal').show();
+			}
+		};		
+		
+		/* 增加、移除屏蔽*/
+		$scope.opt_shield = function(str, item, index) {
+			if(str == '+') {
+				if(item.shield.length <= 3) item.shield.push('');
+			}else {
+				if(item.shield.length > 0) {
+					item.shield.splice(index, 1);
+				}
+			}
+		};
+		
+		/* 选择求职意向*/
+		$scope.sltJobInfo = function(item) {
+			if($scope.ittStatus) {
+				$scope.reSubmit(item);
+			}else {
+				$scope.upJobInfo(item);
+			}
+		};
+		
+		/* 更新求职意向*/
+		$scope.upJobInfo = function(item) {
+			var config = {
+					expectedSalary: item.expectedSalary/1000,
+					destination: item.destination,
+					content: item.shield.toString()
+			};
+			
+			if(!_checkJobInfo(config)) return;
+			
+            $q.when($http.post('/resume/updateJobInfo', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getJobInfo();
+            		$('.itt-modal').hide();
+            	}else {
+            		$('#itt_sub_tip').show().text(data.message);
+            	}
+            }, function(err) {
+            	console.error('updateJobInfo', err);
+            });			
+		};
+		
+		/* 重新提交审核*/
+		$scope.reSubmit = function(item) {
+			var config = {
+					expectedSalary: item.expectedSalary/1000,
+					destination: item.destination,
+					jobTitle: item.jobTitle,
+					skills: item.skills,
+					content: item.shield.toString()
+			};
+			
+			if(!_checkJobInfo(config, 1)) return;
+			
+            $q.when($http.post('/resume/resubmitCheck', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getJobInfo();
+            		$('.itt-modal').hide();
+            		window.location.href = '/common/talentRoute';
+            	}else {
+            		$('#itt_sub_tip').show().text(data.message);
+            	}
+            }, function(err) {
+            	console.error('resubmitCheck', err);
+            });			
+		};
+		
+		
+		/*初始化城市*/
+		$scope.initCity = function() {
+			$('.city-modal').show();
+			var flag = false;
+			var eleList = $('.city-wapr .feel-item').removeClass('feel-slt');
+			$('#city_inp').hide();
+			
+			if($scope.ittInfo.destination){
+				cityArray = $scope.ittInfo.destination.split(',');
+			}else{
+				cityArray = [];			
+			}
+				
+			$('.city-wapr .feel-item').each(function(index) {
+				var obj = $(this);
+				for ( var i in cityArray) {
+					if(cityArray[i] == obj.text()) obj.addClass('feel-slt');
+				}
+			});
+			
+			for (var i in cityArray) {
+				eleList.each(function() {
+					if(cityArray[i] == $(this).text()) flag = true;
+				});
+				
+				if(!flag) {
+					$('#city_inp').show().val(cityArray[i]);
+					$('.city-wapr .feel-item:last').addClass('feel-slt');
+				}else {
+					flag = false;
+				}			
+			}
+		};
+		
+		/*选择城市*/
+		$scope.sltCity = function(_event) {
+			var ele = $(_event.target);
+			var tmp = [];
+			var inp = $('#city_inp');
+			var inpText = '';
+			
+			if(ele.hasClass('feel-slt')) {
+				ele.removeClass('feel-slt');
+				if(ele.text() == '其他') {
+					inpText = inp.val();
+					inp.val('').hide();
+				}
+				
+				for(var i in cityArray) {
+					if(cityArray[i]  == inpText) {
+						cityArray.splice(i, cityArray.length == 1? 1 : cityArray.length -1);
+					}else if(cityArray[i]  == ele.text()) {
+						cityArray.splice(i, cityArray.length == 1? 1 : cityArray.length -1);
+					}
+				}
+			}else {
+				if($('.feel-slt').length <= 1) {
+					ele.addClass('feel-slt');
+					if(ele.text() == '其他') 
+						inp.show();
+					else
+						cityArray.push(ele.text());
+				}
+			}
+		};		
+		
+		/*确认选择城市*/
+		$scope.confirmCity = function() {
+			var ele = $('#city_inp');
+			var flag = true;
+			
+			if(ele.css('display') != 'none') {
+				if($.trim(ele.val()) == ''){
+					ele.focus();
+					return;
+				}else {
+					for ( var i in cityArray) {
+						if(cityArray[i] == ele.val()) flag = false;
+					}
+					if(flag) cityArray.push(ele.val());
+				}
+			}
+			
+			$scope.ittInfo.destination = cityArray.toString();
+			$scope.close('.city-modal');
+		};		
+		
+		
+		/*初始化技能*/
+		$scope.initSkill = function() {
+			$scope._clearTip('#skill_tip');
+			
+			if(!$scope.skillsList) {
+				$scope.getSkillsList();
+			}else {
+				_bindSkillEle();
+				$('.skill-modal').show();
+			}	
+		};
+		
+		/*获取技能列表*/
+		$scope.getSkillsList = function() {
+			$q.when($http.post('/bidme/getSkillsList'))
+			.then(function(result) {
+				var tmp = result.data.specialList;
+				for ( var i in tmp) {
+					if(tmp[i].skillName != null && tmp[i].skillName) {
+						tmp[i].skillName = tmp[i].skillName.split('、');
+					}
+				}
+				$scope.skillsList = tmp;
+				setTimeout(function() {
+					_bindSkillEle();
+				});
+				$('.skill-modal').show();
+			}, function(err) {
+            	  console.error('getSkillsList', err);
+			});
+		};
+		
+		/*获取技能详情*/
+		$scope.getSkillsDetails = function(item, _event) {
+			$(_event.target).addClass('slt').siblings().removeClass('slt');
+			$scope.skillNameList = item.skillName;
+		};
+		
+		/*选择技能*/
+		$scope.sltSkill = function(_event) {
+			var ele = $(_event.target);
+			
+			if(ele.hasClass('skill-slt')) {
+				ele.removeClass('skill-slt');
+				$scope.skillArray = $scope.clearSkill(ele.text(), $scope.skillArray);
+			}else {
+				if($scope.skillArray.length <= 1) {
+					ele.addClass('skill-slt');
+					$scope.skillArray.push(ele.text());
+				}
+			}
+		};
+		
+		/* 清除技能*/
+		$scope.clearSkill = function(str, array) {
+			for ( var i in array) {
+				if(array[i] == str) array.splice(i, array.length == 1? 1 : array.length -1);
+			}
+			
+			return array;
+		};
+		
+		/*确定技能*/
+		$scope.confirmSkill = function() {
+			if($scope.skillArray.length > 0) {
+				$scope.ittInfo.skills = $scope.skillArray.toString();
+			}
+			$scope.close('.skill-modal');
+		};
+		
+		//绑定元素
+		function _bindSkillEle() {
+			var specialEle = $('.skill-warp ul li').removeClass('slt');
+			var skillEle = $('.skill-warp .skill-item').removeClass('skill-slt');
+			$scope.skillArray = [];	
+			specialName = specialEle.first().text();
+
+			specialEle.each(function(index) {
+				var obj = $(this);
+				if(obj.text() == specialName) {
+					obj.addClass('slt');
+					$safeApply($scope, function() {
+						$scope.skillNameList = $scope.skillsList[index].skillName;
+					});
+				}
+			});
+			
+			skillEle.each(function(index) {
+				var obj = $(this);
+				for ( var i in $scope.skillArray) {
+					if($scope.skillArray[i] == obj.text()){
+						obj.addClass('skill-slt');
+					}
+				}
+			});			
+		}		
+		
+		
+		/* 验证求职意向*/
+		function _checkJobInfo(data, status) {
+			$scope._clearTip();
+			var isNumber = /^[1-9]\d{0,9}$/;
+			
+			if(!data.jobTitle && status) {
+				$('#itt_jobTitle').focus();
+				$('#itt_jobTitle_tip').show().text('职位输入有误！');
+				return false;
+			}else if(!isNumber.test(data.expectedSalary)) {
+				$('#itt_salary').focus();
+				$('#itt_salary_tip').show().text('期望薪资输入有误！');
+				return false;
+			}
+			
+			return true;
+		}	
+		
+		/* 格式化求职意向信息*/
+		function _fomartJobInfo(data) {
+        	if(data.content) {
+        		data.shield = data.content.split(',');
+        	}else {
+        		data.shield = [''];
+        	}
+        	
+			return data;
+		}
+		
+		/* 格式化简历信息*/
+		function _fomartResume(data) {
+        	if(data.resume.productUrl) {
+        		data.productUrl = data.resume.productUrl.split(',');
+        	}
+        	
+        	if(data.resume.productImg) {
+        		data.productImg = data.resume.productImg.split(',');
+        	}
+        	
+        	for(var i in $scope.edus) {
+        		if($scope.edus[i].id == data.resume.education)
+        			data.resume.educationStr = $scope.edus[i].value;
+        	}
+        	
+			return data;
+		}
+		
+		function $safeApply($scope, fn) {
+			var phase = $scope.$$phase;
+			if (phase == '$apply' || phase == '$digest') {
+				$scope.$eval(fn);
+			} else {
+				$scope.$apply(fn);
+			}
+		}		
+		
+ 	}]);
+	
+	app.bootstrap();
+});

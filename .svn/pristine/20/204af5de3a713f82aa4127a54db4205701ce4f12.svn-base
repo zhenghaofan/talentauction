@@ -1,0 +1,30 @@
+package com.auction.wechat.dao;
+
+import java.util.Map;
+
+/** 
+ * @author tobber
+ * @version 2015年5月29日
+ */
+public interface WechatDao {
+	/**
+	 * @param 获取用户信息
+	 * @param openId 
+	 * @return
+	 */
+	public Map<String,Object> getUserByOpenId(String openId);
+	
+	/**
+	 * @param 获取简历状态
+	 * @param userId 
+	 * @return
+	 */
+	public int getResumeStatus(String userId);
+	
+	/**
+	 * @param 获取简历状态
+	 * @param params 
+	 * @return
+	 */
+	public String wechatBind(Map<String, Object> params);
+}

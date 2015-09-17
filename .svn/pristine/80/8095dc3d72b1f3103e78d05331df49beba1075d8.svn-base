@@ -1,0 +1,107 @@
+
+
+body {
+	background-color: #E2E2E2;
+}
+
+
+.comp-wrap {
+	padding-bottom: 15px;
+}
+.comp-wrap .c_b {
+	color: #3988CD;
+}
+.comp-wrap .c_r {
+	color: #E6775C;
+}
+.comp-wrap .c_g {
+	color: #999999;
+}
+.comp-wrap .f_b {
+	font-weight: bold;
+}
+.comp-wrap .mar_b10 {
+	margin-bottom: 10px;
+}
+.comp-wrap .title {
+	height: 40px;
+	font-size: 16px;
+	line-height: 55px;
+	padding-left: 18px;
+	font-weight: bold;
+}
+.info-item-title {
+	height: 45px;
+	line-height:55px;
+	color: #3988CD;
+	font-size: 1.5em;
+	font-weight: bold;
+	padding-left: 18px;
+}
+.info-base-warp {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin: 0 10px 10px 10px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.info-base-warp .context {
+	padding: 12px 18px 12px 18px;
+}
+.info-base-warp .scale {
+	width: 26%;
+}
+.info-base-warp .cityName {
+	width: 20%;
+}
+.info-base-warp .trade {
+	width: 28%;
+}
+.info-base-warp .funds {
+	width: 20%;
+}
+.info-base-warp .website, .addr {
+	width: 80%;
+	display: block;
+}
+.info-base-warp .benefits {
+	padding: 0 4px;
+	margin-right: 5px;
+	margin-top: 5px;
+	border: 1px solid #999;
+	display: inline-block;
+}
+.info-base-warp .context div > span {
+	font-size: 1.1em;
+	height: 24px;
+	line-height: 24px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+}
+.info-detail-warp {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	margin: 0 10px 10px 10px;
+	background-color: #fff;
+	overflow: hidden;
+}
+.info-detail-warp .context {
+	padding: 6px 18px 4px 18px;
+}
+.info-detail-warp .context div > span {
+	font-size: 1.0em;
+	padding: 4px 0;
+	display: inline-block;
+}
+.info-detail-warp .demand {
+	padding-bottom: 12px;
+}
+.info-detail-warp .demand div > span {
+	padding: 1px 0;
+}
+
+.info-detail-warp a {
+	text-decoration: underline;
+}

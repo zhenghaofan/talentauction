@@ -1,0 +1,46 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'info'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('listCtrl', ['$scope', '$rootScope', '$http', '$q', 'info',
+   		function($scope, $rootScope, $http, $q, info) {
+		
+		$scope.getCompList = function() {
+			var config = {
+					pageSize: 20,
+					page: 1
+			};
+			
+            $q.when($http.post('/common/getCompanyList', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.dataList = _formateData(data.companyList);
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getCompanyList', err);
+            });			
+		};
+	
+		function _formateData(data) {
+			var sizeList = info.getCompSize();
+			var progressList = info.getCompPhase();
+			var sizeText, progressText;
+		
+			for( var i = 0, len = data.length; i < len; i++ ) {
+				sizeText = sizeList[Number(data[i].size)].value;
+				progressText = progressList[Number(data[i].progress)].value;
+				data[i].sizeText = sizeText;
+				data[i].progressText = progressText;
+			}
+			
+			return data;
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

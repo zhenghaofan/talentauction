@@ -1,0 +1,125 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'info'
+], 
+function($, angular, app, cookie, url, uiservice, info) {
+	app.controller('jobresultCtrl', ['$scope', '$rootScope', '$http', '$q', 'info',
+   		function($scope, $rootScope, $http, $q, info) {
+		$rootScope.tabIndex = 4;
+		$scope.edus = info.getEdus();
+		
+		/* 获取简历当前状态*/
+		$scope.getResumeStatus = function() {
+            $q.when($http.post('/cvmake/getResumeStatus'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.resumeStatus = data.resumeStatusMap;
+            	if(!$scope.resumeStatus.isOnline) $('.viewport').show();
+            }, function(err) {
+            	console.error('getResumeStatus', err);
+            });
+		};
+
+		/* 获取求职意向*/
+		$scope.getJobInfo = function() {
+            $q.when($http.post('/resume/getJobInfo'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.jobInfo = data.jobInfo;
+            }, function(err) {
+            	console.error('getJobInfo', err);
+            });
+		};
+		
+		/* 初始化简历信息*/
+		$scope.initResume = function() {
+			var resumeStatus = $scope.resumeStatus;
+			if(resumeStatus.cvCheckResult == 0 || resumeStatus.cvCheckResult == 3)
+				$scope.getBuResume();
+			else
+				$scope.getResume();
+		};
+		
+		/* 获取简历信息*/
+		$scope.getResume = function() {
+            $q.when($http.post('/common/getUserResume'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.userInfo = _fomartResume(data);
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getUserResume', err);
+            });
+		};
+		
+		/* 获取备份简历信息*/
+		$scope.getBuResume = function() {
+            $q.when($http.post('/resume/getUserBackupResume'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.userInfo = _fomartResume(data);
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getUserBackupResume', err);
+            });
+		};
+		
+		/* 更新求职意向*/
+		$scope.upJobInfo = function() {
+			var config = {
+					expectedSalary: '',
+					destination: '',
+					content: ''
+			};
+			
+			return;
+            $q.when($http.post('/resume/updateJobInfo', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('updateJobInfo', err);
+            });			
+		};
+		
+		/* 重新提交审核*/
+		$scope.reSubmit = function() {
+			var config = {
+					expectedSalary: '',
+					destination: '',
+					jobTitle: '',
+					skills: '',
+					content: ''
+			};
+			
+            $q.when($http.post('/resume/resubmitCheck', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('resubmitCheck', err);
+            });			
+		};
+		
+		/* 格式化简历信息*/
+		function _fomartResume(data) {
+        	if(data.resume.productUrl) {
+        		data.productUrl = data.resume.productUrl.split(',');
+        	}
+        	
+        	for(var i in $scope.edus) {
+        		if($scope.edus[i].id == data.resume.education)
+        			data.resume.educationStr = $scope.edus[i].value;
+        	}
+        	
+			return data;
+		};
+		
+ 	}]);
+	
+	app.bootstrap();
+});

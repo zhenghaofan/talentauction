@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/zebra_datepicker.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/jobinfo.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/jobinfo.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="./js/common/html5.min.js"></script>
+      <script src="./js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/jobinfo" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/dist/jobinfo-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="jobinfoCtrl">
+			<div class="info-warp" ng-init="getResume()">
+				<div class="info-title box-shadow">
+					<div class="tab-wrap">
+						<div class="tab-item">
+							<div class="tab-item-step">1</div>
+							<div class="tab-item-text">求职意向</div>
+						</div>
+						<div class="tab-line"></div>
+						<div class="tab-item tab-item-slt">
+							<div class="tab-item-step">2</div>
+							<div class="tab-item-text">提交简历</div>
+						</div>
+					</div>
+					<div class="tip-wrap">
+						<i class="ico"></i>
+						<span>请选择其中一种方式提交简历</span>
+					</div>					
+					<div class="slt-wrap">
+						<div class="btn" ng-class="{0: 'slt'}[(resumeType)]" ng-click="typeSlt(0)">
+							<span class="rand" ></span>
+							<span class="text">填写简历</span>
+						</div>
+						<div class="btn"  ng-class="{1: 'slt'}[(resumeType)]" ng-click="typeSlt(1)">
+							<span class="rand" ></span>
+							<span class="text">上传简历</span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="body-wrap" ng-if="!resumeType">
+					<div class="sidebar">
+						<div class="cv-pro box-shadow">
+							<div class="pro-title">完善简历才能提交审核</div>
+							<div class="pro-text">简历完整度：
+								<span class="f-c-1"><span id="on_pro_text">0</span>%</span>
+							</div>
+							<div class="line">
+								<div class="slider" id="on_pro_line"></div>
+							</div>
+						</div>
+						<div class="cv-ico">
+							<div class="ico-line" ng-class="{'5': 'ico-line-l'}[resume.special]"></div>
+							<div class="ico-item first">
+								<div class="ico-point"><div class="ico-point-p" ng-class="{true: 'slt'}[(!!userInfo.resume.name)]"></div></div>
+								<div class="ico-person"><span class="ico-base"></span></div>
+								<div class="ico-text">基本信息</div>
+							</div>
+							
+							<div class="ico-item">
+								<div class="ico-point"><div class="ico-point-p" ng-class="{true: 'slt'}[(userInfo.educations.length > 0)]"></div></div>
+								<div class="ico-person"><span class="ico-edu"></span></div>
+								<div class="ico-text">教育经历</div>
+							</div>
+							
+							<div class="ico-item">
+								<div class="ico-point"><div class="ico-point-p" ng-class="{true: 'slt'}[(userInfo.work_experiences.length > 0)]"></div></div>
+								<div class="ico-person"><span class="ico-exp"></span></div>
+								<div class="ico-text">工作经历</div>
+							</div>
+							
+							<div class="ico-item">
+								<div class="ico-point"><div class="ico-point-p" ng-class="{true: 'slt'}[(userInfo.projects.length > 0)]"></div></div>
+								<div class="ico-person"><span class="ico-pro"></span></div>
+								<div class="ico-text">项目经历</div>
+							</div>
+							
+							<div class="clear"></div>
+						</div>
+					</div>
+					
+					<div class="rightbar box-shadow">
+						<div class="cv-title">
+							<div class="edit-wrap">
+								<div class="edit-ico" ng-click="editBaseInfo(2)">
+								</div><div class="clear"></div>
+							</div>
+							<div class="title-edit" ng-if="!userInfo.resume">
+								<div class="edit-btn" ng-click="editBaseInfo(1)">编辑个人基本信息</div>
+							</div>	
+							<div class="base-name" ng-bind="userInfo.resume.name"></div>	
+							<div class="base-message">
+								<div class="base-sex">
+									<span class="title-ico sex-ico"></span>
+									<span ng-bind="userInfo.resume.sex? '女' : '男'"></span>
+								</div>
+								<div class="base-age">
+									<span class="title-ico age-ico"></span>
+								<span ng-bind="userInfo.resume.age + '岁'"></span></div>
+								<div class="base-edu">
+									<span class="title-ico edu-ico"></span>
+								<span ng-bind="userInfo.resume.educationStr"></span></div>
+							</div>											
+							<div class="base-msg">
+								<div class="base-phone">
+									<span class="title-ico phone-ico"></span>
+								<span ng-bind="userInfo.resume.phone"></span></div>
+								<div class="base-email">
+									<span class="title-ico msg-ico"></span>
+								<span ng-bind="userInfo.resume.email"></span></div>
+							</div>							
+						</div>
+						<div class="cv-body">
+							<div class="resume-item">
+								<div class="resume-title">
+									<span class="title-ico ico-1"></span>教育经历
+									<span class="title-ico item-add" ng-if="!eduStatus && userInfo.educations.length" ng-click="editEduInfo(1)"></span>
+								</div>
+								
+								<div class="resume-con" ng-if="!eduStatus && !userInfo.educations.length">
+									<div class="resume-init" ng-click="editEduInfo(1)">
+										<span class="title-ico add-ico"></span>
+										<span>添加教育</span>
+									</div>
+								</div>
+								
+								<div class="resume-box" ng-if="!eduStatus && userInfo.educations.length">
+									<ul class="resume-ul" ng-repeat="item in userInfo.educations">
+										<li>
+											<span ng-bind="item.startTime"></span> — 
+											<span ng-bind="item.endTime"></span>&nbsp;&nbsp;
+											<span ng-bind="item.school"></span> |
+											<span ng-bind="item.specialty"></span>
+											<!-- <div class="opt-btn-con">
+												<span class="del-btn" ng-click="delEdu(item.id)"></span>
+												<span class="edit-btn" ng-click="editEduInfo(2, item)"></span>
+											</div> -->
+											<div class="opt-btn-con">
+												<span class="title-ico del-btn" ng-click="delEdu(item.id)"></span>
+												<span class="title-ico edit-btn" ng-click="editEduInfo(2, item)"></span>
+											</div>
+										</li>
+									</ul>
+								</div>								
+								
+								<div class="box-edit" ng-if="eduStatus">
+				  					<div class="inp-item">
+				  						<span class="remarks">时间</span>
+				  						<input type="text" class="min" id="edu_start_time" ng-model="eduInfo.startTime" ng-change="_clearTip()" placeholder="请输入开始时间">
+				  						<span>至</span>
+				  						<input type="text" class="min" id="edu_end_time" ng-model="eduInfo.endTime" ng-change="_clearTip()" placeholder="请输入结束时间">
+										<div class="err-wrap">
+											<label id="edu_time_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<span class="remarks">学校名称</span>
+				  						<input type="text" id="edu_name" ng-model="eduInfo.school" ng-change="_clearTip()" maxlength="25" placeholder="请输入学校名称">
+										<div class="err-wrap">
+											<label id="edu_name_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<span class="remarks">所学专业</span>
+				  						<input type="text" id="edu_specialty" ng-model="eduInfo.specialty" ng-change="_clearTip()" maxlength="15" placeholder="请输入所学专业">
+										<div class="err-wrap">
+											<label id="edu_specialty_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<div class="btn-con">
+				  							<button class="btn" ng-click="saveEdu()">保存</button>
+				  							<span ng-click="editEduInfo(0)">取消</span>
+				  						</div>
+				  					</div>
+								</div>
+							</div>
+							<div class="resume-item">
+								<div class="resume-title">
+									<span class="title-ico ico-2"></span>工作经历
+									<span class="title-ico item-add" ng-if="!workStatus && userInfo.work_experiences.length" ng-click="editWork(1)"></span>
+								</div>
+								<div class="resume-con">
+									<div class="resume-init" ng-if="!workStatus && !userInfo.work_experiences.length" ng-click="editWork(1)">
+										<span class="title-ico add-ico"></span>
+										<span>添加工作</span>
+									</div>
+								</div>
+								
+								<div class="resume-box" ng-if="!workStatus && userInfo.work_experiences.length">
+									<ul class="resume-ul" ng-repeat="item in userInfo.work_experiences">
+										<li>
+											<span ng-bind="item.companyName"></span>
+											<div class="opt-btn-con">
+												<span class="del-btn" ng-click="delWork(item.id)"></span>
+												<span class="edit-btn" ng-click="editWork(2, item)"></span>
+											</div>
+										</li>
+										<li>
+											<span ng-bind="item.startTime"></span> — 
+											<span ng-bind="item.endTime"></span>&nbsp;&nbsp; |&nbsp;&nbsp;
+											<span ng-bind="item.jobTitle"></span>
+										</li>
+										<li>
+											<pre ng-bind="item.workContent"></pre>
+										</li>
+									</ul>
+								</div>	
+															
+								<div class="box-edit" ng-if="workStatus">
+				  					<div class="inp-item">
+				  						<span class="remarks">时间</span>
+				  						<input type="text" class="min" id="work_start_time" ng-model="workInfo.startTime" ng-change="_clearTip()" placeholder="请输入开始时间">
+				  						<span>至</span>
+				  						<input type="text" class="min" id="work_end_time" ng-model="workInfo.endTime" ng-change="_clearTip()" placeholder="请输入结束时间">
+										<div class="err-wrap">
+											<label id="work_time_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<span class="remarks">公司名称</span>
+				  						<input type="text" id="work_name" ng-model="workInfo.companyName" ng-change="_clearTip()" maxlength="30" placeholder="请输入公司名称">
+										<div class="err-wrap">
+											<label id="work_name_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<span class="remarks">公司职位</span>
+				  						<input type="text" id="work_title" ng-model="workInfo.jobTitle" ng-change="_clearTip()" maxlength="12" placeholder="请输入公司职位">
+										<div class="err-wrap">
+											<label id="work_title_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<span class="remarks">工作描述</span>
+				  						<textarea type="text" id="work_content" ng-model="workInfo.workContent" ng-change="_clearTip()" placeholder="请输入工作描述"></textarea>
+										<div class="err-wrap">
+											<label id="work_content_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<div class="btn-con">
+				  							<button class="btn" ng-click="saveWork()">保存</button>
+				  							<span ng-click="editWork(0)">取消</span>
+				  						</div>
+				  					</div>
+								</div>
+							</div>
+							<div class="resume-item">
+								<div class="resume-title">
+									<span class="title-ico ico-3"></span>项目经历
+									<span class="title-ico item-add" ng-if="!projStatus && userInfo.projects.length" ng-click="editProj(1)"></span>
+								</div>
+																
+								<div class="resume-con">
+									<div class="resume-init" ng-if="!projStatus && !userInfo.projects.length" ng-click="editProj(1)">
+										<span class="title-ico add-ico"></span>
+										<span>添加项目</span>
+									</div>
+								</div>
+								
+								<div class="resume-box" ng-if="!projStatus && userInfo.projects.length">
+									<ul class="resume-ul" ng-repeat="item in userInfo.projects">
+										<li>
+											<span ng-bind="item.name"></span>
+											<span ng-bind="item.startTime"></span> — 
+											<span ng-bind="item.endTime"></span>
+											<div class="opt-btn-con">
+												<span class="del-btn" ng-click="deleProj(item.id)"></span>
+												<span class="edit-btn" ng-click="editProj(2, item)"></span>
+											</div>
+										</li>
+										<li>
+											<span>项目描述：</span>
+											<div>
+												<pre ng-bind="item.projectDetails"></pre>
+											</div>
+										</li>
+									</ul>
+								</div>
+																
+								<div class="box-edit" ng-if="projStatus">
+				  					<div class="inp-item">
+				  						<span class="remarks">时间</span>
+				  						<input type="text" class="min" id="proj_start_time" ng-model="projInfo.startTime" ng-change="_clearTip()" placeholder="请输入开始时间">
+				  						<span>至</span>
+				  						<input type="text" class="min" id="proj_end_time" ng-model="projInfo.endTime" ng-change="_clearTip()" placeholder="请输入结束时间">
+										<div class="err-wrap">
+											<label id="proj_time_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<span class="remarks">项目名称</span>
+				  						<input type="text" id="proj_name" ng-model="projInfo.name" ng-change="_clearTip()" maxlength="30" placeholder="请输入项目名称">
+										<div class="err-wrap">
+											<label id="proj_name_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<span class="remarks">项目描述</span>
+				  						<textarea type="text" id="proj_content" ng-model="projInfo.projectDetails" ng-change="_clearTip()" placeholder="请输入项目描述"></textarea>
+										<div class="err-wrap">
+											<label id="proj_content_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<div class="btn-con">
+				  							<button class="btn" ng-click="saveProj()">保存</button>
+				  							<span ng-click="editProj(0)">取消</span>
+				  						</div>
+				  					</div>
+								</div>								
+							</div>
+							<div class="resume-item">
+								<div class="resume-title">
+									<span class="title-ico ico-4"></span>作品链接
+									<span class="title-ico item-add" ng-if="!urlStatus && userInfo.productUrl.length <= 4" ng-click="editUrl(1, item)"></span>
+								</div>
+								
+								<div class="resume-con" ng-if="!urlStatus && !userInfo.productUrl.length > 0">
+									<div class="resume-init" ng-click="editUrl(1, item)">
+										<span class="title-ico add-ico"></span>
+										<span>添加链接</span>
+									</div>
+								</div>
+								
+								<div class="resume-box" ng-if="!urlStatus && userInfo.productUrl.length > 0">
+									<ul class="resume-ul" ng-repeat="item in userInfo.productUrl">
+										<li>
+											<a target="_blank" ng-href="item" ng-bind="item"></a>
+											<div class="opt-btn-con">
+												<span class="del-btn" ng-click="deleUrl(item)"></span>
+												<span class="edit-btn" ng-click="editUrl(2, $index)"></span>
+											</div>
+										</li>
+									</ul>
+								</div>
+																
+								<div class="box-edit" ng-if="urlStatus">
+				  					<div class="inp-item">
+				  						<span class="remarks">作品链接地址</span>
+				  						
+				  						<input type="text" id="url_name" ng-model="urlInfo[urlIndex]" ng-change="_clearTip()" placeholder="请输入作品链接地址">
+										<div class="err-wrap">
+											<label id="url_name_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<div class="btn-con">
+				  							<button class="btn" ng-click="saveUrl()">保存</button>
+				  							<span ng-click="editUrl(0)">取消</span>
+				  						</div>
+				  					</div>
+								</div>								
+							</div>
+							<div class="resume-item">
+								<div class="resume-title">
+									<span class="title-ico ico-5"></span>作品展示
+									<span class="title-ico item-up" ng-if="!imgStatus && userInfo.productImg.length <= 4" ng-click="editImg(1)"></span>
+								</div>
+								
+								<div class="resume-con" ng-if="!imgStatus && !userInfo.productImg.length">
+									<div class="resume-init" ng-click="editImg(1)">
+										<span class="title-ico add-ico"></span>
+										<span>添加作品</span>
+									</div>
+								</div>
+								
+								<div class="resume-box" ng-if="!imgStatus && userInfo.productImg.length > 0">
+									<ul class="resume-ul">
+										<li class="img-w" ng-repeat="item in userInfo.productImg"><img ng-src="{{'/download/getUserIcon/original/' + item}}"></li>
+									</ul>
+								</div>
+								
+								<div class="box-edit" ng-if="imgStatus">
+				  					<div class="inp-item">
+				  						<span class="remarks">图片上传</span>
+				  						<div class="img-box">
+											<div class="img-item" ng-repeat="item in userInfo.productImg">
+												<img class="edit-upload-img" ng-src="{{'/download/getUserIcon/original/' + item}}">
+												<i class="img-del" ng-click="delImg(item)"></i>
+											</div>
+										</div>
+				  						<span class="img-btn" ng-click="imgSlt()">图片上传</span>
+				  						<span class="img-text">已上传<span class="f-c-2" ng-bind="userInfo.productImg.length? userInfo.productImg.length : 0"></span>/5张图片，每张最大6M，支持jpg/gif/png格式，或者你的专业代表作品。</span>
+				  						<input type="file" class="hidden" name="upload" id="upload" accept="image/gif, image/jpeg, image/png, image/x-png, image/pjpeg">
+										<div class="err-wrap">
+											<label id="img_name_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<div class="btn-con">
+				  							<button class="btn" ng-click="editImg(0)">返回</button>
+				  						</div>
+				  					</div>
+								</div>								
+							</div>
+							<div class="resume-item">
+								<div class="resume-title" id="ui_title">
+									<span class="title-ico ico-6"></span>个人总结
+									<span class="title-ico item-up" ng-if="!sumStatus && userInfo.resume.details" ng-click="editSum(2)"></span>
+								</div>
+								
+								<div class="resume-con" ng-if="!sumStatus && !userInfo.resume.details">
+									<div class="resume-init" ng-click="editSum(1)">
+										<i class="add-ico"></i>
+										<span>添加总结</span>
+									</div>
+								</div>
+								
+								<div class="resume-box" ng-if="!sumStatus && userInfo.resume.details">
+									<ul class="resume-ul">
+										<li>
+											<div>
+												<pre ng-bind="userInfo.resume.details"></pre>
+											</div>
+										</li>
+									</ul>
+								</div>
+															
+								<div class="box-edit" ng-if="sumStatus">
+				  					<div class="inp-item">
+				  						<span class="remarks">个人总结</span>
+				  						<textarea type="text" id="sum_name" ng-model="sumInfo.text" ng-change="_clearTip()" maxlength="150" placeholder="请输入个人总结"></textarea>
+										<div class="err-wrap">
+											<label id="sum_name_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<div class="btn-con">
+				  							<button class="btn" ng-click="saveSum()">保存</button>
+				  							<span ng-click="editSum(0)">取消</span>
+				  						</div>
+				  					</div>
+								</div>
+							</div>			
+						</div>
+						<div class="cv-footer">
+							<div class="btn-wrap">
+								<button class="btn submit" ng-click="subResume()">提交</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<!-- 上传简历 -->
+				<div class="upload-warp box-shadow" ng-if="resumeType">
+					<div class="file-title"><img src="/img/upload_ico.png">上传简历</div>
+					<div class="file-con">
+						<form id="upload_form">
+							<div class="file-group">
+								<input ng-if="!isIe"type="text" id="upload_inp" ng-model="fileName" ng-click="fileSlt()" readonly="true" placeholder="上传简历（请上传PDF，或者word格式文件）">
+								<span ng-if="!isIe" class="slt-file" ng-click="fileSlt()">选择文件</span>
+								<input type="file" name="upload" id="upload" accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/pdf">
+							</div>
+							<div class="err-wrap">
+								<label id="file_tip">如果你不是第一次申请，可以使用之前通过审核的简历！</label>
+							</div>
+							<div class="file-btn-wrap">
+								<button class="btn old" ng-click="oldCv()">使用之前的简历</button>
+								<button class="btn submit" ng-class="{true: 'dis'}[(!fileName)]" ng-click="fileUpload()">提交</button>
+							</div>
+						</form>
+					</div>
+				</div>
+				
+				<!-- 基本信息填写 -->
+				<div class="info-modal modal">
+					<div class="modal-backdrop in"></div>
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button class="close" ng-click="close('.info-modal')">x</button>
+								<div class="modal-title"><span>填写基本信息</span></div>
+							</div>
+							<div class="modal-body">
+				  				<div class="box-info">
+				  					<div class="inp-item">
+				  						<span class="remarks">姓名</span>
+				  						<input type="text" id="base_name" ng-model="baseInfo.name" ng-change="_clearTip()" maxlength="12" placeholder="请输入姓名">
+										<div class="err-wrap">
+											<label id="base_name_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<span class="remarks">年龄/性别</span>
+				  						<input type="text" class="min" id="base_age" ng-model="baseInfo.age" ng-change="_clearTip()" maxlength="2" placeholder="请输入年龄">
+										<span class="sex-item">
+											<input type="radio" ng-model="baseInfo.sex" name="base_sex" value="0">
+											<label class="sex-text" for="sex_man">男</label>
+										</span>
+										<span class="sex-item">
+											<input type="radio" ng-model="baseInfo.sex" name="base_sex" value="1">
+											<label class="sex-text" for="sex_female">女</label>
+										</span>										
+										<div class="err-wrap">
+											<label id="base_age_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  					<div class="inp-item">
+				  						<span class="remarks">最高学历</span>
+										<select ng-model="baseInfo.education" ng-options="c.id as c.value for c in edus"></select>
+										<div class="err-wrap">
+											<label id="base_info_tip" class="ico-invalid"></label>
+										</div>
+				  					</div>
+				  				</div>								
+							</div>
+							<div class="modal-footer">
+								<button class="btn save" ng-click="saveBaseInfo()">保存</button>
+								<button class="btn btn-default cancel" ng-click="close('.info-modal')">取消</button>
+							</div>				
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

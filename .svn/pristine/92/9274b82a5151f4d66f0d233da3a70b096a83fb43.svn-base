@@ -1,0 +1,50 @@
+package com.auction.common.web;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.auction.common.util.SysConfig;
+
+/** 
+ * @author tobber
+ * @version 2015年5月7日
+ */
+
+@Controller
+@RequestMapping(value = "download")
+public class FileDownloadController {
+	
+	@RequestMapping("getUserIcon/{imgPath}/{imgName}.{suffix}")
+    public void getIcon(@PathVariable("imgPath") String imgPath,
+    		@PathVariable("imgName") String imgName,
+    		@PathVariable("suffix") String suffix,
+    		HttpServletRequest request,HttpServletResponse response) throws IOException {
+
+        String fileName = SysConfig.getValue("UPLOAD_USER_URL").toString()+imgPath+"/"+imgName+"."+suffix;
+        File file = new File(fileName);
+        //判断文件是否存在如果不存在就返回默认图标
+        if(!(file.exists() && file.canRead())) {
+            file = new File(request.getSession().getServletContext().getRealPath("/")
+                    + "resource/icons/auth/root.png");
+        }
+        FileInputStream inputStream = new FileInputStream(file);
+        byte[] data = new byte[(int)file.length()];
+        int length = inputStream.read(data);
+        inputStream.close();
+        response.setContentType("image/png");
+        OutputStream stream = response.getOutputStream();
+        stream.write(data);
+        stream.flush();
+        stream.close();
+    }
+}

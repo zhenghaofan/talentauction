@@ -1,0 +1,53 @@
+<div class="footer">
+	<div class="footer-con">
+		<div class="footer-box w-250">
+			<ul>
+				<li><a class="footer-a" href="{{user.isOnline? '' : '/'}}">首页</a></li>
+				<li><a class="footer-a" href="{{user.isOnline? '' : '/base/compindex'}}">企业请进</a></li>
+				<li><a class="footer-a" href="/base/placedefault">拍卖会</a></li>
+				<li><a class="footer-a" href="/base/complist">入驻企业</a></li>
+				<li><a class="footer-a" href="/base/about">关于我们</a></li>
+			</ul>
+		</div>
+		
+		<div class="footer-box w-250">
+			<ul>
+				<li><a class="footer-a" href="{{user.isOnline? '' : '/base/signup'}}">注册</a></li>
+				<li><a class="footer-a" href="{{user.isOnline? '' : '/base/signin'}}">登录</a></li>
+				<li><a class="footer-a" href="/base/upwd">忘记密码</a></li>
+				<li><a class="footer-a" href="/base/mailresend">验证邮件</a></li>
+				<li><a class="footer-a" href="/base/question">常见问题</a></li>
+			</ul>
+		</div>
+		
+		<div class="footer-box w-250">
+			<ul>
+				<li><a class="footer-a" target="_blank" href="http://www.jianshu.com/users/97afaa22fdf8/latest_articles">团队博客</a></li>
+				<li><a class="footer-a" target="_blank" href="http://weibo.com/shilipaiofficial?sudaref=localhost">官方微博</a></li>
+				<li>官方微信</li>
+				<li>
+					<span class="footer-qrcode"></span>
+				</li>
+			</ul>
+		</div>
+		
+		<div class="footer-box w-250">
+			<ul>
+				<li>商务合作：business@shilipai.net</li>
+				<li>意见反馈：tellus@shilipai.net</li>
+				<li>服务热线：0755-23545761</li>
+				<li>实力拍人才交流QQ群：338403574</li>
+			</ul>
+		</div>
+		
+		<div class="clear"></div>
+		<div class="copyright">深圳市红领巾网络科技有限公司 粤ICP备14078532号-1</div>
+	</div>
+	
+	<div class="rocket" id="rocket"></div>
+	
+	<div class="tool_float">
+        <a class="tool_kf" title="联系人才客服" rel="nofollow" href="http://wpa.qq.com/msgrd?v=3&uin=3161347059&site=qq&menu=yes" target="_blank"></a>
+        <a class="tool_feed" title="联系企业客服" href="http://wpa.qq.com/msgrd?v=3&uin=1545935909&site=qq&menu=yes" target="_blank"></a>
+    </div>	
+</div>

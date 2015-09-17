@@ -1,0 +1,793 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'upload',
+ 'uiservice',
+ 'info',
+ 'zebra_datepicker'
+], 
+function($, angular, app, cookie, url, upload) {
+	app.controller('jobinfoCtrl', ['$scope', '$rootScope', '$http', '$q', 'uiservice', 'info',
+   		function($scope, $rootScope, $http, $q, uiservice, info) {
+		$rootScope.tabIndex = 4;
+		$scope.resumeType = 0;
+		$scope.edus = info.getEducation();
+		$scope.userInfo = {};
+		$scope.baseInfo = {edu: '0', sex: 0};
+		$scope.eduInfo = {};
+		$scope.workInfo = {};
+		$scope.projInfo = {};
+		$scope.urlInfo = [];
+		$scope.imgInfo = [];
+		$scope.sumInfo = {};
+		$scope.isIe = false;
+		
+		
+		/* 打开弹出框*/
+		$scope.show = function(ele) {
+			$(ele).show();
+		};
+
+		/* 关闭弹出框*/
+		$scope.close = function(ele) {
+			$(ele).hide();
+			$scope.baseInfo = {edu: '0', sex: 0};
+			$scope._clearTip();
+		};
+		
+		/* 清除提示*/
+		$scope._clearTip = function(ele) {
+			if(ele) {
+				$(ele).text('').hide();
+			}else {
+				$('.err-wrap label').text('').hide();
+			}
+		};
+		
+		/*选择简历填写方式*/
+		$scope.typeSlt = function(status) {
+			$scope.resumeType = status;
+			$scope.fileName = '';
+			if(status == 0) $scope.getProgress();
+			$scope._checkBrowser(status);
+		};
+		
+		/* 检查浏览器*/
+		$scope._checkBrowser = function(status) {
+			if(!!window.ActiveXObject || "ActiveXObject" in window){
+				$scope.isIe = true;
+				
+				if(status == 1) {
+					setTimeout(function() {
+						$('#upload').show();
+						$('.upload-warp .err-wrap').addClass('ie');
+						$('#file_tip').text('如果你不是第一次申请，可以使用之前通过审核的简历！').removeClass('ico-invalid');
+						$('#upload').change(function() {
+							$safeApply($scope, function(){
+								$scope.fileName = $('#upload').val();
+							});
+						}, 100);			
+					});
+				}else {
+					$(document).on('change', '#img_upload', function() {
+						$scope._clearTip();
+						$scope.imgName = $(this).val();
+						$scope.saveImg();
+					});	
+				}
+		    }
+		};
+		
+		/*选择文件*/
+		$scope.fileSlt = function() {
+			var obj = $('#upload');
+			$('#file_tip').text('如果你不是第一次申请，可以使用之前通过审核的简历！').removeClass('ico-invalid');
+			obj.click();
+			obj.change(function() {
+				$safeApply($scope, function(){
+					$scope.fileName = $('#upload').val();
+				});
+			});
+		};
+		
+		/*上传文件*/
+		$scope.fileUpload = function() {
+			var config = {
+					id: 'upload',
+					url: '/fileUpload/resumeUpload'
+			};
+			
+			if(!_checkFile()) return;
+			
+			upload.fileUpload(config, function(result) {
+				var data = result;
+				if(data.code == 200) {
+					window.location.replace('/talentform/jobresult');
+				}else {
+					$('#file_tip').text(data.message).addClass('ico-invalid');
+				}
+			},function(err) {
+				console.error('resumeUpload', err);
+			});
+		};
+		
+		/* 使用之前的简历*/
+		$scope.oldCv = function() {
+            $q.when($http.post('/cvmake/usePastResume'))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		window.location.replace('/talentform/jobresult');
+            	}else {
+            		$('#file_tip').text(data.message).addClass('ico-invalid');
+            	}
+            }, function(err) {
+            	console.error('usePastResume', err);
+            });
+		};
+		
+		/* 获取简历完整度*/
+		$scope.getProgress = function() {
+            $q.when($http.post('/cvmake/speedOfProgress'))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+                	$("#on_pro_text").text(data.speedOfProgress);
+                	$("#on_pro_line").animate({
+    					'width': data.speedOfProgress + '%'
+    				}, 1000);
+            	}
+            }, function(err) {
+            	console.error('speedOfProgress', err);
+            });
+		};
+		
+		/* 获取简历信息*/
+		$scope.getResume = function() {
+            $q.when($http.post('/resume/getUserResume'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.userInfo = _fomartResume(data);
+            	$scope.getProgress();
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getUserResume', err);
+            });
+		};
+		
+		/* 简历提交审核*/ 
+		$scope.subResume = function() {
+			
+			if(uiservice.isNotify()) return;
+			
+			uiservice.alert('确定提交审核吗？', function() {
+	            $q.when($http.post('/cvmake/submitCheck'))
+	            .then(function(result) {
+	            	var data = result.data;
+	            	uiservice.notify(data.message, data.code != 200, function() {
+	            		window.location.replace('/talentform/jobresult');
+	        		});
+	            }, function(err) {
+	            	console.error('submitCheck', err);
+	            });				
+			});
+		};
+		
+		/* 编辑基本信息*/
+		$scope.editBaseInfo = function(status) {
+			$scope.show('.info-modal');
+			if(status == 2) {
+				$scope.baseInfo = {
+						name: $scope.userInfo.resume.name,
+						age: $scope.userInfo.resume.age,
+						sex: $scope.userInfo.resume.sex,
+						education: $scope.userInfo.resume.education.toString()						
+				};				
+			}
+		};
+		
+		/* 保存基本信息*/
+		$scope.saveBaseInfo = function() {
+			var config = {
+					name: $scope.baseInfo.name,
+					age: $scope.baseInfo.age,
+					sex: $scope.baseInfo.sex,
+					education: $scope.baseInfo.education	
+			};
+			
+			if(!_checkBaseInfo(config)) return;
+			
+            $q.when($http.post('/cvmake/updateResumeInfo', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.close('.info-modal');
+            		$scope.getResume();
+            	}else {
+            		$('#base_info_tip').show().text(data.message);
+            	}
+            }, function(err) {
+            	console.error('updateResumeInfo', err);
+            });
+		};
+		
+		/* 编辑教育信息*/
+		$scope.editEduInfo = function(status, item) {
+			$scope.eduStatus = status;
+			if(status == 0) {
+				$scope.eduInfo = {};
+				$('.zebra_edu').remove();
+			}else if(status == 2) {
+				$scope.eduInfo = item;
+			}
+			
+			setTimeout(function() {
+				$('#edu_start_time').Zebra_DatePicker({
+					format: 'Y/m',
+					pair: $('#edu_end_time'),
+					text: 'zebra_edu'
+				});
+				
+				$('#edu_end_time').Zebra_DatePicker({
+					format: 'Y/m',
+					direction: 1,
+					text: 'zebra_edu'
+				});				
+			});
+		};
+		
+		/* 保存教育经历*/
+		$scope.saveEdu = function() {
+			var config = {
+					resumeId: $scope.userInfo.resume.resumeId,
+					startTime: $("#edu_start_time").val(),
+					endTime: $("#edu_end_time").val(),	
+					school: $scope.eduInfo.school,
+					specialty: $scope.eduInfo.specialty
+			};
+			
+			if(!_checkEduInfo(config)) return;
+			
+			if($scope.eduStatus == 2) config.id = $scope.eduInfo.id;
+			
+            $q.when($http.post('/cvmake/updateEducations', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            		$scope.editEduInfo(0);
+            	}else {
+            		$('#edu_specialty_tip').show().text(data.message);
+            	}
+            }, function(err) {
+            	console.error('updateEducations', err);
+            });
+		};
+		
+		/* 删除教育经历*/
+		$scope.delEdu = function(id) {
+			var config = {
+				id: id	
+			};
+			
+            $q.when($http.post('/cvmake/delEducations', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            	}
+            }, function(err) {
+            	console.error('delEducations', err);
+            });			
+		};
+		
+		/* 编辑工作经历*/
+		$scope.editWork = function(status, item) {
+			$scope.workStatus = status;
+			if(status == 0) {
+				$scope.workInfo = {};
+				$('.zebra_wrok').remove();
+			}else if(status == 2) {
+				$scope.workInfo = item;
+			}
+			
+			setTimeout(function() {
+				$('#work_start_time').Zebra_DatePicker({
+					format: 'Y/m',
+					pair: $('#work_end_time'),
+					text: 'zebra_wrok'
+				});
+				
+				$('#work_end_time').Zebra_DatePicker({
+					format: 'Y/m',
+					direction: 1,
+					text: 'zebra_wrok'
+				});				
+			});
+		};
+		
+		/* 保存工作经历*/
+		$scope.saveWork = function() {
+			var config = {
+					resumeId: $scope.userInfo.resume.resumeId,
+					startTime: $('#work_start_time').val(),
+					endTime: $('#work_end_time').val(),
+					companyName: $scope.workInfo.companyName,
+					jobTitle: $scope.workInfo.jobTitle,
+					workContent: $scope.workInfo.workContent					
+			};
+			
+			if(!_checkWorkInfo(config)) return;
+			
+			if($scope.workStatus == 2) config.id = $scope.workInfo.id;
+			
+            $q.when($http.post('/cvmake/updateWorkExperiences', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            		$scope.editWork(0);
+            	}else {
+            		$('#work_content_tip').show().text(data.message);
+            	}
+            }, function(err) {
+            	console.error('updateWorkExperiences', err);
+            });
+		};
+		
+		/* 删除工作经历*/
+		$scope.delWork = function(id) {
+			var config = {
+				id: id	
+			};
+			
+            $q.when($http.post('/cvmake/delWorkExperiences', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            	}
+            }, function(err) {
+            	console.error('delWorkExperiences', err);
+            });			
+		};
+		
+		/* 编辑项目经历*/
+		$scope.editProj = function(status, item) {
+			$scope.projStatus = status;
+			if(status == 0) {
+				$scope.projInfo = {};
+				$('.zebra_proj').remove();
+			}else if(status == 2) {
+				$scope.projInfo = item;
+			}
+			setTimeout(function() {
+				$('#proj_start_time').Zebra_DatePicker({
+					format: 'Y/m',
+					pair: $('#proj_end_time'),
+					text: 'zebra_proj'
+				});
+				
+				$('#proj_end_time').Zebra_DatePicker({
+					format: 'Y/m',
+					direction: 1,
+					text: 'zebra_proj'
+				});				
+			});
+		};
+		
+		/* 保存项目经历*/
+		$scope.saveProj = function() {
+			var config = {
+					resumeId: $scope.userInfo.resume.resumeId,
+					startTime: $('#proj_start_time').val(),
+					endTime: $('#proj_end_time').val(),
+					name: $scope.projInfo.name,
+					projectDetails: $scope.projInfo.projectDetails
+			};
+			
+			if(!_checkProjInfo(config)) return;
+			
+			if($scope.projStatus == 2) config.id = $scope.projInfo.id;
+			
+            $q.when($http.post('/cvmake/updateProjects', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            		$scope.editProj(0);
+            	}else {
+            		$('#proj_content_tip').show().text(data.message);
+            	}
+            }, function(err) {
+            	console.error('updateProjects', err);
+            });			
+		};
+		
+		/* 删除项目经历*/
+		$scope.deleProj = function(id) {
+			var config = {
+				id: id	
+			};
+			
+            $q.when($http.post('/cvmake/delProjects', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            	}
+            }, function(err) {
+            	console.error('delProjects', err);
+            });			
+		};
+		
+		/* 编辑连接*/
+		$scope.editUrl = function(status, index) {
+			$scope.urlStatus = status;
+			$scope.urlIndex = 0;
+			if(status == 0) {
+				$scope.urlInfo = [];
+			}else if(status == 2) {
+				$scope.urlIndex = index;
+				$scope.urlInfo = $scope.userInfo.productUrl;
+			}
+		};		
+		
+		/* 保存链接*/
+		$scope.saveUrl = function() {
+			for (var i in $scope.urlInfo) {
+				if($scope.urlInfo[i].indexOf('http') == -1) {
+					$scope.urlInfo[i] = 'http://' + $scope.urlInfo[i];
+				}
+			}
+			
+			var config = {
+					productUrl: $scope.urlInfo.toString()
+			}
+			
+			var url = $scope.urlStatus == 2? '/cvmake/updateProductUrl' : '/cvmake/addProductUrl';
+			
+			if(!_checkUrlInfo(config)) return;
+			
+            $q.when($http.post(url, $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            		$scope.editUrl(0);
+            	}else {
+            		$('#url_name_tip').show().text(data.message);
+            	}
+            }, function(err) {
+            	console.error('addProductUrl', err);
+            });			
+		};
+		
+		/* 删除连接*/
+		$scope.deleUrl = function(url) {
+			var config = {
+					productUrl: url
+			};
+			
+            $q.when($http.post('/cvmake/delProductUrl', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            	}
+            }, function(err) {
+            	console.error('delProductUrl', err);
+            });			
+		};
+		
+		/* 编辑作品展示*/
+		$scope.editImg = function(status, index) {
+			$scope.imgStatus = status;
+			$scope.imgIndex = 0;
+			if(status == 0) {
+				$scope.imgInfo = [];
+			}else if(status == 2) {
+				$scope.imgIndex = index;
+				$scope.imgInfo = $scope.userInfo.img;
+			}
+		};
+		
+		/* 选择图片*/
+		$scope.imgSlt = function() {
+			if(uiservice.isNotify() || $scope.isIe) return;
+			
+			$scope.imgName = '';
+			var obj = $('#img_upload');
+			obj.click();
+			obj.change(function() {
+				$safeApply($scope, function(){
+					$scope.imgName = $('#img_upload').val();
+					$scope.saveImg();
+				});
+			});
+		};
+		
+		/* 保存作品展示*/
+		$scope.saveImg = function() {
+			var config = {
+					id: 'img_upload',
+					url: '/fileUpload/userWorkUpload'
+			};
+			
+			if(! _checkImg(config.id)) return;
+			
+			upload.fileUpload(config, function(result) {
+				var data = result;
+				if(data.code == 200) {
+					$scope.getResume();
+				}else {
+					$('#img_name_tip').show().text(data.message);
+				}
+			},function(err) {
+				console.error('userWorkUpload', err);
+			});
+		};
+		
+		/* 删除作品展示*/
+		$scope.delImg = function(img) {
+			var config = {
+					productImg: img
+			}
+			
+            $q.when($http.post('/cvmake/delProductImg', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            	}
+            }, function(err) {
+            	console.error('delProductImg', err);
+            });			
+		};
+		
+		/* 编辑个人总结*/
+		$scope.editSum = function(status) {
+			$scope.sumStatus = status;
+			if(status == 0) {
+				$scope.sumInfo = {};
+			}else if(status == 2) {
+				$scope.sumInfo.text = $scope.userInfo.resume.details;
+			}
+		};			
+		
+		/* 保存个人总结*/
+		$scope.saveSum = function() {
+			var config = {
+					details: $scope.sumInfo.text
+			}
+			
+            $q.when($http.post('/cvmake/addDetails', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getResume();
+            		$scope.editSum(0);
+            	}else {
+            		$('#url_name_tip').show().text(data.message);
+            	}
+            }, function(err) {
+            	console.error('addDetails', err);
+            });			
+		};
+		
+		/* 验证基本信息*/
+		function _checkBaseInfo(data) {
+			var isNumber = /^[1-9]\d{0,9}$/;
+			
+			if(!data.name) {
+				$('#base_name').focus();
+				$('#base_name_tip').show().text('姓名输入有误！');
+				return false;
+			}else if(!isNumber.test(data.age)) {
+				$('#base_age').focus();
+				$('#base_age_tip').show().text('年龄输入有误！');
+				return false;
+			}
+			
+			return true;
+		}
+		
+		/* 验证教育信息*/
+		function _checkEduInfo(data) {
+			$scope._clearTip();
+			if(!data.startTime) {
+				$('#edu_start_time').focus();
+				$('#edu_time_tip').show().text('开始时间输入有误！');
+				return false;
+			}else if(!data.endTime) {
+				$('#edu_end_time').focus();
+				$('#edu_time_tip').show().text('结束时间输入有误！');
+				return false;
+			}else if(!data.school) {
+				$('#edu_name').focus();
+				$('#edu_name_tip').show().text('学校名称输入有误！');
+				return false;
+			}else if(!data.specialty) {
+				$('#edu_specialty').focus();
+				$('#edu_specialty_tip').show().text('所学专业输入有误！');
+				return false;
+			}
+			
+			return true;
+		}
+		
+		/* 验证工作信息*/
+		function _checkWorkInfo(data) {
+			$scope._clearTip();
+			if(!data.startTime) {
+				$('#work_start_time').focus();
+				$('#work_time_tip').show().text('开始时间输入有误！');
+				return false;
+			}else if(!data.endTime) {
+				$('#work_end_time').focus();
+				$('#work_time_tip').show().text('结束时间输入有误！');
+				return false;
+			}else if(!data.companyName) {
+				$('#work_name').focus();
+				$('#work_name_tip').show().text('公司名称输入有误！');
+				return false;
+			}else if(!data.jobTitle) {
+				$('#work_title').focus();
+				$('#work_title_tip').show().text('公司职位输入有误！');
+				return false;
+			}else if(!data.workContent) {
+				$('#work_content').focus();
+				$('#work_content_tip').show().text('工作描述输入有误！');
+				return false;
+			}
+			
+			return true;
+		}
+		
+		/* 验证项目信息*/
+		function _checkProjInfo(data) {
+			$scope._clearTip();
+			if(!data.startTime) {
+				$('#proj_start_time').focus();
+				$('#proj_time_tip').show().text('开始时间输入有误！');
+				return false;
+			}else if(!data.endTime) {
+				$('#proj_end_time').focus();
+				$('#proj_time_tip').show().text('结束时间输入有误！');
+				return false;
+			}else if(!data.name) {
+				$('#proj_name').focus();
+				$('#proj_name_tip').show().text('项目名称输入有误！');
+				return false;
+			}else if(!data.projectDetails) {
+				$('#proj_content').focus();
+				$('#proj_content_tip').show().text('项目描述输入有误！');
+				return false;
+			}
+			
+			return true;
+		}
+		
+		/* 验证作品连接*/
+		function _checkUrlInfo(data) {
+			if(!data.productUrl) {
+				$('#url_name').focus();
+				$('#url_name_tip').show().text('链接地址输入有误！');
+				return false;
+			}
+			
+			return true;
+		};
+		
+		/* 验证图片*/
+		function _checkImg(id) {
+			if(!$scope.isIe) {
+				var files = [];
+		    	var flag = true;
+		    	var e = $('#' + id).get(0);
+		    	for(i in e.files) {
+		    		// 限制为3M
+		    		if(typeof e.files[i] == 'object') {
+		    			if( e.files[i].size >= 3 * 1024 *1024 ) {
+		    				flag = false;
+		    				uiservice.notify('图片过大！限制3M', true);
+		    				$('input[name="upload"]').val('');
+		    				return false;
+		    			}
+		    			files.push(e.files[i]);
+		    		} 
+		    	}
+		    	if(files.length == 0 || !flag) {
+		    		uiservice.notify('图片过大！限制3M', true);
+		    		$('input[name="upload"]').val('');
+		    		return false;			    	
+		    	}		
+		    }else {
+		    	if ($scope.imgName.indexOf('.jpg') == -1 && $scope.imgName.indexOf('.gif') == -1 && 
+	            		$scope.imgName.indexOf('.png') == -1 && $scope.imgName.indexOf('.jpeg')) {  
+		    		$('#img_name_tip').show().text('非图片类型文件，请重传！');
+	            	$('input[name="upload"]').val('');
+	                return false;  
+	            }
+		    }
+			
+			return true;		
+		}
+				
+		/* 验证文件*/
+		function _checkFile () {
+			if(!$scope.fileName) {
+				$('#upload_inp').focus();
+				$('#file_tip').text('请选择文件！').addClass('ico-invalid');
+				return false;
+			}else if($scope.isIe) {
+	            if ($scope.fileName.indexOf('.doc') == -1 && $scope.fileName.indexOf('.docx') == -1 && 
+	            		$scope.fileName.indexOf('.pdf') == -1) {  
+	            	$('#file_tip').text('非word或pdf类型文件，请重传！').addClass('ico-invalid');
+	                return false;  
+	            }			
+		    }else {
+		    	var files = [];
+		    	var flag = true;
+		    	var e = $('#upload').get(0);
+		    	for(i in e.files) {
+		    		// 限制为3M
+		    		if(typeof e.files[i] == 'object'){
+		    			if( e.files[i].size >= 3 * 1024 *1024 ) {
+		    				$('#file_tip').text('文件过大！限制3M').addClass('ico-invalid');
+		    				flag = false;
+		    				return false;
+		    			}
+		    			files.push(e.files[i]);
+		    		} 
+		    	}
+		    	if(files.length == 0 || !flag) {
+		    		$('#file_tip').text('文件过大！限制3M').addClass('ico-invalid');
+		    		return false;			    	
+		    	}
+		    }	
+			
+			return true;		
+		}
+		
+		/* 格式化简历信息*/
+		function _fomartResume(data) {
+        	if(data.resume.productUrl) {
+        		data.productUrl = data.resume.productUrl.split(',');
+        	}
+        	
+        	if(data.resume.productImg) {
+        		data.productImg = data.resume.productImg.split(',');
+        	}        	
+        	
+        	for(var i in $scope.edus) {
+        		if($scope.edus[i].id == data.resume.education)
+        			data.resume.educationStr = $scope.edus[i].value;
+        	}
+        	
+			return data;
+		}
+		
+		
+		$(document).on("mouseenter", ".resume-box ul", function(){
+			$(this).find('.opt-btn-con').css('display', 'inline-block');
+		})
+		.on("mouseleave" ,".resume-box ul", function(){
+			$(this).find('.opt-btn-con').css('display', 'none');
+		});
+		
+		function $safeApply($scope, fn) {
+			var phase = $scope.$$phase;
+			if (phase == '$apply' || phase == '$digest') {
+				$scope.$eval(fn);
+			} else {
+				$scope.$apply(fn);
+			}
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

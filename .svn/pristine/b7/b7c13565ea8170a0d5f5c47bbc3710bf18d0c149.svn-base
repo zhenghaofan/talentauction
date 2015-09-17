@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.company.dao.CompanyDao">
+    
+    <!-- 添加阅读记录 -->
+    <insert id="addCompany" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+    	insert into read_logs (companyId,name,creatTime) values (#{companyId},#{name},#{creatTime})
+    </insert>
+    
+    <select id="getSameCompanyList" parameterType="String" resultType="map">
+        select a.*,c.name from (
+        	select r.companyId from rigistration r where r.status='1' and r.companyId is not null and r.email like '%@shilipai.net'
+        ) a left join company c on a.companyId=c.companyId where c.name is not null
+    </select>
+    
+    <select id="getCompanyInfo" parameterType="String" resultType="map">
+        select r.*,
+        	d.name provinceName,
+        	a.name cityName,
+        	b.name areaName 
+        from (
+        	select c.id,
+        		c.companyId,
+        		c.name,
+        		c.nickName,
+        		c.province,
+        		c.city,
+        		c.addr,
+        		c.phone,
+        		c.logoName,
+        		c.dateOfRegist,
+        		c.website,
+        		c.area,
+        		c.progress,
+        		c.size,
+        		c.companyIntro,
+        		c.welfare,
+        		c.environment 
+        	from company c where c.companyId=#{0}
+        ) r 
+        left join cities a on a.id=r.city 
+        left join cities d on d.id=r.province 
+        left join areas b on b.id=r.area
+    </select>
+    
+    <update id="isSaveUserInfo" parameterType="String">
+        update rigistration set isSaveUserInfo=1 where userId=#{userId}
+    </update>
+    
+</mapper> 

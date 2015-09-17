@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/compinfo.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/compinfo.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/compinfo" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/compinfo-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="infoCtrl">
+			<div class="info-wrap box-shadow" ng-init="getCompInfo()">
+				<div class="nav-warp">
+	  				<div class="tab-item">
+	  					<div class="tab-step">1</div>
+	  					<div class="tab-text">选择公司</div>
+	  				</div>
+	  				<div class="line"></div>
+	  				<div class="tab-item slt">
+	  					<div class="tab-step">2</div>
+	  					<div class="tab-text">基本信息</div>
+	  				</div>
+	  				<div class="line"></div>
+	  				<div class="tab-item">
+	  					<div class="tab-step">3</div>
+	  					<div class="tab-text">人才需求</div>
+	  				</div>
+  				</div>
+  				
+  				<div class="box-info">
+  					<div class="inp-item">
+  						<span class="remarks">公司全称</span>
+  						<input type="text" id="comp_name" ng-model="compInfo.name" ng-change="_clearTip()" maxlength="50" placeholder="请输入公司全称，如：拍手网">
+						<div class="err-wrap">
+							<label id="comp_name_tip" class="ico-invalid"></label>
+						</div>
+  					</div>
+  					<div class="inp-item">
+  						<span class="remarks">公司简称</span>
+  						<input type="text" id="comp_nickname" ng-model="compInfo.nickName" ng-change="_clearTip()" maxlength="16" placeholder="请输入公司简称，如：拍手">
+						<div class="err-wrap">
+							<label id="comp_nickname_tip" class="ico-invalid"></label>
+						</div>
+  					</div>
+   					<div class="inp-item">
+  						<span class="remarks">所在城市</span>
+  						<select class="slt-l"ng-model="compInfo.province" ng-change="getCityList(compInfo.province)" ng-options="c.id as c.name for c in webContext.provinceList">
+						</select>
+						<select class="slt-r" ng-model="compInfo.city" ng-options="c.id as c.name for c in webContext.cityList">
+						</select>
+						<div class="err-wrap">
+							<label id="email_tip" class="ico-invalid"></label>
+						</div>
+  					</div>
+   					<div class="inp-item">
+  						<span class="remarks">行业领域</span>
+  						<select ng-model="compInfo.area" ng-options="c.id as c.name for c in webContext.areasList">
+						</select>
+						<div class="err-wrap">
+							<label class="ico-invalid"></label>
+						</div>
+  					</div>
+   					<div class="inp-item">
+  						<span class="remarks">公司规模</span>
+						<select ng-model="compInfo.size" ng-options="c.id as c.value for c in webContext.compSizeList">
+						</select>
+						<div class="err-wrap">
+							<label class="ico-invalid"></label>
+						</div>
+  					</div>
+  					<div class="inp-item">
+  						<span class="remarks">发展阶段</span>
+  						<div class="phase-con">
+							<span class="phase-item" ng-class="{true: 'slt'}[(compInfo.progress == item.id)]" ng-click="sltPhase(item.id)" 
+								ng-repeat="item in webContext.compPhaseList" ng-bind="item.value"></span>				
+  						</div>
+  						<div class="err-wrap">
+							<label id="comp_info_tip" class="ico-invalid"></label>
+						</div>
+  					</div>
+  					<div class="inp-item">
+  						<div class="btn-con">
+  							<button class="btn" ng-click="saveCompInfo()">下一步</button>
+  						</div>
+  					</div>
+  				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

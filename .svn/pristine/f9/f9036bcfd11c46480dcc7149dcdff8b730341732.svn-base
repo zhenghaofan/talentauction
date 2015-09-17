@@ -1,0 +1,139 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'uiservice'
+], 
+function($, angular, app, cookie, url, uiservice) {
+	app.controller('bidlistCtrl', ['$scope', '$rootScope', '$http', '$q', 'uiservice',
+   		function($scope, $rootScope, $http, $q, uiservice) {
+		$rootScope.tabIndex = 5;
+		$scope.replayState = 0;
+		$scope.page = {
+				page: 1,
+				pageSize: 15,
+				totalPage: 1
+		};
+		
+		
+		/* 清除提示*/
+		$scope._clearTip = function() {
+			$('.err-wrap label').text('').hide();
+		};	
+		
+		/* 获取拍卖记录*/
+		$scope.getBidLogs = function() {
+            $q.when($http.post('/resume/getBidLogs', $.param($scope.page)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.listData = data.bidLogs;
+            	$scope.page.totalPage = data.totalPage;
+            	$scope.page.page = data.page;
+            	
+            	_initPager();
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getBidLogs', err);
+            });
+		};
+		
+		/* 选择排序方法*/
+		$scope.sltSort = function(status) {
+			$scope.page = {
+					page: 1,
+					pageSize: 15,
+					totalPage: 1
+			};
+			
+			if(status) $scope.page.reply = status;
+			
+			$scope.replayState = status;
+			$scope.getBidLogs();
+		};
+		
+		/* 拒绝面板*/
+		$scope.rejectBox = function(item) {
+			item.optReply = !item.optReply;
+		};
+		
+		/* 拒绝操作*/
+		$scope.rejectOpt = function(item) {
+			var str = $('.reject-box-option input:radio:checked').val();
+			var config = {
+					id: item.id,
+					isReply: 2
+			};
+			
+			if(str == '其他')
+				config.rejectReason = $('#rjt_Text').val();
+			else
+				config.rejectReason = str;			
+			
+			if(!_checkReply(config)) return;
+			
+			uiservice.confirm('确定发送拒绝吗？', function() {
+				$scope.subReply(config, item);
+			});
+		};
+		
+		/* 同意操作*/
+		$scope.agreeOpt = function(item) {
+			var config = {
+					id: item.id,
+					isReply: 1
+				};
+			
+			uiservice.confirm('确定联系面试吗？', function() {
+				$scope.subReply(config);
+			});
+		};
+		
+		/* 提交回复*/
+		$scope.subReply = function(config, item) {
+            $q.when($http.post('/resume/userReply', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.getBidLogs();
+            }, function(err) {
+            	console.error('userReply', err);
+            });
+		};
+		
+		/* 翻页*/
+		$scope.turnPage = function(_event, status) {
+			if(status == '+') {
+				$scope.page.page ++;
+			}else if(status == '-') {
+				$scope.page.page --;
+			}else {
+				$scope.page.page = status;
+				$(_event.target).addClass('slt').siblings().removeClass('slt');
+			}
+			$scope.getBidLogs();
+		};		
+		
+		/*初始化翻页*/
+		function _initPager() {
+			$scope._pageCount = [];
+			for (var i = 0; i < $scope.page.totalPage; i++) {
+				$scope._pageCount.push(i + 1);
+			}
+		}
+		
+		/*验证回复*/
+		function _checkReply(data) {
+			$scope._clearTip();
+			
+			if(!data.rejectReason) {
+				$('#reject_inp_tip').show().text('拒绝原因输入有误！');
+				return false;
+			}
+			
+			return true;
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

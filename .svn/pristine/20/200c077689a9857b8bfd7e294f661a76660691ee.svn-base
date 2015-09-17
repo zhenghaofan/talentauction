@@ -1,0 +1,593 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'upload',
+ 'info',
+ 'uiservice'
+], 
+function($, angular, app, cookie, url, upload) {
+	app.controller('defaultCtrl', ['$scope', '$rootScope', '$http', '$q', 'info', 'uiservice',
+   		function($scope, $rootScope, $http, $q, info, uiservice) {
+		$rootScope.tabIndex = 4;
+		$scope.webContext = {};
+		$scope.compInfo = {};
+		$scope.jdInfo = {};
+		$scope.teamInfo = {};
+		$scope.pdtInfo = {};
+		$scope.webContext.compSizeList = info.getCompSize();
+		$scope.webContext.compPhaseList = info.getCompPhase();
+		$scope.webContext.welfareList = info.getWelfare();
+		
+//		$(document).on('change', '#upload', function() {
+//			$scope.imgUpload();
+//		});	
+		
+		/* 隐藏操作*/
+		$('.box-shadow').mouseenter(function(e) {
+			$(this).find('.opt-ico, .add-ico').show();
+		}).mouseleave(function() {
+			$(this).find('.opt-ico, .add-ico').hide();
+		});
+		
+		$scope._clearTip = function(ele) {
+			$(ele).text('').hide();
+		};
+		
+		/* 选择图片*/
+		$scope.imgSlt = function(status) {
+			$scope.imgStatus = status;
+			$scope.imgName = '';
+			var obj = $('#upload');
+			obj.click();
+			obj.change(function() {
+				$scope.imgUpload();
+			});
+		};	
+		
+		/*图片上传*/
+		$scope.imgUpload = function(item) {
+			var config = {
+					id: 'upload',
+					url: '/upload/companyImgUpload'
+			};
+			
+			if($scope.imgStatus == 4) config.url = '/upload/officeUpload';
+			
+			if(! _checkImg()) return;
+			
+			upload.fileUpload(config, function(result) {
+				var data = result;
+				if(data.code == 200) {
+					$safeApply($scope, function() {
+						switch ($scope.imgStatus) {
+						case 1:
+							$scope.compInfo.tmpLogoName = data.imgName;
+							break;
+						case 2:
+							$scope.pdtInfo.tmpLogoName = data.imgName;
+							break;
+						case 3:
+							$scope.teamInfo.tmpLogoName = data.imgName;
+							break;
+						case 4:
+							$scope.getCompInfo();
+							break;
+						default:
+							break;
+						}
+					});
+				}
+			},function(err) {
+				console.error('companyImgUpload', err);
+			});		
+		};
+
+		/*信息完整度*/
+		$scope.getProgress = function() {
+            $q.when($http.post('/company/compProgress'))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+                	$("#on_pro_text").text(data.speedOfProgress);
+                	$("#on_pro_line").animate({
+    					'width': data.speedOfProgress + '%'
+    				}, 1000);
+            	}
+            }, function(err) {
+            	console.error('speedOfProgress', err);
+            });			
+		};
+		
+		/* 获取省份*/
+		$scope.getProvinceList = function() {
+			var config = {
+					superId: 0
+			};		
+			
+            $q.when($http.post('/common/getCityList', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.webContext.provinceList = data.cityList;
+            }, function(err) {
+            	console.error('getAreasList', err);
+            });				
+		};
+		
+		/* 获取城市*/
+		$scope.getCityList = function(id, status) {
+			var config = {
+					superId: id
+			};
+			
+            $q.when($http.post('/common/getCityList',  $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.webContext.cityList = data.cityList;
+            	if(status)$scope.compInfo.city = data.cityList[0].id;
+            }, function(err) {
+            	console.error('getAreasList', err);
+            });				
+		};
+		
+		/* 获取行业领域*/
+		$scope.getAreasList = function() {
+            $q.when($http.post('/common/getAreasList'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.webContext.areasList = data.areasList;
+            }, function(err) {
+            	console.error('getAreasList', err);
+            });				
+		};		
+		
+		/* 获取公司信息*/
+		$scope.getCompInfo = function() {
+            $q.when($http.post('/common/getCompanyAllInfo'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.baseInfo = _fomartCompInfo(data.companyInfo);
+            	$scope.products = _fomartPdtInfo(data.product);
+            	$scope.demands = data.talentDemand;
+            	$scope.founder = data.founder;
+            	$scope.getProgress();
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('getCompanyAllInfo', err);
+            });
+		};
+		
+		/*编辑公司信息*/
+		$scope.editCompInfo = function(status) {
+			$scope.baseInfo.isEdit = status;
+			if(status) {
+				$scope.compInfo = {
+					name: $scope.baseInfo.name,
+					nickName: $scope.baseInfo.nickName,
+					province: $scope.baseInfo.province,
+					city: $scope.baseInfo.city,
+					area: $scope.baseInfo.area,
+					size: $scope.baseInfo.size,
+					progress: $scope.baseInfo.progress,
+					website: $scope.baseInfo.website,
+					addr: $scope.baseInfo.addr,
+					welfare: $scope.baseInfo.welfare,
+					logoName: $scope.baseInfo.logoName
+				};
+            	$scope.getAreasList();
+            	$scope.getProvinceList();
+				$scope.getCityList($scope.compInfo.province);
+			}else {
+				$scope.compInfo = {};
+			}
+		};
+		
+		/* 选择公司福利*/
+		$scope.sltWelfare = function(item) {
+			item.slt = !item.slt;
+		};
+		
+		/* 选择公司阶段*/
+		$scope.sltPhase = function(id) {
+			$scope.compInfo.progress = id;
+		};
+		
+		 /* 修改公司信息*/
+		$scope.upCompInfo = function() {
+			var config = $scope.compInfo;
+			
+			if(config.tmpLogoName) {
+				config.logoName = config.tmpLogoName;
+			}else {
+				delete config.logoName;
+			}
+			
+			if(!_checkCompInfo(config)) return;
+			
+			if(config.website && config.website.indexOf('http') == -1) {
+				config.website = 'http://' + config.website;
+			}			
+			
+            $q.when($http.post('/company/updateCompanyInfo', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+        			$scope.getCompInfo();
+            	}
+            }, function(err) {
+            	console.error('getCompanyInfo', err);
+            });			
+		};
+		
+		/*编辑人才需求*/
+		$scope.editJd = function(status, item) {
+			$scope.jdInfo.isEdit = status;
+		};
+		
+		 /* 增加人才需求*/
+		$scope.addJd = function() {
+			var config = $scope.jdInfo;
+			
+			if(!_checkJdInfo(config)) return;
+			if(config.website.indexOf('http') == -1) config.website = 'http://' + config.website;
+			
+            $q.when($http.post('/company/updateTalentDemand', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.jdInfo = {};
+            		$scope.getCompInfo();
+            	}
+            }, function(err) {
+            	console.error('updateTalentDemand', err);
+            });				
+		};
+		
+		 /* 删除人才需求*/
+		$scope.delJd = function(id) {
+			var config = {
+					id: id
+			};
+			
+            $q.when($http.post('/company/delTalentDemand', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getCompInfo();
+            	}
+            }, function(err) {
+            	console.error('delTalentDemand', err);
+            });				
+		};		
+		
+		/*编辑创始团队*/
+		$scope.editTeam = function(status, item) {
+			if(status == 2) {
+				$scope.teamInfo = item;
+			}else {
+				$scope.teamInfo = {};
+			}
+			
+			$scope.teamInfo.isEdit = status;
+		};
+		
+		 /* 增加或修改创始团队*/
+		$scope.upTeam = function() {
+			var config = $scope.teamInfo;
+			
+			if(!_checkTeamInfo(config)) return;
+			
+			if(config.tmpLogoName) {
+				config.imgName = config.tmpLogoName;
+			}else {
+				delete config.imgName;
+			}
+			
+			if(config.website && config.website.indexOf('http') == -1) {
+				config.website = 'http://' + config.website;
+			}
+			
+			delete config.isEdit;			
+			
+            $q.when($http.post('/company/updateFounder', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		console.log(data);
+            		$scope.getCompInfo();
+            	}else {
+            		$('#file_tip').text(data.message).addClass('ico-invalid');
+            	}
+            }, function(err) {
+            	console.error('updateFounder', err);
+            });				
+		};
+		
+		 /* 删除创始团队*/
+		$scope.delTeam = function(id) {
+			var config = {
+				id: id	
+			};
+			
+            $q.when($http.post('/company/delFounder', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		console.log(data);
+            		$scope.getCompInfo();
+            	}else {
+            		$('#file_tip').text(data.message).addClass('ico-invalid');
+            	}
+            }, function(err) {
+            	console.error('delFounder', err);
+            });				
+		};
+		
+		/*编辑公司产品*/
+		$scope.editPdt = function(status, item) {
+			if(status == 1) {
+				$scope.pdtInfo = {progress: '0'};
+				$scope.webContext.pdtPhaseList = info.getPdtPhase();
+			}else if(status == 2) {
+				$scope.pdtInfo = {
+						id: item.id,	
+						imgName: item.imgName,
+						progress: item.progress,
+						productName: item.productName,
+						website: item.website,
+						brief: item.brief					
+				};
+				$scope.webContext.pdtPhaseList = info.getPdtPhase();
+			}else {
+				$scope.pdtInfo = {};
+			}
+			
+			$scope.pdtInfo.isEdit = status;
+		};
+		
+		/* 选择产品阶段*/
+		$scope.sltPdtPhase = function(id) {
+			$scope.pdtInfo.progress = id;
+		};
+		
+		 /* 增加或修改公司产品*/
+		$scope.upPdt = function() {
+			var config = $scope.pdtInfo;
+			
+			if(!_checkPdtInfo(config)) return;
+			
+			if(config.tmpLogoName) {
+				config.imgName = config.tmpLogoName;
+			}else {
+				delete config.imgName;
+			}
+			
+			if(config.website && config.website.indexOf('http') == -1) {
+				config.website = 'http://' + config.website;
+			}
+			
+			delete config.isEdit;
+			
+            $q.when($http.post('/company/updateProducts', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getCompInfo();
+            	}else {
+            		$('#file_tip').text(data.message).addClass('ico-invalid');
+            	}
+            }, function(err) {
+            	console.error('updateProducts', err);
+            });			
+		};
+		
+		 /* 删除公司产品*/
+		$scope.delPdt = function(id) {
+			var config = {
+					id: id
+			};
+			
+            $q.when($http.post('/company/delProducts', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		$scope.getCompInfo();
+            	}
+            }, function(err) {
+            	console.error('delProducts', err);
+            });			
+		};
+		
+
+		 /* 删除公司环境*/
+		$scope.delOffice = function(imgName) {
+			var config = {
+					imgName: imgName
+			};
+			
+            $q.when($http.post('/company/delOffice', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		uiservice.notify(data.message, function() {
+            			$scope.getCompInfo();
+            		});
+            	}
+            }, function(err) {
+            	console.error('delOffice', err);
+            });			
+		};
+		
+		/*编辑公司信息*/
+		$scope.editIntro = function(status) {
+			$scope.introEdit = status;
+		};
+		
+		 /* 增加或修改公司介绍*/
+		$scope.upIntro = function() {
+			var config = {
+					companyIntro: $scope.baseInfo.companyIntro	
+			};
+			
+            $q.when($http.post('/company/updateCompanyInfo', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	if(data.code == 200) {
+            		console.log(data);
+            		$scope.introEdit = 0;
+            		$scope.getCompInfo();
+            	}else {
+            		$('#file_tip').text(data.message).addClass('ico-invalid');
+            	}
+            }, function(err) {
+            	console.error('updateCompanyInfo', err);
+            });			
+		};
+		
+		
+		/* 验证公司信息*/
+		function _checkCompInfo(data) {
+			$scope._clearTip();
+			if(!data.name) {
+				$('#compInfo_name').focus();
+				$('#compInfo_name_tip').show().text('公司全称有误！');
+				return false;
+			}else if(!data.nickName) {
+				$('#compInfo_nickname').focus();
+				$('#compInfo_nickname_tip').show().text('公司简称输入有误！');
+				return false;				
+			}
+			
+			return true;			
+		}
+		
+		/* 验证人才需求*/
+		function _checkJdInfo(data) {
+			$scope._clearTip();
+			if(!data.skills) {
+				$('#jd_skills').focus();
+				$('#jd_skills_tip').show().text('职位输入有误！');
+				return false;
+			}
+			
+			return true;			
+		}
+		
+		/* 验证创始团队*/
+		function _checkTeamInfo(data) {
+			$scope._clearTip();
+			if(!data.name) {
+				$('#team_name').focus();
+				$('#team_name_tip').show().text('姓名输入有误！');
+				return false;
+			}else if(!data.jobName) {
+				$('#team_title').focus();
+				$('#team_title_tip').show().text('职位输入有误！');
+				return false;				
+			}
+			
+			return true;			
+		}
+		
+		/* 验证公司产品*/
+		function _checkPdtInfo(data) {
+			$scope._clearTip();
+			if(!data.productName) {
+				$('#pdt_name').focus();
+				$('#pdt_name_tip').show().text('产品名称输入有误！');
+				return false;
+			}
+			
+			return true;			
+		}
+		
+		/* 验证图片*/
+		function _checkImg() {
+			if(window.attachEvent) {
+	            if ($scope.imgName.indexOf('.jpg') == -1 && $scope.imgName.indexOf('.gif') == -1 && 
+	            		$scope.imgName.indexOf('.png') == -1 && $scope.imgName.indexOf('.jpeg')) {  
+	            	$('#file_tip').show().text('非图片类型文件，请重传！');
+	                return false;  
+	            }			
+		    }else {
+		    	var files = [];
+		    	var flag = true;
+		    	var e = $('#upload').get(0);
+		    	for(i in e.files) {
+		    		// 限制为6M
+		    		if(typeof e.files[i] == 'object'){
+		    			if( e.files[i].size >= 6 * 1024 *1024 ) {
+		    				$('#file_tip').show().text('图片过大！');
+		    				flag = false;
+		    				return false;
+		    			}
+		    			files.push(e.files[i]);
+		    		} 
+		    	}
+		    	if(files.length == 0 || !flag) {
+		    		$('#file_tip').show().text('图片过大！');
+		    		return false;			    	
+		    	}
+		    }	
+			
+			return true;		
+		}
+		
+		/* 格式化公司产品信息*/
+		function _fomartPdtInfo(data) {
+			var pdtPhaseList = info.getPdtPhase();
+			for (var j in data) {
+	        	for(var i in pdtPhaseList) {
+	        		if(pdtPhaseList[i].id == data[j].progress)
+	        			data[j].progressStr = pdtPhaseList[i].value;
+	        	}				
+			}
+			
+			return data;
+		}
+		
+		/* 格式化公司信息*/
+		function _fomartCompInfo(data) {
+        	if(data.productUrl) {
+        		data.productUrl = data.productUrl.split(',');
+        	}
+        	
+        	if(data.productImg) {
+        		data.productImg = data.productImg.split(',');
+        	}        	
+        	
+        	if(data.welfare) {
+        		data.welfareArray = data.welfare.split(',');
+        	}
+        	
+        	if(data.environment) {
+        		data.officeArray = data.environment.split(',');
+        	}
+        	
+        	for(var i in $scope.webContext.compSizeList) {
+        		if($scope.webContext.compSizeList[i].id == data.size)
+        			data.sizeStr = $scope.webContext.compSizeList[i].value;
+        	}
+        	
+        	for(var i in $scope.webContext.compPhaseList) {
+        		if($scope.webContext.compPhaseList[i].id == data.progress)
+        			data.progressStr = $scope.webContext.compPhaseList[i].value;
+        	}
+        	
+			return data;
+		}
+		
+		function $safeApply($scope, fn) {
+			var phase = $scope.$$phase;
+			if (phase == '$apply' || phase == '$digest') {
+				$scope.$eval(fn);
+			} else {
+				$scope.$apply(fn);
+			}
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

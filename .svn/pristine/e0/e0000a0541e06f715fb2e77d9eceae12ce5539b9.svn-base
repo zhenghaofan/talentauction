@@ -1,0 +1,93 @@
+
+
+body {
+	background-color: #e2e2e2;
+}
+
+
+/* 用户登录*/
+.city-wrap {
+	position: relative;
+}
+.city-wrap .inp-item {
+	width: 265px;
+	margin: 0 auto;
+}
+.city-wrap .inp-item input {
+	width: 100%;
+	max-width: 242px;
+	height: 32px;
+	color: #3B3B3B;
+	padding: 5px 10px;
+	border: 0;
+	background-color: #e2e2e2;
+}
+.top-bar {
+	height: 50px;
+	color: #fff;
+	font-size: 1.3em;
+	line-height: 50px;
+	text-align: center;
+	background-color: #2d4e7b;
+}
+.top-bar .bar-back {
+	float: left;
+	height: 50px;
+}
+.top-bar .back-ico {
+	width: 15px;
+	padding: 12px 10px 0 15px;
+}
+.top-bar .bar-title {
+	margin-left: -40px;
+}
+
+
+.sign-form {
+	text-align: center;
+	padding: 20px 0;
+	background-color: #fff;
+}
+.sign-form .feel-item {
+	width: 77px;
+	height: 36px;
+	line-height: 36px;
+	color: #999;
+	font-size: 1.1em;
+	text-align: center;
+	border-radius: 2px;
+	border: 2px solid #eee;
+	margin: 0 5px 15px 0;
+	background-color: #e2e2e2;
+	display: inline-block;
+	cursor: pointer;
+}
+.sign-form .feel-item.mgn-1 {
+	margin-right: 0;
+}
+.sign-form .feel-item.slt {
+	color: #3a89ce;
+	border: 2px solid #3a89ce;
+}
+.btn-group {
+	text-align: center;
+}
+.btn-group .btn {
+	width: 85%;
+	max-width: 300px;
+	padding: 5px 10px;
+	height: 36px;
+	color: #fff;
+	font-size: 1.2em;
+	line-height: 36px;
+	border-radius: 3px;
+	background-color: #3a89ce;
+	display: inline-block;
+	cursor: pointer;
+}
+.btn-group .btn.mgn {
+	margin-top: 25px;
+}
+.btn-group .btn:active {
+	background-color: #337BBA;
+}

@@ -1,0 +1,35 @@
+package com.auction.common.service;
+
+import javax.servlet.http.HttpServletRequest;
+
+public interface BidmeService {  
+	
+	/**
+     * 获取专场列表
+     * @param request
+     * @return
+     */
+    public String getSpecialList(HttpServletRequest request); 
+    
+    /**
+     * 获取专场技能列表
+     * @param request
+     * @return
+     */
+    public String getSkillsList(HttpServletRequest request); 
+    
+    /**
+     * 获取简历池信息
+     * @param request
+     * @return
+     */
+    public String getBidPools(HttpServletRequest request); 
+    
+    /**
+     * 公司出价竞拍
+     * @param request
+     * @return
+     */
+    public String companyAuction(HttpServletRequest request); 
+    
+}

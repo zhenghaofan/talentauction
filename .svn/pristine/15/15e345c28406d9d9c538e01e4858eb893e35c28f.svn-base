@@ -1,0 +1,339 @@
+package com.auction.common.service.impl;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.stereotype.Service;
+
+import com.auction.common.dao.CommonDao;
+import com.auction.common.service.CommonService;
+import com.auction.util.Util;
+import com.auction.company.dao.CompanyDao;
+import com.auction.company.dao.FeesDao;
+import com.auction.company.util.AlipayNotify;
+import com.auction.resume.dao.CvMakeDao;
+import com.auction.resume.dao.ResumeDao;
+
+/** 
+ * @author tobber
+ * @version 2015年4月15日
+ */
+
+@Service
+public class CommonServiceLmpl implements CommonService{
+
+	@Resource  
+    private CommonDao commonDao;
+	@Resource
+	private CvMakeDao cvMakeDao;
+	@Resource
+	private ResumeDao resumeDao;
+	@Resource 
+	private CompanyDao companyDao;
+	@Resource 
+	private FeesDao feesDao;
+
+	@Override
+	public String getCityList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		if(Util.isVerify(request.getParameter("superId"), 0, 0, "[0-9]{0,9}")){
+    		List<Map<String, Object>> cityList = commonDao.getCityList(request.getParameter("superId"));
+    		if(cityList!=null && cityList.size()>0){
+    			json.put("cityList", cityList);
+    			json.put("code", 200);
+    			json.put("message", "获取成功！");
+    		}
+    	}else{
+			json.put("code", 301);
+			json.put("message", "获取失败！");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getAreasList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		List<Map<String, Object>> areasList = commonDao.getAreasList();
+		if(areasList!=null && areasList.size()>0){
+			json.put("areasList", areasList);
+			json.put("code", 200);
+			json.put("message", "获取成功！");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String talentRoute(HttpServletRequest request) {
+		String viewName = "base/signin"; //登录页面
+		try {  
+        	if(request.getSession().getAttribute("userId")!=null){
+        		Map<String, Object> userMap = cvMakeDao.getUserInfoByUserId(request.getSession().getAttribute("userId").toString());
+        		if(userMap!=null && userMap.size()>0){
+        			if(userMap.get("isSuccess")!=null && userMap.get("isSuccess").toString().equals("0")){
+        				viewName = "base/mailbox";
+            		}else if(userMap.get("isSuccess").toString().equals("1")){
+            			if(userMap.get("status")!=null && userMap.get("status").toString().equals("0")){ //候选人路由
+            				 Map<String, Object> resumeStatusMap = cvMakeDao.getResumeStatus(request.getSession().getAttribute("userId").toString());
+            			        if(resumeStatusMap!=null && resumeStatusMap.size()>0 ){
+            			        	if("0".equals(resumeStatusMap.get("status").toString())){
+            			        		viewName = "talentform/jobintent";//填写求职意向页面
+            			        	}else if("2".equals(resumeStatusMap.get("status").toString())){
+            			        		viewName = "talentform/jobinfo";//简历编辑页面
+            			        	}else{
+            			        		viewName = "talentform/jobresult";//简历状态
+            			        	}
+            			     }
+            			}else if(userMap.get("status")!=null && userMap.get("status").toString().equals("1")){ //企业路由
+            				if(userMap.get("companyId")==null || userMap.get("companyId").toString().equals("")){
+            					viewName = "companyform/compslt";//填写公司名称
+            				}else if(userMap.get("companyId")!=null && userMap.get("isSaveUserInfo").toString().equals("0")){
+            					viewName = "companyform/compinfo";//填写公司基本信息
+            				}else if(userMap.get("companyId")!=null && userMap.get("isSaveUserInfo").toString().equals("1")){
+            					viewName = "companyform/compdefault";//公司主页
+            				}
+            			}
+            		}
+        		}
+        	}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            viewName="404";
+        }  
+		return viewName;
+	}
+	
+	@Override
+	public String userCancel(HttpServletRequest request,HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		try{  
+			Util.wipeSession(request, response);
+		}catch(Exception e) {  
+			e.printStackTrace();
+			System.out.println("清空Cookies发生异常！");  
+		} 
+		json.put("code", "200");
+		json.put("message", "success");
+		return json.toString();
+	}
+	
+	@Override
+	public String getCompanyInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+    		String companyId = null;
+    		boolean flag = false;
+    		if(Util.isVerify(request.getParameter("companyId"), 0, 0, "[0-9]{1,20}")){
+    			companyId = request.getParameter("companyId");
+    			flag = true;
+    		}
+    		if(companyId==null && request.getSession().getAttribute("companyId")!=null){
+    			companyId= request.getSession().getAttribute("companyId").toString();
+    		}
+    		if(companyId!=null){
+    			Map<String, Object> companyMap = companyDao.getCompanyInfo(companyId);
+    			if(companyMap!=null && companyMap.size()>0){
+    				if(flag){
+    					companyMap.remove("telephone");
+    					companyMap.remove("extension");
+    				}
+    				json.put("companyInfo", companyMap); //企业基本信息
+    				
+    				List<Map<String, Object>> talentDemandMap = companyDao.getTalentDemand(companyId);//企业招聘需求
+    				json.put("talentDemand", talentDemandMap);
+    				
+    				List<Map<String, Object>> founderMap = companyDao.getFounderList(companyId);//企业团队信息
+    				json.put("founder", founderMap);
+    				
+    				List<Map<String, Object>> productMap = companyDao.getProductList(companyId);//企业产品信息
+    				json.put("product", productMap);
+    			}
+    		}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 501);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+	
+	@Override
+	public String getCompanyList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {  
+    		int page = 1;
+    		int pageSize = 20;
+    		if(Util.isVerify(request.getParameter("page"), 0, 0, "[1-9][0-9]{0,8}")){
+    			page = Integer.parseInt(request.getParameter("page"));
+    		}
+    		if(Util.isVerify(request.getParameter("pageSize"), 0, 0, "[1-9][0-9]{0,8}")){
+    			pageSize = Integer.parseInt(request.getParameter("pageSize"));
+    		}
+			List<Map<String, Object>> companyList = commonDao.getCompanyList((page-1)*pageSize, pageSize);
+			int rowCount = commonDao.getCompanyListTotal();
+    		if(rowCount%pageSize==0){
+    			json.put("totalPage", rowCount/pageSize);
+    		}else{
+    			json.put("totalPage", (rowCount/pageSize)+1);
+    		}
+    		
+			json.put("companyList", companyList);
+			json.put("page", page);
+			json.put("pageSize", pageSize);
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            json.put("code", 500);
+            json.put("message", "服务器异常");
+        }
+		return json.toString();
+	}
+	
+	@Override
+	public String getSkillsList(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			List<Map<String, Object>> specialList = commonDao.getSkillsList();
+			json.put("specialList", specialList);
+			json.put("code", 200);
+			json.put("message", "获取成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 301);
+			json.put("message", "获取失败！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String alipayNotify(HttpServletRequest request) {
+		try {  
+			//获取支付宝POST过来反馈信息
+			Map<String,String> params = new HashMap<String,String>();
+			Map requestParams = request.getParameterMap();
+			for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+				String name = (String) iter.next();
+				String[] values = (String[]) requestParams.get(name);
+				String valueStr = "";
+				for (int i = 0; i < values.length; i++) {
+					valueStr = (i == values.length - 1) ? valueStr + values[i]
+							: valueStr + values[i] + ",";
+				}
+				//乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+				//valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+				params.put(name, valueStr);
+			}
+			//交易状态
+			String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
+			//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
+			if(AlipayNotify.verify(params)){//验证成功
+				//////////////////////////////////////////////////////////////////////////////////////////
+				//请在这里加上商户的业务逻辑程序代码
+				//——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
+				Map<String,Object> paramsMap = new HashMap<String, Object>();
+				if(trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")){
+					//判断该笔订单是否在商户网站中已经做过处理
+					String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+					int total_fee = (int)Float.parseFloat(new String(request.getParameter("total_fee").getBytes("ISO-8859-1"),"UTF-8"));
+					if(total_fee==950){
+						paramsMap.put("i_gold", 1000);
+					}else if(total_fee==2250){
+						paramsMap.put("i_gold", 2500);
+					}else{
+						paramsMap.put("i_gold", 500);
+					}
+					//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+					//商户订单号
+					paramsMap.put("i_out_trade_no", out_trade_no);
+					//支付宝交易号
+					paramsMap.put("i_trade_no", new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8"));
+					//交易金额
+					paramsMap.put("i_total_fee", total_fee);
+					//商品名称
+					paramsMap.put("i_subject", request.getParameter("subject"));
+					//交易创建时间
+					paramsMap.put("i_gmt_create", new String(request.getParameter("gmt_create").getBytes("ISO-8859-1"),"UTF-8"));
+					//交易付款时间
+					paramsMap.put("i_gmt_payment", new String(request.getParameter("gmt_payment").getBytes("ISO-8859-1"),"UTF-8"));
+					//支付宝交易号
+					paramsMap.put("i_buyer_email", new String(request.getParameter("buyer_email").getBytes("ISO-8859-1"),"UTF-8"));
+					paramsMap.put("i_compId", out_trade_no.split("_")[1]);
+					paramsMap.put("i_compUserId", out_trade_no.split("_")[2]);
+					feesDao.recharge(paramsMap);
+				}
+				//——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
+				return "success";	//请不要修改或删除
+			}else{//验证失败
+				return "fail";
+			}
+        } catch (Exception e) { 
+            e.printStackTrace();  
+            return "fail";
+        }
+	}
+	
+	@Override
+	public String alipayReturn(HttpServletRequest request) {
+		try {  
+			Map<String,String> params = new HashMap<String,String>();
+			Map requestParams = request.getParameterMap();
+			for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+				String name = (String) iter.next();
+				String[] values = (String[]) requestParams.get(name);
+				String valueStr = "";
+				for (int i = 0; i < values.length; i++) {
+					valueStr = (i == values.length - 1) ? valueStr + values[i]
+							: valueStr + values[i] + ",";
+				}
+				//乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+				valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
+				params.put(name, valueStr);
+			}
+			//交易状态
+			String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
+			//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
+			//计算得出通知验证结果
+			boolean verify_result = AlipayNotify.verify(params);
+			if(verify_result){//验证成功
+				//请在这里加上商户的业务逻辑程序代码
+				//——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
+				if(trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")){
+					return "views/index"; 
+				}
+				
+				//该页面可做页面美工编辑
+				return "views/index";
+				//——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
+			}else{
+				//该页面可做页面美工编辑
+				return "views/index";
+			}
+        } catch (Exception e) { 
+            e.printStackTrace(); 
+            return "views/index";
+        }
+	}
+	
+	@Override
+	public String addSuggestion(HttpServletRequest request) {
+		try {
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("email"), 1, 100, null)){
+				paramsMap.put("i_email", request.getParameter("email"));
+				if(Util.isVerify(request.getParameter("status"), 0, 0, "[0-1]{1}")){
+					paramsMap.put("i_status", request.getParameter("status"));
+					commonDao.addSuggestion(paramsMap);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}

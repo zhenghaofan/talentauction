@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8;IE=EDGE">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/compslt.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/compslt.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/compslt" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="js/controller/dist/compslt-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="sltCtrl">
+			<div class="slt-wrap box-shadow" ng-init="getCompList()">
+				<div class="nav-warp">
+	  				<div class="tab-item slt">
+	  					<div class="tab-step">1</div>
+	  					<div class="tab-text">选择公司</div>
+	  				</div>
+	  				<div class="line"></div>
+	  				<div class="tab-item">
+	  					<div class="tab-step">2</div>
+	  					<div class="tab-text">基本信息</div>
+	  				</div>
+	  				<div class="line"></div>
+	  				<div class="tab-item">
+	  					<div class="tab-step">3</div>
+	  					<div class="tab-text">人才需求</div>
+	  				</div>
+  				</div>
+  				
+  				<div class="box-item">
+					<div class="comp-warp">
+		  				<div class="item-title">
+		  					<span><i>*</i> 根据您填写的公司邮箱<a ng-click="backRegister()">（修改邮箱地址）</a>，请选择您所在的公司名称：</span>
+		  				</div>
+		  				<div class="con-slt" ng-if="!editStatus">
+		  					<div class="comp-list">
+		  						<div ng-repeat="item in queryList">
+		  							<a class="com-name" target="_blank" ng-href="/base/company/678.html" ng-bind="item.name"></a>
+		  							<span class="com-opt" ng-click="useExistCompany(item.companyId)">使用这个公司的名称和信息</span>
+		  						</div>
+		  						<div>
+		  							<span class="com-opt" ng-click="editComp(1)">+创建新公司</span>
+		  						</div>
+		  					</div>			
+		  				</div>
+						<div class="con-add" ng-if="editStatus">
+		  					<div><input type="text" id="comp_info" ng-model="compInfo.companyName" ng-change="_clearTip()" placeholder="请输入公司名称"></div>
+							<div class="err-wrap">
+								<label id="comp_info_tip" class="ico-invalid"></label>
+							</div>	  					
+		  					<div><button ng-click="addCompany()">提交</button></div>
+		  				</div>		  				
+		  			</div>				
+  				</div>
+  				
+				<div class="footer-warp">
+	  				如果有任何问题，请发邮件到：<span>tellus@shilipai.net</span>，我们将第一时间为您处理
+	  			</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

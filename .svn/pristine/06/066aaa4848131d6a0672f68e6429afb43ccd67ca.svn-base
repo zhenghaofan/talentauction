@@ -1,0 +1,114 @@
+
+
+body {
+	background-color: #e2e2e2;
+}
+
+
+/* 用户登录*/
+.city-wrap {
+	position: relative;
+}
+.city-wrap .inp-item {
+	width: 265px;
+	margin: 0 auto;
+}
+.city-wrap .inp-item input {
+	width: 100%;
+	max-width: 168px;
+	height: 32px;
+	color: #3B3B3B;
+	padding: 5px 10px;
+	border: 0;
+	vertical-align: middle;
+	background-color: #e2e2e2;
+}
+.top-bar {
+	height: 50px;
+	color: #fff;
+	font-size: 1.3em;
+	line-height: 50px;
+	text-align: center;
+	background-color: #2d4e7b;
+}
+.top-bar .bar-back {
+	float: left;
+	height: 50px;
+}
+.top-bar .back-ico {
+	width: 15px;
+	padding: 12px 10px 0 15px;
+}
+.top-bar .bar-title {
+	margin-left: -40px;
+}
+
+
+.sign-form {
+	text-align: center;
+	padding-bottom: 20px;
+	background-color: #fff;
+}
+.sign-form .tip {
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	background-color: #e2e2e2;
+}
+.sign-form .tip .text {
+	color: #b2b2b2;
+	font-size: 1.1em;
+}
+.sign-form .tip .skill-text {
+	color: #fff;
+	padding: 6px 8px;
+	border-radius: 2px;
+	margin-left: 10px;
+	background-color: #3a89ce;
+	cursor: pointer;
+}
+.sign-form .tip .skill-text:first-child {
+	margin-left: 0;
+}
+.sign-form .tip .skill-text:after {
+	content: 'x';
+	margin-left: 6px;
+}
+.sign-form .city-box {
+	padding-top: 20px;
+}
+.sign-form .feel-item {
+	width: 77px;
+	height: 36px;
+	line-height: 36px;
+	color: #999;
+	font-size: 1.1em;
+	text-align: center;
+	border-radius: 2px;
+	border: 2px solid #eee;
+	margin: 0 5px 15px 0;
+	background-color: #e2e2e2;
+	display: inline-block;
+	cursor: pointer;
+}
+.sign-form .feel-item.mgn-1 {
+	margin-right: 0;
+}
+.sign-form .feel-item.slt {
+/* 	color: #3a89ce;
+	border: 2px solid #3a89ce; */
+}
+
+.btn {
+	width: 50px;
+	padding: 5px 10px;
+	height: 32px;
+	color: #fff;
+	font-size: 1.2em;
+	line-height: 32px;
+	border-radius: 3px;
+	background-color: #3a89ce;
+	vertical-align: middle;
+	display: inline-block;
+	cursor: pointer;
+}

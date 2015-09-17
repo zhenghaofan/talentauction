@@ -1,0 +1,94 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'uiservice'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('bidlistCtrl', ['$scope', '$rootScope', '$http', '$q', 'uiservice',
+   		function($scope, $rootScope, $http, $q, uiservice) {
+		$rootScope.tabIndex = 5;
+		$scope.replayState = 2;
+		$scope.pageIndex = 1;
+		$scope.pageSize = 15;
+		
+		/* 选择排序方法*/
+		$scope.sltSort = function(status) {
+			$scope.pageIndex = 1;
+			$scope.replayState = status;
+			$scope.getBidLogs();
+		};
+		
+		/* 获取联系*/
+		$scope.getReplay = function(item) {
+			var config = {
+					id: item.id
+			};
+			
+			uiservice.confirm('确定获取联系方式吗？', function() {
+	            $q.when($http.post('/company/getContacts', $.param(config)))
+	            .then(function(result) {
+	            	var data = result.data;
+					if(data.code == 200) {
+						$scope.getBidLogs();
+					}	            	
+	            }, function(err) {
+	            	console.error('getContacts', err);
+	            });
+			});
+		};
+		
+		/* 获取拍卖记录*/
+		$scope.getBidLogs = function() {
+			var config = {
+					pageSize: $scope.pageSize,
+					page: $scope.pageIndex,
+					reply: $scope.replayState == 2? '' : $scope.replayState
+			};
+			
+            $q.when($http.post('/company/companyBidLogs', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.listData = data.bidLogs;
+            	$scope.totalPage = data.totalPage;
+            	$scope.pageIndex = data.page;
+            	
+            	_initPager();
+            	$('.viewport').show();
+            }, function(err) {
+            	console.error('companyBidLogs', err);
+            });
+		};
+		
+		
+		/* 翻页*/
+		$scope.turnPage = function(_event, status) {
+			if(status == '+') {
+				$scope.pageIndex ++;
+			}else if(status == '-') {
+				$scope.pageIndex --;
+			}else {
+				$scope.pageIndex = status;
+				$(_event.target).addClass('slt').siblings().removeClass('slt');
+			}
+			$scope.getBidLogs();
+		};	
+
+		/* 初始化翻页*/
+		function _initPager() {
+			$scope._pageCount = [];
+			var index = Math.ceil($scope.pageIndex / 6);
+			var total = Math.ceil($scope.totalPage / 6);
+			var size = index < total? index * 6 : $scope.totalPage;
+			var i = (index - 1) * 6;
+			
+			for (i; i < size; i++) {
+				$scope._pageCount.push(i + 1);
+			}
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

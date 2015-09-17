@@ -1,0 +1,212 @@
+if (typeof define !== 'function') {
+	var define = require('amdefine')(module);
+}
+
+define(['app', '$'], function(app, $) {
+	app.factory('info', ['$q', '$http', function($q, $http){
+		
+		/* 工作经验*/
+		function getJobYear() {
+			return [{
+				id: '0',
+				value: '不限'
+			},{
+				id: '1',
+				value: '3年以下'
+			},{
+				id: '2',
+				value: '3-5年'
+			},{
+				id: '3',
+				value: '大于5年'
+			}]			
+		}
+	
+		/* 热门城市*/
+		function getHotCitys() {
+			return [{
+				id: '0',
+				value: '不限'
+			},{
+				id: '110100',
+				value: '北京'
+			},{
+				id: '310100',
+				value: '上海'
+			},{
+				id: '440100',
+				value: '广州'
+			},{
+				id: '440300',
+				value: '深圳'
+			},{
+				id: '330100',
+				value: '杭州'
+			}]			
+		}
+	
+		/* 学历*/
+		function getEducation() {
+			return [{
+				id: '0',
+				value: '不限'
+			},{
+				id: '1',
+				value: '大专'
+			},{
+				id: '2',
+				value: '本科'
+			},{
+				id: '3',
+				value: '硕士'
+			},{
+				id: '4',
+				value: '博士'
+			}]
+		}
+	
+		/* 热门搜索条件*/
+		function getHotWords() {
+			return [{
+				id: '0',
+				value: 'Android,iOS,HTML5,Java,PHP,UI设计,产品经理,运营总监'.split(',')
+			},{
+				id: '1',
+				value: 'HTML5,iOS,Android,Javascript,U3D'.split(',')
+			},{
+				id: '2',
+				value: 'Java,PHP,Python,.Net,C'.split(',')
+			},{
+				id: '3',
+				value: '产品经理,游戏策划,产品设计师,产品总监'.split(',')
+			},{
+				id: '4',
+				value: '网页设计,App设计,UI设计,原画师,设计总监'.split(',')
+			},{
+				id: '5',
+				value: '内容运营,用户运营,新媒体运营,文案策划,运营总监'.split(',')
+			},{
+				id: '6',
+				value: '网络安全,测试开发,硬件测试,游戏测试,运维开发'.split(',')
+			}]
+		}
+		
+		/* 搜索类型*/
+		function getSearchType() {
+			return [{
+				id: '1',
+				value: '基本信息'
+			},{
+				id: '2',
+				value: '项目经验'
+			},{
+				id: '3',
+				value: '工作经历'
+			}]
+		}
+		
+		/* 公司规模*/
+		function getCompSize() {
+			return [{
+				id: '0',
+				value: '少于15人'
+			},{
+				id: '1',
+				value: '15-50人'
+			},{
+				id: '2',
+				value: '50-150人'
+			},{
+				id: '3',
+				value: '150-500人'
+			},{
+				id: '4',
+				value: '500-2000人'
+			},{
+				id: '5',
+				value: '2000人以上'
+			}]
+		}
+		
+		/* 发展阶段*/
+		function getCompPhase() {
+			return [{
+				id: '0',
+				value: '未融资'
+			},{
+				id: '1',
+				value: '天使轮'
+			},{
+				id: '2',
+				value: 'A轮'
+			},{
+				id: '3',
+				value: 'B轮'
+			},{
+				id: '4',
+				value: 'C轮'
+			},{
+				id: '5',
+				value: 'D轮'
+			},{
+				id: '6',
+				value: '上市公司'
+			},{
+				id: '7',
+				value: '不需要融资'
+			}]
+		}
+		
+		/* 产品阶段*/
+		function getPdtPhase() {
+			return [{
+				id: '0',
+				value: '概念'
+			},{
+				id: '1',
+				value: '开发中'
+			},{
+				id: '2',
+				value: '已上线'
+			}]
+		}
+		
+		/* 公司福利*/
+		function getWelfare() {
+			return [{
+				slt: false,
+				value: '不加班'
+			}, {
+				slt: false,
+				value: '双休'
+			}, {
+				slt: false,
+				value: '午餐补助'
+			}, {
+				slt: false,
+				value: '零食饮料'
+			}, {
+				slt: false,
+				value: '交通补助'
+			}, {
+				slt: false,
+				value: '五险一金'
+			}, {
+				slt: false,
+				value: '股票期权'
+			}];
+		}
+
+		return {
+			getJobYear: getJobYear,
+			getHotCitys: getHotCitys,
+			getEducation: getEducation,
+			getHotWords: getHotWords,
+			getCompSize: getCompSize,
+			getCompPhase: getCompPhase,
+			getPdtPhase: getPdtPhase,
+			getWelfare: getWelfare,
+			getSearchType: getSearchType
+		};
+	}]);
+});

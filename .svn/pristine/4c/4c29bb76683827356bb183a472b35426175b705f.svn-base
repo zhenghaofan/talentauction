@@ -1,0 +1,35 @@
+$(function($) {
+	$('.skill-wrap').show();
+	
+	
+	/* 后退*/
+	$('.bar-back').click(function() {
+		window.location.href="/wap/signup.html";
+	});
+	
+	$('ul li').on('click', function() {
+		var hook = $(this).find('.hook');
+		var angle = $(this).find('.skill-title .angle');
+		var text = $(this).find('.text');
+		
+		if(hook.css('display') == 'none') {
+			hook.css({'display': 'inline-block'});
+			text.css({'color': '#3a89ce'});
+		}else {
+			hook.css({'display': 'none'});
+			text.css({'color': '#666'});
+		}
+	});
+	
+	$('.skill-item .skill-title').on('click', function() {
+		var angle = $(this).find('.angle');
+		
+		if(angle.hasClass('top')) {
+			angle.removeClass('top');
+			$(this).siblings().show();
+		}else {
+			angle.addClass('top');
+			$(this).siblings().hide();
+		}
+	});
+});

@@ -1,0 +1,781 @@
+package com.auction.resume.service.impl;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import org.springframework.stereotype.Service;
+import net.sf.json.JSONObject;
+import com.auction.common.dao.BaseDao;
+import com.auction.util.SysConfig;
+import com.auction.util.Util;
+import com.auction.resume.dao.CvMakeDao;
+import com.auction.resume.model.ShieldLogs;
+import com.auction.resume.service.CvMakeService;
+
+/** 
+ * @author tobber
+ * @version 2015年4月17日
+ */
+
+@Service
+public class CvMakeServiceImpl implements CvMakeService{
+	@Resource
+	private CvMakeDao cvMakeDao;
+	@Resource
+	private BaseDao baseDao;
+	
+	@Override
+	public String addIntent(final HttpServletRequest request) {
+		String jobTitle=null; 
+    	float expectedSalary=0; 
+    	JSONObject json = new JSONObject();
+    	try {
+    		if(Util.isVerify(request.getParameter("jobTitle"),2,30,null)){
+        		jobTitle = request.getParameter("jobTitle");
+        	}
+        	if(Util.isVerify(request.getParameter("expectedSalary"),0,0,"[1-9][0-9]{0,1}[.]{0,1}[0-9]{0,1}")){
+        		expectedSalary = Float.parseFloat(request.getParameter("expectedSalary"));
+        	}
+        	if(jobTitle!=null && expectedSalary!=0){
+        		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        		Map<String, Object> params = new HashMap<String, Object>();
+                Map<String, Object> paramsMap = new HashMap<String, Object>();
+                paramsMap.put("jobTitle", jobTitle);
+                paramsMap.put("expectedSalary", expectedSalary);
+                paramsMap.put("status", 2);//未上传简历
+                paramsMap.put("updateTime", df.format(new Date()));
+                params.put("tableName", "resume");
+                params.put("trem", "userId='"+request.getSession().getAttribute("userId")+"'");
+                params.put("paramsMap", paramsMap);
+                int flag = baseDao.baseUpdate(params);
+                if(flag>0 && Util.isVerify(request.getParameter("content"),2,100,null)){
+                	new Thread(new Runnable() {
+        				@Override
+        				public void run() {
+        					String[] email =  request.getParameter("content").split(",");
+        					if(email.length<=3){
+        						Map<String, Object> delParasm = new HashMap<String, Object>();
+        						delParasm.put("tableName", "shield_logs");
+        						delParasm.put("trem", "userId='"+request.getSession().getAttribute("userId")+"'");
+        						baseDao.baseDelete(delParasm);
+        						ShieldLogs shieldLogs = new ShieldLogs();
+        						shieldLogs.setUserId(request.getSession().getAttribute("userId").toString());
+        						shieldLogs.setCompanyId(null);
+        						shieldLogs.setContent(request.getParameter("content"));
+        						shieldLogs.setShieldTime(df.format(new Date()));
+        						cvMakeDao.addShieldLogs(shieldLogs);
+        					}
+        				}
+        			}).start();
+                }
+                json.put("code", 200);
+        		json.put("message", "填写成功！");
+        	}else{
+        		json.put("code", 301);
+        		json.put("message", "职位或期望薪资输入有误！");
+        	}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String getResumeStatus(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> resumeStatusMap = cvMakeDao.getResumeStatus(request.getSession().getAttribute("userId").toString());
+	        if(resumeStatusMap!=null && resumeStatusMap.size()>0 ){
+	        	json.put("code", 200);
+	        	json.put("resumeStatusMap", resumeStatusMap);
+	    		json.put("message", "获取成功！");
+	        }else{
+	        	json.put("code", 301);
+	    		json.put("message", "获取失败！");
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String updateResumeInfo(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			boolean flag = true;
+			if(Util.isVerify(request.getParameter("name"), 2, 25, null)){
+				paramsMap.put("name", request.getParameter("name").trim());
+			}else{
+				flag = false;
+				json.put("message", "姓名输入有误！");
+			}
+			if(Util.isVerify(request.getParameter("age"), 0, 0, "[1-9][0-9]{0,1}")){
+				paramsMap.put("age", request.getParameter("age").trim());
+			}else{
+				flag = false;
+				json.put("message", "年龄输入有误（1~99）！");
+			}
+			if(Util.isVerify(request.getParameter("sex"), 0, 0, "[0-1]")){
+				paramsMap.put("sex", request.getParameter("sex").trim());
+			}else{
+				flag = false;
+				json.put("message", "性别输入有误！");
+			}
+			if(Util.isVerify(request.getParameter("education"), 0, 0, "[0-9]")){
+				paramsMap.put("education", request.getParameter("education").trim());
+			}else{
+				flag = false;
+				json.put("message", "学历输入有误！");
+			}
+			
+			if(flag){
+				Map<String, Object> params = new HashMap<String, Object>();
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+				paramsMap.put("updateTime", df.format(new Date()));
+				params.put("tableName", "resume");
+	            params.put("trem", "userId='"+request.getSession().getAttribute("userId")+"'");
+	            params.put("paramsMap", paramsMap);
+	            int i = baseDao.baseUpdate(params);
+	            if(i>0){
+	            	json.put("code", 200);
+	            	json.put("message", "保存成功！");
+	            }else{
+	            	json.put("code", 302);
+	            	json.put("message", "保存失败！");
+	            }
+			}else{
+				json.put("code", 301);
+				json.put("message", "填写完整信息！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+
+	@Override
+	public String addEducations(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("resumeId"),0,0,"[1-9][0-9]{0,6}")){
+				paramsMap.put("resumeId", request.getParameter("resumeId"));
+			}
+			if(Util.isVerify(request.getParameter("startTime"),0,0,"[1-2][0-9]{3}/[0-9][1-9]")){
+				paramsMap.put("startTime", request.getParameter("startTime"));
+			}
+			if(Util.isVerify(request.getParameter("endTime"),0,0,"[1-2][0-9]{3}/[0-9][1-9]")){
+				paramsMap.put("endTime", request.getParameter("endTime"));
+			}
+			if(Util.isVerify(request.getParameter("school"), 2, 100,null)){
+				paramsMap.put("school", request.getParameter("school").trim());
+			}
+			if(Util.isVerify(request.getParameter("specialty"), 2, 100,null)){
+				paramsMap.put("specialty", request.getParameter("specialty").trim());
+			}
+			
+			int flag = -1;
+			if(Util.isVerify(request.getParameter("id"),0,0,null) && paramsMap.size()>0){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("tableName", "educations");
+	            params.put("trem", "id='"+request.getParameter("id").trim()+"'");
+	            params.put("paramsMap", paramsMap);
+	            flag = baseDao.baseUpdate(params);
+			}else if(paramsMap!=null && paramsMap.size()==5){
+				flag = cvMakeDao.addEducations(paramsMap);
+			}
+			if(flag>0){
+				json.put("code", 200);
+	    		json.put("message", "保存成功！");
+			}else if(flag==0){
+				json.put("code", 302);
+	    		json.put("message", "保存失败！");
+			}else{
+				json.put("code", 301);
+	    		json.put("message", "请输入完整信息！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String addWorkExperiences(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("resumeId"),0,0,"[1-9][0-9]{0,6}")){
+				paramsMap.put("resumeId", request.getParameter("resumeId"));
+			}
+			if(Util.isVerify(request.getParameter("startTime"),0,0,"[1-2][0-9]{3}/[0-9][1-9]")){
+				paramsMap.put("startTime", request.getParameter("startTime"));
+			}
+			if(Util.isVerify(request.getParameter("endTime"),0,0,"[1-2][0-9]{3}/[0-9][1-9]")){
+				paramsMap.put("endTime", request.getParameter("endTime"));
+			}
+			if(Util.isVerify(request.getParameter("companyName"), 2, 100,null)){
+				paramsMap.put("companyName", request.getParameter("companyName").trim());
+			}
+			if(Util.isVerify(request.getParameter("jobTitle"), 2, 100,null)){
+				paramsMap.put("jobTitle", request.getParameter("jobTitle").trim());
+			}
+			if(Util.isVerify(request.getParameter("workContent"), 2,1600,null)){
+				paramsMap.put("workContent", request.getParameter("workContent").trim());
+			}
+			
+			int flag = -1;
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{1,20}")){
+				paramsMap.put("id", request.getParameter("id").trim());
+	            flag = cvMakeDao.updateWorkExperiences(paramsMap);
+			}else if(paramsMap!=null && paramsMap.size()==6){
+				flag = cvMakeDao.addWorkExperiences(paramsMap);
+			}
+			if(flag>0){
+				json.put("code", 200);
+	    		json.put("message", "保存成功！");
+			}else if(flag==0){
+				json.put("code", 302);
+	    		json.put("message", "保存失败！");
+			}else{
+				json.put("code", 301);
+	    		json.put("message", "请输入完整信息！");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String addProjects(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("resumeId"),0,0,"[1-9][0-9]{0,6}")){
+				paramsMap.put("resumeId", request.getParameter("resumeId"));
+			}
+			if(Util.isVerify(request.getParameter("startTime"),0,0,"[1-2][0-9]{3}/[0-9][1-9]")){
+				paramsMap.put("startTime", request.getParameter("startTime"));
+			}
+			if(Util.isVerify(request.getParameter("endTime"),0,0,"[1-2][0-9]{3}/[0-9][1-9]")){
+				paramsMap.put("endTime", request.getParameter("endTime"));
+			}
+			if(Util.isVerify(request.getParameter("name"), 2,100,null)){
+				paramsMap.put("name", request.getParameter("name").trim());
+			}
+			if(Util.isVerify(request.getParameter("projectDetails"), 2, 1600,null)){
+				paramsMap.put("projectDetails", request.getParameter("projectDetails").trim());
+			}
+			
+			int flag = -1;
+			if(Util.isVerify(request.getParameter("id"),0,0,null)){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("tableName", "projects");
+	            params.put("trem", "id='"+request.getParameter("id").trim()+"'");
+	            params.put("paramsMap", paramsMap);
+	            flag = baseDao.baseUpdate(params);
+			}else if(paramsMap!=null && paramsMap.size()==5){
+				flag = cvMakeDao.addProjects(paramsMap);
+			}
+			if(flag>0){
+				json.put("code", 200);
+	    		json.put("message", "保存成功！");
+			}else if(flag==0){
+				json.put("code", 302);
+	    		json.put("message", "保存失败！");
+			}else{
+				json.put("code", 301);
+	    		json.put("message", "请输入完整信息！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String delProjects(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		boolean flag = false;
+		try {
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{1,9}")){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("i_tableName", "projects");
+				params.put("i_id", request.getParameter("id"));
+				params.put("i_userId", request.getSession().getAttribute("userId"));
+				cvMakeDao.resume_base_del(params);
+				if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+					flag = true;
+	        	}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(flag){
+			json.put("code", 200);
+            json.put("message", "删除成功！");
+		}else{
+			json.put("code", 301);
+            json.put("message", "删除失败！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String delWorkExperiences(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		boolean flag = false;
+		try {
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{1,9}")){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("i_tableName", "work_experiences");
+				params.put("i_id", request.getParameter("id"));
+				params.put("i_userId", request.getSession().getAttribute("userId"));
+				cvMakeDao.resume_base_del(params);
+				if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+					flag = true;
+	        	}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(flag){
+			json.put("code", 200);
+            json.put("message", "删除成功！");
+		}else{
+			json.put("code", 301);
+            json.put("message", "删除失败！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String delEducations(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		boolean flag = false;
+		try {
+			if(Util.isVerify(request.getParameter("id"), 0, 0, "[0-9]{1,9}")){
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("i_tableName", "educations");
+				params.put("i_id", request.getParameter("id"));
+				params.put("i_userId", request.getSession().getAttribute("userId"));
+				cvMakeDao.resume_base_del(params);
+				if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+					flag = true;
+	        	}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(flag){
+			json.put("code", 200);
+            json.put("message", "删除成功！");
+		}else{
+			json.put("code", 301);
+            json.put("message", "删除失败！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String addProductUrl(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("productUrl"),0,0,"^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:.;]*[-a-zA-Z0-9+&@#/%=~_|]")){
+				Map<String, Object> resumeMap = cvMakeDao.getProductUrlByUserId(request.getSession().getAttribute("userId").toString());
+				boolean flag = true;
+				if(resumeMap!=null && resumeMap.size()>0){
+					if(resumeMap.get("productUrl")!=null && !"".equals(resumeMap.get("productUrl").toString().trim())){
+						String[] urlStr = resumeMap.get("productUrl").toString().split(",");
+						if(urlStr.length<5){
+							for(int i=0;i<urlStr.length;i++){
+								if(urlStr[i].equals(request.getParameter("productUrl"))){
+									flag = false;
+								}
+							}
+							if(flag){
+								paramsMap.put("productUrl", resumeMap.get("productUrl")+","+request.getParameter("productUrl"));	
+							}else{
+								json.put("code", 304);
+					    		json.put("message", "产品链接不可重复！");
+							}
+						}else{
+							json.put("code", 303);
+				    		json.put("message", "最多可填写三个产品链接！");
+						}
+					}else{
+						paramsMap.put("productUrl", request.getParameter("productUrl"));
+					}
+					if(paramsMap.size()>0 && flag){
+						Map<String, Object> params = new HashMap<String, Object>();
+						params.put("tableName", "resume");
+			            params.put("trem", "userId='"+request.getSession().getAttribute("userId").toString()+"'");
+			            params.put("paramsMap", paramsMap);
+			            baseDao.baseUpdate(params);
+			            json.put("code", 200);
+			    		json.put("message", "添加成功！");
+					}
+				}else{
+					json.put("code", 302);
+		    		json.put("message", "请先填写简历信息！");
+				}
+			}else{
+				json.put("code", 301);
+	    		json.put("message", "链接输入有误！");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String delProductImg(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			String productImg = null;
+			String userId = request.getSession().getAttribute("userId").toString();
+			if(Util.isVerify(request.getParameter("productImg"), 0, 0, "[0-9_]{1,20}[.][A-Aa-z]{3}")){
+				Map<String, Object> productMap = cvMakeDao.getProductUrlByUserId(userId);
+				if(productMap!=null && productMap.get("productImg")!=null){
+					String[] productStr = productMap.get("productImg").toString().split(",");
+					for(int i=0;i<productStr.length;i++){
+						if(!productStr[i].equals(request.getParameter("productImg"))){
+							if(productImg!=null){
+								productImg = productImg+","+productStr[i];
+							}else{
+								productImg = productStr[i];
+							}
+						}
+					}
+				}
+				int num =cvMakeDao.updateProduntImg(productImg, userId);
+				if(num>0){
+					json.put("code", 200);
+		    		json.put("message", "删除成功！");
+				}else{
+					json.put("code", 301);
+		    		json.put("message", "删除失败！");
+				}
+				
+				String oriPath = SysConfig.getValue("UPLOAD_USER_ORIGINAL_URL").toString(); //原图保存路径
+				String comPath = SysConfig.getValue("UPLOAD_USER_COMPRESSION_URL").toString(); //压缩图片保存路经
+				File oriFile = new File(oriPath, request.getParameter("productImg"));
+				File comFile = new File(comPath, request.getParameter("productImg"));
+	    		if(oriFile.isFile()){
+	    			oriFile.delete();
+	    		}
+	    		if(comFile.isFile()){
+	    			comFile.delete();
+	    		}
+			}else{
+				json.put("code", 301);
+	    		json.put("message", "删除失败！");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String updateProductUrl(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			boolean flag = true;
+			if(Util.isVerify(request.getParameter("productUrl"), 1, 500, null)){
+				String[] url = request.getParameter("productUrl").split(",");
+				if(url.length<=5){
+					for(int i=0;i<url.length;i++){
+						if(!Util.isVerify(url[i], 0, 0, "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:.;]*[-a-zA-Z0-9+&@#/%=~_|]")){
+							flag = false;
+						}
+						for(int j=0;j<url.length;j++){
+							if(url[i].equals(url[j])){
+								flag = false;
+							}
+						}
+					}
+				}else{
+					flag = false;
+				}
+			}else{
+				flag = false;
+			}
+			if(flag){
+				Map<String, Object> paramsMap = new HashMap<String, Object>();
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put("tableName", "resume");
+	            params.put("trem", "userId='"+request.getSession().getAttribute("userId").toString()+"'");
+	            paramsMap.put("productUrl", request.getParameter("productUrl"));
+	            params.put("paramsMap", paramsMap);
+	            baseDao.baseUpdate(params);
+	            json.put("code", 200);
+	    		json.put("message", "更新成功！");
+			}else{
+				 json.put("code", 301);
+		    		json.put("message", "更新失败！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String delProductUrl(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+			if(Util.isVerify(request.getParameter("productUrl"),0,0,"^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:.;]*[-a-zA-Z0-9+&@#/%=~_|]")){
+				Map<String, Object> resumeMap = cvMakeDao.getProductUrlByUserId(request.getSession().getAttribute("userId").toString());
+				if(resumeMap!=null && resumeMap.size()>0){
+					if(resumeMap.get("productUrl")!=null && !"".equals(resumeMap.get("productUrl").toString().trim())){
+						String[] str = resumeMap.get("productUrl").toString().split(",");
+						StringBuffer productUrl = new StringBuffer();
+			     		for (int i = 0; i < str.length; i++) {
+							if(!request.getParameter("productUrl").toString().trim().equals(str[i])){
+								if(productUrl!=null && productUrl.length()>0){
+									productUrl.append(","+str[i]);
+								}else{
+									productUrl.append(str[i]);
+								}
+							}
+						}
+			     		if(productUrl!=null && productUrl.length()>0){
+			     			paramsMap.put("productUrl", productUrl.toString());
+			     		}
+			     		
+			     		paramsMap.put("userId", request.getSession().getAttribute("userId").toString());
+			     		
+			     		json.put("productUrl", productUrl.toString());
+					}
+					if(paramsMap.size()>0){
+						cvMakeDao.updateProduntUrl(paramsMap);
+			            json.put("code", 200);
+			    		json.put("message", "删除成功！");
+					}else{
+						json.put("code", 301);
+			    		json.put("message", "删除失败！");
+					}
+				}else{
+					json.put("code", 302);
+		    		json.put("message", "请先填写简历信息！");
+				}
+			}else{
+				json.put("code", 301);
+	    		json.put("message", "链接输入有误！");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String addDetails(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			if(Util.isVerify(request.getParameter("details"),2,800,null)){
+				Map<String, Object> params = new HashMap<String, Object>();
+				Map<String, Object> paramsMap = new HashMap<String, Object>();
+				params.put("tableName", "resume");
+	            params.put("trem", "userId='"+request.getSession().getAttribute("userId").toString()+"'");
+	            paramsMap.put("details", request.getParameter("details"));
+	            params.put("paramsMap", paramsMap);
+	            int i = baseDao.baseUpdate(params);
+	            if(i>0){
+	            	json.put("code", 200);
+		    		json.put("message", "保存成功！");
+	            }else{
+	            	json.put("code", 302);
+		    		json.put("message", "保存失败！");
+	            }
+			}else{
+				json.put("code", 301);
+	    		json.put("message", "输入有误（长度2~800）！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String speedOfProgress(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> resultMap = cvMakeDao.getResumeIdByUserId(request.getSession().getAttribute("userId").toString());
+            if(resultMap!=null && resultMap.get("resumeId") != null){
+            	int speedOfProgress = 0;
+            	Map<String, Object> progressMap = cvMakeDao.getSpeedOfProgress(resultMap.get("resumeId").toString());
+            	if(progressMap!=null && progressMap.size()>0){
+					if(progressMap.get("name")!=null && !"".equals(progressMap.get("name").toString().trim())){
+						speedOfProgress=speedOfProgress+5;
+					}
+					if(progressMap.get("age")!=null && !"".equals(progressMap.get("age").toString().trim())){
+						speedOfProgress=speedOfProgress+5;
+					}
+					if(progressMap.get("sex")!=null && !"".equals(progressMap.get("sex").toString().trim())){
+						speedOfProgress=speedOfProgress+5;
+					}
+					if(progressMap.get("school")!=null && !"".equals(progressMap.get("school").toString().trim())){
+						speedOfProgress=speedOfProgress+25;
+					}
+					if(progressMap.get("companyName")!=null && !"".equals(progressMap.get("companyName").toString().trim())){
+						speedOfProgress=speedOfProgress+30;  //工作经验
+					}
+					if(progressMap.get("perojectName")!=null && !"".equals(progressMap.get("perojectName").toString().trim())){
+						speedOfProgress=speedOfProgress+30; //项目经验
+					}
+				}
+            	json.put("speedOfProgress", speedOfProgress);
+            	json.put("code", 200);
+	    		json.put("message", "获取成功！");
+            }else{
+            	json.put("code", 301);
+	    		json.put("message", "请先填写简历信息！");
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String submitCheck(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			Map<String, Object> resultMap = cvMakeDao.getResumeIdByUserId(request.getSession().getAttribute("userId").toString());
+            if(resultMap!=null && resultMap.get("resumeId") != null){
+            	int speedOfProgress = 0;
+            	Map<String, Object> progressMap = cvMakeDao.getSpeedOfProgress(resultMap.get("resumeId").toString());
+            	if(progressMap!=null && progressMap.size()>0){
+					if(progressMap.get("name")!=null && !"".equals(progressMap.get("name").toString().trim())){
+						speedOfProgress=speedOfProgress+1;
+					}
+					if(progressMap.get("age")!=null && !"".equals(progressMap.get("age").toString().trim())){
+						speedOfProgress=speedOfProgress+1;
+					}
+					if(progressMap.get("sex")!=null && !"".equals(progressMap.get("sex").toString().trim())){
+						speedOfProgress=speedOfProgress+1;
+					}
+					if(progressMap.get("companyName")!=null && !"".equals(progressMap.get("companyName").toString().trim())){
+						speedOfProgress=speedOfProgress+1;  //工作经验
+					}
+					if(progressMap.get("perojectName")!=null && !"".equals(progressMap.get("perojectName").toString().trim())){
+						speedOfProgress=speedOfProgress+1; //项目经验
+					}
+				}
+            	
+            	if(speedOfProgress>=4){
+            		
+					Map<String, Object> params = new HashMap<String, Object>();
+		            params.put("i_resumeId", resultMap.get("resumeId").toString());
+		            params.put("i_userId", request.getSession().getAttribute("userId").toString());
+		            params.put("i_commitTime", resultMap.get("commitTime"));
+		            cvMakeDao.user_backup(params);
+		            
+		        	if(params.get("resultNumber")!=null && "1".equals(params.get("resultNumber").toString())){
+		        		json.put("code", 200);
+			            json.put("message", "提交成功！");
+		        	}else{
+		        		json.put("code", 303);
+			            json.put("message", "提交失败！");
+		        	}
+				}else{
+					json.put("code", 301);
+		            json.put("message", "简历信息不全，无法提交！");
+				}
+            }else{
+            	json.put("code", 302);
+	    		json.put("message", "请先填写简历信息！");
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+	
+	@Override
+	public String usePastResume(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try {
+			boolean flag = false;
+				String userId = request.getSession().getAttribute("userId").toString().trim();
+	            String inputUrl = SysConfig.getValue("UPLOAD_URL").toString();
+            	File file = new File(inputUrl, userId+".pdf");
+        		if(file.isFile()){
+        			flag = true;
+        		}else{
+        			File file2 = new File(inputUrl, userId+".docx");
+            		if(file2.isFile()){
+            			flag = true;
+            		}else{
+            			File file3 = new File(inputUrl, userId+".doc");
+	            		if(file3.isFile()){
+	            			flag = true;
+	            		}
+            		}
+        		}
+        		if(flag){
+    	        	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+    	        	int num = cvMakeDao.usePastResume(userId, df.format(new Date()));
+    	        	if(num>0){
+    	        		json.put("code", 200);
+        	            json.put("message", "更新成功！");
+    	        	}else{
+    	        		json.put("code", 301);
+        	            json.put("message", "您的简历不存在，请重新上传！");
+    	        	}
+        		}else{
+        			json.put("code", 302);
+    	            json.put("message", "您的简历不存在，请重新上传！");
+        		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.put("code", 500);
+    		json.put("message", "服务器异常！");
+		}
+		return json.toString();
+	}
+
+}

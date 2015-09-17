@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/signin.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/signin.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/signin" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/dist/signin-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div> 
+		<div id="main" ng-controller="signinCtrl">
+			<div class="sign-warp box-shadow">
+				<div class="sign-title">
+					<span class="login-title">登录账号</span>
+				</div>
+				<div class="sing-body">
+					<div class="con-l">
+						<form ng-submit="signIn()">
+							<div class="in-item">
+								<span class="remarks">邮箱</span>
+								<input type="text" id="email" ng-model="userinfo.email" ng-change="_clearTip('#email_tip')" maxlength="50" placeholder="请输入邮箱"/>
+								<div class="err-wrap">
+									<label id="email_tip" class="ico-invalid"></label>
+								</div>
+							</div>
+							
+							<div class="in-item">
+								<span class="remarks">密码</span>
+								<input type="password" id="pwd" ng-model="userinfo.pwd" ng-change="_clearTip('#pwd_tip')" maxlength="16" placeholder="请输入密码">
+								<div class="err-wrap">
+									<label id="pwd_tip" class="ico-invalid"></label>
+								</div>								
+							</div>
+							
+							<div class="in-item status">
+								<input id="remember" type="checkbox">
+								<label for="remember">自动登录</label>
+								<a href="/base/upwd">忘记密码?</a>
+							</div>
+							
+							<div class="in-item sign-btn">
+								<button>登录</button>
+							</div>
+						</form>						
+					</div>
+					<div class="con-r">
+						<div class="login-r-con">
+							<div class="sign-text"><span>还没有个人账号？</span></div>
+							<div><a ng-href="signup" class="signup-btn">立即注册</a></div>
+							<div class="mail-text"><a href="/base/mailresend">还没收到验证邮件？</a></div>
+						</div>						
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>

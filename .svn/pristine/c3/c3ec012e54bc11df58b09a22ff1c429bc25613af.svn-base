@@ -1,0 +1,130 @@
+require([
+ '$',
+ 'angular',
+ 'app',
+ 'cookie',
+ 'url',
+ 'info'
+], 
+function($, angular, app, cookie, url) {
+	app.controller('infoCtrl', ['$scope', '$rootScope', '$http', '$q', 'info',
+   		function($scope, $rootScope, $http, $q, info) {
+		$('.viewport').show();
+		$scope.compInfo = {area: '1000', size: '0', progress: '0'};
+		$scope.staticContext = {};
+		$scope.staticContext.compSizeList = info.getCompSize();
+		$scope.staticContext.compPhaseList = info.getCompPhase();
+		
+		/* 清除提示*/
+		$scope._clearTip = function() {
+			$('.err-wrap label').text('').hide();
+		};
+		
+		/* 获取公司信息*/
+		$scope.getCompInfo = function() {
+            $q.when($http.post('/company/getCompanyInfo'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.compInfo.name = data.companyInfo.name;
+            	$scope.getAreasList();
+            	$scope.getProvinceList();
+            }, function(err) {
+            	console.error('getCompanyInfo', err);
+            });				
+		};
+		
+		/* 获取省份*/
+		$scope.getProvinceList = function() {
+			var config = {
+					superId: 0
+			};		
+			
+            $q.when($http.post('/common/getCityList', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.staticContext.provinceList = data.cityList;
+            	$scope.compInfo.province = data.cityList[0].id;
+            	$scope.getCityList(data.cityList[0].id);
+            }, function(err) {
+            	console.error('getAreasList', err);
+            });				
+		};
+		
+		/* 获取城市*/
+		$scope.getCityList = function(id) {
+			var config = {
+					superId: id
+			};
+			
+            $q.when($http.post('/common/getCityList',  $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.staticContext.cityList = data.cityList;
+            	$scope.compInfo.city = data.cityList[0].id;
+            }, function(err) {
+            	console.error('getAreasList', err);
+            });				
+		};
+		
+		/* 获取行业领域*/
+		$scope.getAreasList = function() {
+            $q.when($http.post('/common/getAreasList'))
+            .then(function(result) {
+            	var data = result.data;
+            	$scope.staticContext.areasList = data.areasList;
+            }, function(err) {
+            	console.error('getAreasList', err);
+            });				
+		};
+		
+		/* 选择公司阶段*/
+		$scope.sltPhase = function(id) {
+			$scope.compInfo.progress = id;
+		};
+		
+		/* 保存公司基本信息*/
+		$scope.saveCompInfo = function() {
+			var config = {
+					name: $scope.compInfo.name,
+					nickName: $scope.compInfo.nickName,
+					province: $scope.compInfo.province,
+					city: $scope.compInfo.city,
+					area: $scope.compInfo.area,
+					size: $scope.compInfo.size,
+					progress: $scope.compInfo.progress
+			};
+			
+			if(!_checkCompInfo(config)) return;
+
+            $q.when($http.post('/company/saveCompanyInfo', $.param(config)))
+            .then(function(result) {
+            	var data = result.data;
+				if(data.code == 200) {
+					window.location.href = '/companyform/compjd';
+				}else {
+					$('#comp_info_tip').show().text(data.message);
+				}   	
+            }, function(err) {
+            	console.error('saveCompanyInfo', err);
+            });				
+		};
+		
+		/* 验证公司信息*/
+		function _checkCompInfo(data) {
+			$scope._clearTip();
+			if(!data.name) {
+				$('#comp_name').focus();
+				$('#comp_name_tip').show().text('公司名称输入有误！');
+				return false;
+			}else if(!data.nickName) {
+				$('#comp_nickname').focus();
+				$('#comp_nickname_tip').show().text('公司简称输入有误！');
+				return false;				
+			}
+			
+			return true;			
+		}
+ 	}]);
+	
+	app.bootstrap();
+});

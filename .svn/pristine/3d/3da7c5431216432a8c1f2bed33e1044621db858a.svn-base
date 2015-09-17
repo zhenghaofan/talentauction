@@ -1,0 +1,22 @@
+package com.auction.common.dao;
+
+import java.util.List;
+import java.util.Map;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+public interface CommonDao {
+	/**
+	 * 获取城市列表
+	 * @return
+	 */
+	public List<Map<String, Object>> getCityList(String superId); 
+	
+	/**
+	 * 获取行业领域列表
+	 * @return
+	 */
+	public List<Map<String, Object>> getAreasList(); 
+}

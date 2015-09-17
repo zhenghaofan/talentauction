@@ -1,0 +1,167 @@
+package com.auction.company.dao;
+
+import java.util.List;
+import java.util.Map;
+
+/** 
+ * @author tobber
+ * @version 2015年5月6日
+ */
+public interface CompanyDao {
+
+	/**
+	 * 添加公司信息
+	 * @return
+	 */
+	public String addCompany(Map<String, Object> params);
+	
+	/**
+	 * 获取同邮箱后缀公司列表
+	 * @return
+	 */
+	public List<Map<String, Object>> getSameCompanyList(String emailSuffixes);
+	
+	/**
+	 * 获取公司基本信息
+	 * @return
+	 */
+	public Map<String, Object> getCompanyInfo(String companyId);
+	
+	/**
+	 * 更新企业填写信息状态
+	 * @return
+	 */
+	public int isSaveUserInfo(String userId);
+	
+	/**
+	 * 更新企业产品信息
+	 * @return
+	 */
+	public int updateProducts(Map<String, Object> params);
+	
+	/**
+	 * 添加企业产品信息
+	 * @return
+	 */
+	public String addProducts(Map<String, Object> params);
+	
+	/**
+	 * 更新企业创始团队信息
+	 * @return
+	 */
+	public int updateFounder(Map<String, Object> params);
+	
+	/**
+	 * 添加企业创始团队信息
+	 * @return
+	 */
+	public String addFounder(Map<String, Object> params);
+	
+	/**
+	 * 更新公司人才招聘需求
+	 * @return
+	 */
+	public int updateTalentDemand(Map<String, Object> params);
+	
+	/**
+	 * 添加公司人才招聘需求
+	 * @return
+	 */
+	public Map<String, Object> addTalentDemand(Map<String, Object> params);
+	
+	/**
+	 * 删除公司人才招聘需求
+	 * @return
+	 */
+	public String delTalentDemand(Map<String, Object> params);
+	
+	/**
+	 * 获取企业拍卖纪录
+	 * @return
+	 */
+	public List<Map<String, Object>> companyBidLogs(Map<String, Object> params);
+	
+	/**
+	 * 获取企业拍卖纪录总条数
+	 * @return
+	 */
+	public int companyBidLogsTotal(Map<String, Object> params);
+	
+	/**
+	 * 公司竞拍
+	 * @return
+	 */
+	public String companyAuction(Map<String, Object> params);
+	
+	/**
+	 * 获取候选人联系方式
+	 * @return
+	 */
+	public Map<String, Object> getContacts(String id,String companyId);
+	
+	/**
+	 * 检验是否获取联系方式
+	 * @return
+	 */
+	public int isGetContacts(String userId,String companyId);
+	
+	/**
+	 * 获取企业招聘需求
+	 * @return
+	 */
+	public List<Map<String, Object>> getTalentDemand(String companyId);
+	
+	/**
+	 * 获取企业产品信息
+	 * @return
+	 */
+	public List<Map<String, Object>> getProductList(String companyId);
+	
+	/**
+	 * 获取企业团队信息
+	 * @return
+	 */
+	public List<Map<String, Object>> getFounderList(String companyId);
+	
+	/**
+	 * 获取企业环境
+	 * @return
+	 */
+	public String getOfficeByCompanyId(String companyId);
+	
+	/**
+	 * 更新企业环境
+	 * @return
+	 */
+	public int updateOffice(String environment,String companyId);
+	
+	/**
+	 * 更新企业基本信息
+	 * @return
+	 */
+	public int updateCompBasicInfo(Map<String, Object> params);
+	
+	/**
+	 * 获取企业资料完善进度
+	 * @return
+	 */
+	public Map<String, Object> compProgress(String companyId);
+	
+	/**
+	 * 获取企业环境
+	 * @return
+	 */
+	public int getCompMessage(String compUserId);
+	
+	/**
+	 * 拍卖记录标记为已读
+	 * @return
+	 */
+	public int updateCompRead(String compUserId);
+	
+	/**
+	 * 邀请出价纪录
+	 * @return
+	 */
+	public String addForwardResume(Map<String, Object> params);
+}

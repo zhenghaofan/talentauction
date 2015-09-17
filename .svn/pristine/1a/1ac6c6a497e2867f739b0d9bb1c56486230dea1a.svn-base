@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="com.auction.company.dao.FeesDao">
+    
+    <resultMap type="com.auction.resume.model.Educations" id="educationsResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="school" column="school"/>
+        <result property="specialty " column="specialty "/>
+    </resultMap>
+    
+	<resultMap type="com.auction.resume.model.Projects" id="projectResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="name" column="name"/>
+        <result property="projectDetails " column="projectDetails "/>
+    </resultMap>
+    
+    <resultMap type="com.auction.resume.model.WorkExperiences" id="workExpResult" autoMapping="true">  
+        <id property="id" column="id"/>  
+        <result property="resumeId" column="resumeId"/>  
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="jobTitle" column="jobTitle"/>
+        <result property="companyName " column="companyName "/>
+        <result property="workContent" column="workContent"/>
+    </resultMap>
+    
+	<!--获取简历池信息-->
+    <select id="getResumePools" parameterType="map" resultType="java.util.HashMap">
+        select c.*,
+			d.userId indexUser,
+			ifnull(k.readStatus,-1) readStatus 
+			<if test="type==1 and searches != null and searches != ''">
+				,( MATCH(d.jobTitle) AGAINST (#{searches})*0.5 + MATCH(d.skills) AGAINST(#{searches})*0.3+MATCH(d.details) AGAINST (#{searches})*0.2) matchWeight  
+	        </if>
+		from (
+			select a.resumeId,
+				a.userId,
+				a.code,
+				a.skills,
+				a.isShelves,
+				a.sex,
+				a.education,
+				a.jobTitle,
+				a.jobYear,
+				a.expectedSalary,
+				a.destination,
+				a.readCount,
+				a.special,
+				a.specialCount,
+				a.summary,
+				a.previous,
+				a.checkTime 
+			from resume a 
+			where a.cvCheckResult=2  
+			<if test="special != null and special != ''">
+				and a.special=#{special} 
+	        </if>
+			<if test="education != null and education != ''">
+				and a.education=#{education} 
+	        </if>
+	        <if test="destination != null and destination != ''">
+				and a.destination like '%${destination}%' 
+	        </if>
+	        <if test="minYear != null and maxYear != null">
+				and a.jobYear between #{minYear} and #{maxYear}  
+	        </if>
+	        <if test="minYear != null and maxYear == null">
+				and a.jobYear > #{minYear} 
+	        </if>
+		) c 
+		<if test="type==2 and  searches != null and searches != ''">
+			join (select distinct resumeId from projects where concat_ws(',',name,projectDetails) like '%${searches}%') i on c.resumeId=i.resumeId 
+	    </if>
+	    <if test="type==3 and  searches != null and searches != ''">
+			join (select distinct resumeId from work_experiences where concat_ws(',',companyName,jobTitle,workContent) like '%${searches}%') j on c.resumeId=j.resumeId 
+	    </if>
+		left join (select userId,status readStatus from invite_read_logs where compUserId=#{compUserId}) k on c.userId=k.userId 
+		left join resume_index d on c.resumeId=d.resumeId 
+		<if test="type==1 and  searches != null and searches != ''">
+			where MATCH(d.skills,d.jobTitle,d.details) AGAINST(#{searches}) order by matchWeight desc 
+	    </if>
+	    limit #{page},#{pageSize} 
+	</select>
+	
+    <!--获取简历池信息-->
+    <select id="getResumePoolsTotal" parameterType="map" resultType="java.lang.Integer">
+        select count(*) total 
+		from (
+			select a.resumeId from resume a 
+			where a.cvCheckResult=2 
+			<if test="special != null and special != ''">
+				and a.special=#{special} 
+	        </if>
+			<if test="education != null and education != ''">
+				and a.education=#{education} 
+	        </if>
+	        <if test="destination != null and destination != ''">
+				and a.destination like '%${destination}%' 
+	        </if>
+	        <if test="minYear != null and maxYear != null">
+				and a.jobYear between #{minYear} and #{maxYear}  
+	        </if>
+	        <if test="minYear != null and maxYear == null">
+				and a.jobYear > #{minYear} 
+	        </if>
+		) c 
+		<if test="type==2 and  searches != null and searches != ''">
+			join (select distinct resumeId from projects where concat_ws(',',name,projectDetails) like '%${searches}%') i on c.resumeId=i.resumeId 
+	    </if>
+	    <if test="type==3 and  searches != null and searches != ''">
+			join (select distinct resumeId from work_experiences where concat_ws(',',companyName,jobTitle,workContent) like '%${searches}%') j on c.resumeId=j.resumeId 
+	    </if>
+		left join resume_index d on c.resumeId=d.resumeId 
+		<if test="type==1 and  searches != null and searches != ''">
+			where MATCH(d.skills,d.jobTitle,d.details) AGAINST(#{searches}) 
+	    </if>
+	</select>
+	
+    
+     <!-- 获取简历详细信息 -->
+    <select id="getResumDetailByUserId" resultType="java.util.HashMap" parameterType="map">
+       	select resumeId,
+        	userId,
+        	destination,
+        	expectedSalary,
+        	jobTitle,
+        	jobYear,
+        	skills,
+        	name,
+        	sex,
+        	age,
+        	education,
+        	summary,
+        	details,
+        	code,
+        	ifnull(productUrl,"") productUrl,
+        	ifnull(productImg,"") productImg 
+       	from resume where userId=#{userId} and cvCheckResult=2 
+    </select>
+    
+    <!-- 获取教育经历 -->
+    <select id="getEducationsAll" parameterType="map" resultMap="educationsResult">
+        select id,resumeId,startTime,endTime,school,specialty from ${tableName} where resumeId=#{resumeId}
+    </select>
+    
+    <!-- 获取项目经验 -->
+    <select id="getProjectsAll" parameterType="map" resultMap="projectResult">
+        select id,resumeId,startTime,endTime,name,projectDetails from ${tableName} where resumeId=#{resumeId}
+    </select>
+    
+    <!-- 获取工作经历 -->
+    <select id="getWorkExpAll" parameterType="map" resultMap="workExpResult">
+        select id,resumeId,startTime,endTime,jobTitle,companyName,workContent from ${tableName} where resumeId=#{resumeId}
+    </select>
+    
+    <select id="interviewInvite" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call interview_invite (
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_compUserId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_companyId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_minBidPrice,mode=IN,jdbcType=DECIMAL},
+		   		#{i_maxBidPrice,mode=IN,jdbcType=DECIMAL},
+		   		#{i_isOption,mode=IN,jdbcType=DECIMAL},
+		   		#{i_workTitle,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL})}  
+		]]>
+    </select>
+    
+    <select id="getInviteLogs" parameterType="map" resultType="java.util.HashMap">
+		select a.*,
+			r.jobTitle,
+			r.code,
+			r.destination 
+		from (
+			select 
+				userId,
+				replyTime,
+				inviteTime,
+				minBidPrice,
+				maxBidPrice,
+				isRead 
+			from comp_invite_logs d where d.compUserId=#{compUserId} 
+		    <if test="reply != null and reply ==1">
+				and d.status != 0 
+        	</if>
+        	<if test="reply != null and reply ==0">
+				and d.status = 0  
+        	</if>
+        	order by d.inviteTime 
+		) a 
+		left join resume r on a.userId=r.userId group by userId 
+		order by a.inviteTime desc  
+		limit #{page},#{pageSize}
+    </select>
+    
+    <select id="getInviteLogsTotal" parameterType="map" resultType="java.lang.Integer">
+        select count(*) from (
+			select userId from comp_invite_logs d where d.compId=#{companyId} 
+			<if test="reply != null and reply ==1">
+				and d.status != 0 
+	       	</if>
+	       	<if test="reply != null and reply ==0">
+				and d.status = 0  
+	       	</if>
+	       	group by userId ) a 
+    </select>
+    
+    <select id="getInviteDetails" parameterType="String" resultType="java.util.HashMap">
+        select a.*,b.email,b.telephone from (select userId,destination,skills,expectedSalary,jobYear,jobTitle,sex,age,education,toEmail,toPhone,name from resume where userId=#{0}) a left join rigistration b on a.userId=b.userId
+    </select>
+    
+    <select id="getInviteInfo" parameterType="map" resultType="java.util.HashMap">
+        select 
+        	id,isOption,inviteTime,status,replyTime,minBidPrice,maxBidPrice,message     
+        from comp_invite_logs  
+        where userId=#{i_userId} and compUserId=#{i_compUserId} 
+        <if test="isReply != null and isReply ==1">
+			and status != 0 
+       	</if>
+       	<if test="isReply != null and isReply ==0">
+			and status = #{isReply} 
+       	</if>
+        order by id desc
+    </select>
+    
+    <select id="getDebitLogs" parameterType="String" resultType="java.util.HashMap">
+		select a.*,b.code from (select userId,compUserId,gold,inviteTime,status from comp_invite_logs where compUserId=#{0} order by id desc ) a left join resume b on a.userId=b.userId
+    </select>
+    
+    <select id="addReadLogs" statementType="CALLABLE" resultType="String">
+        <![CDATA[  
+		   {call invite_read_logs (
+		   		#{i_userId,mode=IN,jdbcType=VARCHAR},
+		   		#{i_compUserId,mode=IN,jdbcType=VARCHAR},
+		   		#{resultNumber,mode=OUT,jdbcType=DECIMAL})}  
+		]]>
+    </select>
+	
+</mapper> 

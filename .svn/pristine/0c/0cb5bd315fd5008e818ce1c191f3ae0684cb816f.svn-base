@@ -1,0 +1,39 @@
+package com.auction.resume.web;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+import com.auction.resume.service.ResumeRouteService;
+
+/** 
+ * @author tobber
+ * @version 2015年4月21日
+ */
+
+@Controller
+@RequestMapping(value = "talentform")
+public class ResumeRouteController {
+	@Resource 
+	private ResumeRouteService resumeRouteService;
+	
+	@RequestMapping(value = "jobintent")//简历状态页面跳转
+	public ModelAndView jobintent(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/jobintent", null);
+	}
+	
+	@RequestMapping(value = "jobinfo")//简历状态页面跳转
+	public ModelAndView jobinfo(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/jobinfo", null);
+	}
+	
+	@RequestMapping(value = "jobresult")//简历状态页面跳转
+	public ModelAndView jobresult(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		return new ModelAndView("views/jobresult", null);
+	}
+}
