@@ -1,0 +1,29 @@
+
+
+.agreemt-wrap {
+	width: 1024px;
+	color: #6B7485;
+	margin: 116px auto 120px;
+}
+
+.con-title {
+	font-size: 30px;
+	margin: 10px 0;
+	text-align: center;
+}
+
+p {
+	line-height: 25px;
+	font-size: 15px;
+	margin:0 0 1em;
+}
+
+.f-w-b {
+	font-weight: bold;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

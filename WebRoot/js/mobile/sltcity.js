@@ -1,0 +1,140 @@
+$(function($) {
+	$('.sign-wrap').show();
+	var cityArray = [];
+	var city = LocalStorage.get('city')?  LocalStorage.get('city') : [];
+	
+	if(city.length) {
+		cityArray = city;
+		addCity();
+	}
+	
+	bind();
+	
+	/* 获取技能*/
+	function load() {
+		$.post('/common/getSkillsList', {}, function(res){
+			  res = $.parseJSON(res);
+			  
+			  if( res.code == 200 ) {
+				  initEle(res.specialList);
+			  }
+		});
+	};
+	
+	/* 增加技能*/
+	$('#add_city').on('click', function() {
+		var text = $('#city').val();
+		
+		if(cityArray.length > 1) {
+			T.alert('城市限两个！');
+			return;
+		}
+		
+		if(text) {
+			if(addReject(cityArray, text)) {
+				$('#city').val('');
+				LocalStorage.set('city', cityArray);
+				if(cityArray.length > 1) window.location.href = "/mobile/signup";
+			}
+		}
+	});
+	
+	/* 增加技能*/
+	function addCity() {
+		var ele = $('.sign-form .tip');
+		var html = [];
+		
+		ele.empty();
+		
+		for ( var i in cityArray) {
+			html.push('<span class="skill-text">' + cityArray[i] +'</span>');
+		}
+		
+		ele.append(html.join(''));
+	}
+	
+	/* 移除技能*/
+	function subCity(str) {
+		var ele = $('.sign-form .tip');
+		var html = [];
+		
+		for ( var i in cityArray) {
+			if(str == cityArray[i]) {
+				cityArray.splice(i, 1);
+			}
+		}
+		
+		ele.empty();
+		
+		for ( var i in cityArray) {
+			html.push('<span class="skill-text">' + cityArray[i] +'</span>');
+		}
+		
+		if(!cityArray .length) {
+			html.push('<span class="text">城市限两个</span>');
+		}
+	
+		LocalStorage.set('city', cityArray);
+		ele.append(html.join(''));
+	}
+	
+	/* 移除选中样式*/
+	function removeCss(str) {
+		var ele = $('.city-box .feel-item');
+		
+		ele.each(function(_index) {
+			var _that = $(ele[_index]);
+			
+			if(str ==_that.text()) {
+				_that.removeClass('slt');
+			}
+		});
+	};
+	
+	/* 移除技能*/
+	setTimeout(function() {
+		$(document).on('click', '.tip .skill-text', function() {
+			var str = $(this).text();
+			subCity(str);
+			removeCss(str);
+		});
+	}, 100);
+	
+	/* 添加去重复*/
+	function addReject(array, str) {
+		for(i in array) {
+			if(array[i] == str) return false;
+		}
+		
+		array.push(str);
+		addCity(str);
+		
+		return true;
+	}
+	
+	/* 后退*/
+	$('.bar-back').click(function() {
+		window.location.href="/mobile/signup";
+	});
+	
+	/* 绑定元素*/
+	function bind() {
+		$('.city-box .feel-item').on('click', function() {
+			var feel = $(this);
+			
+			if(feel.hasClass('slt')) {
+				feel.removeClass('slt');
+				subCity(feel.text());
+			}else {
+				if(cityArray.length > 1) return;
+				
+				if(addReject(cityArray, feel.text())) {
+					feel.addClass('slt');;
+					LocalStorage.set('city', cityArray);
+				}
+				
+				if(cityArray.length > 1) window.location.href = "/mobile/signup";
+			}
+		});	
+	}
+});

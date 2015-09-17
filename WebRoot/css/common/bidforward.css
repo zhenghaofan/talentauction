@@ -1,0 +1,350 @@
+
+
+.fc-1 {
+	color: #4182c4;
+}
+.fc-2 {
+	color: #e4785b;
+}
+.fc-3 {
+	color: #71a8e0;
+}
+.fz-1 {
+	font-size: 13px;
+}
+.fb {
+	font-weight: bold;
+}
+pre {
+	color: #6B7485;
+	font-size: 14px;
+}
+
+.bid-wrap {
+	width: 1024px;
+	color: #6B7485;
+	padding-bottom: 2px;
+	margin: 50px auto 80px; 
+	overflow: hidden;
+}
+.bid-wrap .title-ico {
+	vertical-align: middle;
+	background: url("../img/bg-ico.png") no-repeat;
+	display: inline-block;
+}
+
+
+/* 左侧栏*/
+.bid-box-l {
+	float: left;
+	width: 700px;
+	border-radius: 3px;
+	background-color: #fff;
+	display: inline-block;
+}
+.gruid-item img {
+	width: 700px;
+}
+
+.error-wrap {
+	min-height: 600px;
+	background: url("../img/ico_404_1.png") no-repeat;
+	background-position: 50%;
+}
+
+.info-item {
+	border-bottom: 1px dotted #e5e5e5;
+	margin-bottom: 20px;	
+}
+.info-item:last-child {
+	border-bottom: 0;
+}
+.info-item ul {
+	margin-bottom: 30px;
+}
+.info-item.edu ul {
+	margin-bottom: 0;
+}
+.info-item ul:last-child {
+	margin-bottom: 0;
+}
+.info-item .item-title {
+	height: 30px;
+	font-size: 18px;
+	line-height: 30px;
+	padding-left: 40px;
+}
+.info-item .title-ico.ico-1 {
+	width: 23px;
+	height: 34px;
+	background-position: -169px -25px;
+}
+.info-item .title-ico.ico-2 {
+	width: 21px;
+	height: 34px;
+	background-position: -201px -26px;
+}
+.info-item .title-ico.ico-3 {
+	width: 19px;
+	height: 34px;
+	background-position: -233px -26px;
+}
+.info-item .title-ico.ico-4 {
+	width: 18px;
+	height: 34px;
+	background-position: -264px -25px;
+}
+.info-item .title-ico.ico-5 {
+	width: 16px;
+	height: 34px;
+	background-position: -348px -25px;
+}
+.info-item .title-ico.ico-6 {
+	width: 14px;
+	height: 34px;
+	background-position: -374px -25px;
+}
+
+
+.info-item .item-img {
+	width: 20px;
+	margin-bottom: -1px;
+}
+.info-item .item-img.edu {
+	width: 24px;
+}
+.info-item .item-con {
+	font-size: 14px;
+	line-height: 30px;
+	margin: 15px 40px 0;
+	padding-bottom: 20px;
+}
+.info-item .item-con a {
+	color: #6B7485;
+	word-break: break-all;
+}
+.info-item .item-con a:hover {
+	color: #3fa9f5;
+}
+.info-item .resume-box {
+	padding: 10px;
+	max-height: 400px;
+	text-align: center;
+}
+.info-item .resume-box .resume-img {
+	max-width: 600px;
+	max-height: 400px;
+}
+
+/* 基本信息*/
+.base-info .bid-name {
+	color: #71a8e0;
+	font-size: 20px;
+	margin-bottom: 10px;
+}
+.base-info .bid-state {
+	font-size: 16px;
+}
+.base-info .line {
+	margin: 0 2px 0 10px;
+}
+.base-info .push-tag {
+	width: 70px;
+	height: 20px;
+	color: #fff;
+	font-size: 12px;
+	text-align: center;
+	line-height: 20px;
+	vertical-align: 3px;
+	border-radius: 5px 5px 5px 0;
+	background-color: #71a8e0;
+	display: inline-block;
+}
+.base-info .code {
+	float: right;
+	font-size: 14px;
+	color: #8b93a0;
+}
+.base-info .ring-tag {
+	max-width: 140px;
+	color: #4182c6;
+	font-size: 12px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 2.5px 6px;
+	border: 1px solid #4182c6;
+	margin-right: 10px;
+}
+
+
+/* 右侧栏*/
+.bid-con-r {
+	float: right;
+	width: 300px;
+	padding-right: 2px;
+}
+
+/* 竞拍提示*/
+.tip-wrap {
+	background-color: #fff;
+}
+.tip-wrap .tip-title {
+	height: 50px;
+	color: #71a8e0;
+	font-size: 16px;
+	line-height: 50px;
+	padding-left: 20px;
+}
+.tip-wrap .tip-text {
+	padding: 0 20px 20px;
+}
+.tip-wrap .tip-btn {
+	padding: 0 18px;
+}
+.tip-wrap .btn {
+	width: 100%;
+	height: 50px;
+	color: #fff;
+	text-align: center;
+	line-height: 45px;
+	margin-bottom: 20px;
+	border: 0;
+	display: inline-table;
+	cursor: pointer;
+}
+.tip-wrap .btn.btn-success {
+	background: url("../img/bg-ico.png") no-repeat;
+    background-position: -7px -808px;
+}
+.tip-wrap .btn.btn-success:hover {
+	background: url("../img/bg-ico.png") no-repeat;
+    background-position: -7px -863px;
+}
+.tip-wrap .btn.btn-danger {
+	background: url("../img/bg-ico.png") no-repeat;
+    background-position: -7px -917px;
+}
+.tip-wrap .btn.btn-danger:hover {
+	background: url("../img/bg-ico.png") no-repeat;
+    background-position: -7px -974px;
+}
+.tip-wrap .btn.btn-disable {
+ 	background-color: #cbcfd3;
+}
+
+/* 竞拍*/
+.bid-box {
+	margin-bottom: 30px;
+}
+.bid-box .title {
+	font-size: 18px;
+	margin-bottom: 20px;
+}
+.bid-box .inp-box {
+	margin-bottom: 10px;
+}
+.bid-box .inp-box input {
+	height: 35px;
+	width: 50px;
+	font-size: 16px;
+	text-indent: 6px;
+	border-radius: 3px;
+}
+.bid-box .inp-box .bid-unit {
+	vertical-align: bottom;
+	margin-left: 5px;
+	display: inline-block;
+}
+.bid-box .ccl-ico {
+	font-size: 20px;
+	vertical-align: middle;
+	margin: 0 10px 0px 6px;
+}
+.bid-box .check-box {
+	height: 40px;
+	font-size: 16px;
+	text-align: left;
+	line-height: 32px;
+}
+.bid-box .check-box input {
+	margin-right: 5px;
+}
+.bid-box .jobs-label {
+	display: block;
+	margin-bottom: 10px;
+	font-size: 16px;
+}
+.bid-box .job-text {
+	width: 92%;
+	height: 100px;
+	padding: 10px;
+	resize: none;
+	line-height: 20px;
+}
+.bid-box .btn-con {
+	text-align: center;
+}
+.bid-box .bid-btn {
+	width: 100%;
+	color: #fff;
+	font-size: 20px;
+	padding: 13px 0;
+	background-color: #71a8e0;
+	border-radius: 3px;
+	display: inline-block;
+	cursor: pointer;
+}
+.bid-box .bid-btn:hover {
+	background-color: #4182c6;
+}
+.bid-box .err-wrap {
+	min-height: 25px;
+}
+.bid-box .err-wrap label {
+	height: 25px;
+	color: #FF1414;
+	line-height: 25px;
+	text-indent: 20px;
+	padding-left: 18px;
+	display: none;
+}
+.bid-box .err-wrap .ico-invalid {
+	background: url(../img/icon-error.png) 0 45% no-repeat;
+}
+
+
+/* 转发弹出框*/
+.forward-modal {
+	display: none;
+}
+.forward-modal .modal-dialog {
+	width: 320px;
+	margin-top: 8%;
+}
+.forward-modal .modal-body {
+	padding: 0 30px;
+}
+.forward-modal .modal-header {
+	font-size: 18px;
+	padding: 10px 25px;
+	border-bottom: 0;
+	background-size: 30px;
+	background-position: 6px 50%;
+}
+.forward-modal .modal-title {
+	height: 25px;
+	color: #6B7485;
+  	line-height: 30px;
+}
+.forward-modal .close {
+	font-weight: normal;
+	margin-top: 2px;
+	background-color: #fff;
+}
+
+
+/****** 页尾******/
+#footer {
+	position: relative;
+}

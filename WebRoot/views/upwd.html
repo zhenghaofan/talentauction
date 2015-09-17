@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>只做专场人才拍卖 - 实力拍</title>
+	<meta name="keywords" content="实力拍, 人才拍卖">
+	<meta name="description" content="实力拍是深圳市红领巾网络科技有限公司旗下的项目">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+	<link rel="shortcut icon" href="../css/img/logo_ico.ico">
+	<link rel="stylesheet" type="text/css" href="../css/common/normalize.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/global.css">
+	<link rel="stylesheet" type="text/css" href="../css/common/upwd.css">
+	
+	<!-- <link rel="stylesheet" type="text/css" href="../css/dist/master.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/dist/upwd.min.css"> -->
+	
+	<!--[if lt IE 9]>
+      <script src="../js/common/html5.min.js"></script>
+      <script src="../js/common/respond.min.js"></script>
+    <![endif]-->
+    
+	<script src="../js/common/require_config.js" defer="true"></script>
+	<script data-main="../js/controller/upwd" src="../js/common/require.min.js" defer="true"></script>
+	<!-- <script type="text/javascript" src="../js/controller/dist/upwd-built.min.js" defer="true"></script> -->
+</head>
+<body>
+	<div class="viewport">
+		<div id="header" ng-include src="'../views/header.html'" ng-controller="headerCtrl" ng-init="getUserInfo()"></div>
+		<div id="main" ng-controller="upwdCtrl">
+			<div id="bid_tag" class="pwd-wrap">
+				<div class="pwd-box box-shadow">
+					<div class="item-title">
+						<span>忘记密码</span>
+					</div>
+					<div class="step-1" ng-if="step == 1">
+						<div class="con-item">
+							<input id="email" type="text" ng-model="userInfo.email"
+								ng-change="_clearTip('#email_tip')" placeholder="请输入注册邮箱">
+							<span class="btn" ng-click="resendEmail()">找回密码</span>
+							<div class="checked">
+								<label id="email_tip" class="invalid"></label>
+							</div>
+						</div>
+					</div>
+
+					<div class="step-2" ng-show="step == 2">
+						<div class="con-item">
+							<span class="fz-2">密码重置邮件已发送至你的邮件：</span> <span class=" fz-2"
+								ng-bind="userInfo.email"></span>
+						</div>
+						<div class="con-item">请在24小时内登录您的邮箱，点击邮件内链接重置密码</div>
+						<div class="con-item">
+							<span class="btn" ng-if="isCommonEmail" ng-click="checkEmail()">登录邮箱</span>
+							<span class="btn-dis" ng-if="!isCommonEmail">请手动登录邮箱</span>
+						</div>
+					</div>
+
+					<div class="step-3" ng-show="step == 3">
+						<div class="con-item">
+							<span class="remarks">新的密码</span> <input type="password"
+								id="newpwd" class="item-input" ng-model="userInfo.newpwd"
+								ng-change="_clearTip('#newpwd_tip')" placeholder="输入密码（6到16位）" />
+							<div class="checked">
+								<label id="newpwd_tip" class="invalid"></label>
+							</div>
+						</div>
+						<div class="con-item">
+							<span class="remarks">确认密码</span> <input type="password"
+								id="compwd" class="item-input" ng-model="userInfo.compwd"
+								ng-change="_clearTip('#compwd_tip')" placeholder="确认密码（6到16位）" />
+							<div class="checked">
+								<label id="compwd_tip" class="invalid"></label>
+							</div>
+						</div>
+						<div class="con-item">
+							<span class="btn" ng-click="upPwd()">确定</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="footer" ng-include src="'../views/footer.html'"></div>
+	</div>
+</body>
+</html>
