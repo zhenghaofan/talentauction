@@ -220,7 +220,7 @@
 										</div>
 										<div class="row">
 											<span ng-bind-template="{{item.minBidPrice}} - {{item.maxBidPrice}}K {{item.isOption? '（加期权）' : ''}}"></span>
-											<span class="text" ng-bind-template="短信：{{item.workTitle}}"></span>
+											<span class="text" ng-bind-template="短信：{{item.workTitle || item.message}}"></span>
 										</div>
 									</div>
 								</div>
@@ -293,7 +293,7 @@
 										</div>
 										<div class="row">
 											<span ng-bind-template="{{item.minBidPrice}} - {{item.maxBidPrice}}K {{item.isOption? '（加期权）' : ''}}"></span>
-											<span class="text" ng-bind-template="短信：{{item.workTitle}}"></span>
+											<span class="text" ng-bind-template="短信：{{item.workTitle || item.message}}"></span>
 										</div>
 									</div>
 								</div>

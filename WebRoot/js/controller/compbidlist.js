@@ -52,6 +52,7 @@ function($, angular, app, cookie, url) {
 		/* 切换拍卖记录，普通与会员*/
 		$scope.switchTab = function(_event,status) {
 			$scope.isCommon = status;
+			angular.element('.box-shadow li:first-child').trigger('click');
 			$('.item-top-list').fadeOut(150);
 			if(_event) $(_event.target).addClass('slt').siblings().removeClass('slt');
 			$scope.initHref();
