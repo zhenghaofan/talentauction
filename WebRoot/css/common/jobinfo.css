@@ -920,6 +920,11 @@ input.ie {
 .resume-con .sum-modal-ico{
 	margin-left: 25px;
 }
+.bid-modal .modal-body .popt-resume-warp{
+    text-align: center;
+    font-size: 18px;
+    color: #000;
+}
 
 /****** 页尾******/
 #footer {

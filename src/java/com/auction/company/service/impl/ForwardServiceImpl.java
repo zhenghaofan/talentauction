@@ -163,7 +163,7 @@ public class ForwardServiceImpl implements ForwardService{
 							flag=false;
 						}
 						if(Util.isVerify(request.getParameter("workTitle"), 1, 150, null)){
-							String workTitle = request.getParameter("workTitle").replaceAll("【", "【 ").replaceAll("】", " 】");;
+							String workTitle = request.getParameter("workTitle").replaceAll("\n", " ");
 							params.put("i_workTitle", workTitle);
 						}else{
 							flag=false;
@@ -240,7 +240,7 @@ public class ForwardServiceImpl implements ForwardService{
 		                        		+ "\"%scale%\" : [\""+sizeStr+"\"], "
 		                        		+ "\"%salaryRange%\" : [\""+request.getParameter("minBidPrice")+"K~"+request.getParameter("maxBidPrice")+"K\"], "
 		                        		+ "\"%isOption%\" : [\""+isOption+"\"], "
-		                        		+ "\"%message%\" : [\""+request.getParameter("workTitle")+"\"], "
+		                        		+ "\"%message%\" : [\""+request.getParameter("workTitle").replaceAll("\n", " ")+"\"], "
 		                        		+ "\"%loginUrl%\" : [\""+SysConfig.getValue("SERVICE_URL")+"/talentform/jobbidlist\"]}}";
 		                        new Thread(new SendCloudThread("new_interview", substitution_vars, "您收到了新的面试邀请",false)).start();
 		                        
@@ -267,7 +267,7 @@ public class ForwardServiceImpl implements ForwardService{
 		                        		+ "\"%skill%\" : [\""+request.getParameter("skills")+"\"], "
 		                        		+ "\"%salaryRange%\" : [\""+request.getParameter("minBidPrice")+"K~"+request.getParameter("maxBidPrice")+"K\"], "
 		                        		+ "\"%isOption%\" : [\""+isOption+"\"], "
-		                        		+ "\"%message%\" : [\""+request.getParameter("workTitle")+"\"], "
+		                        		+ "\"%message%\" : [\""+request.getParameter("workTitle").replaceAll("\n", " ")+"\"], "
 		                        		+ "\"%bidLogUrl%\" : [\""+SysConfig.getValue("SERVICE_URL")+"/talentform/jobbidlist\"]}}";
 		                        new Thread(new SendCloudThread("redirect_cv_bid", subs_vars, "您转发的候选人已被邀请面试",true)).start();
 		                        
@@ -310,7 +310,7 @@ public class ForwardServiceImpl implements ForwardService{
 										        
 										        TemplateData keyword5 = new TemplateData();  
 										        keyword5.setColor("#272B5A");  
-										        keyword5.setValue(request.getParameter("workTitle"));  
+										        keyword5.setValue(request.getParameter("workTitle").replaceAll("\n", " "));  
 										        m.put("keyword5", keyword5); //提供职位
 										        
 										        TemplateData remark = new TemplateData();  

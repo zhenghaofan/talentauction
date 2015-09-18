@@ -416,7 +416,7 @@
     </select>
     
     <select id="getBidDetails" parameterType="String" resultType="java.util.HashMap">
-        select a.*,b.email,b.telephone from (select userId,destination,skills,expectedSalary,jobYear,jobTitle,sex,age,education,toEmail,toPhone,name from resume where userId=#{0}) a left join rigistration b on a.userId=b.userId
+        select a.*,b.email,b.telephone from (select userId,destination,skills,expectedSalary,jobYear,jobTitle,sex,age,education,toEmail,toPhone,name,code from resume where userId=#{0}) a left join rigistration b on a.userId=b.userId
     </select>
     
     <select id="getBidLogInfo" parameterType="map" resultType="java.util.HashMap">

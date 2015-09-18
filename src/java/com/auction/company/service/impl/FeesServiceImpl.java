@@ -209,7 +209,7 @@ public class FeesServiceImpl implements FeesService{
 							flag=false;
 						}
 						if(Util.isVerify(request.getParameter("workTitle"), 1, 150, null)){
-							String workTitle = request.getParameter("workTitle");
+							String workTitle = request.getParameter("workTitle").replaceAll("\n", " ");
 							params.put("i_workTitle", workTitle);
 						}else{
 							flag=false;

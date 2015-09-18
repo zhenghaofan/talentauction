@@ -410,7 +410,11 @@
 .state-wrap .time .step-5 {
 	right: 0;
 }
-
+.bid-modal .modal-body .popt-resume-warp{
+    text-align: center;
+    font-size: 18px;
+    color: #000;
+}
 
 /****** 页尾******/
 #footer {

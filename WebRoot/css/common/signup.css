@@ -228,6 +228,7 @@
 	width: 104px;
 	margin-left: 42px;
 	margin-bottom: 10px;
+    float: none;
 	display: none;
 }
 .in-warp-r .onsubmit-btn {

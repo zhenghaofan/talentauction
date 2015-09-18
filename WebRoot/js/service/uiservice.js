@@ -16,13 +16,13 @@ define(['$','angular','app'], function($, angular, app) {
 			  $('#bidModal .cancel').hide();
 			  $('#bidModal').fadeIn(150);
 			  
-			  $('.modal-footer button, .modal-header button').click(function() {
+			  $('.global-btn span').click(function() {
 				  $('#bidModal').remove();
 				  var text = $(this).text();
-				  if(typeof _callback === 'function' && angular.equals(text, '确定')) {
+				  if($(this).hasClass('btn1')) {
 					  _callback();
 				  }
-			  });			  
+			  });
 		  };
 		  
 		  /* 确认框*/

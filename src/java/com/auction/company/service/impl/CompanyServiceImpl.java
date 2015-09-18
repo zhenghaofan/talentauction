@@ -825,8 +825,8 @@ public class CompanyServiceImpl implements CompanyService{
 						}else{
 							flag=false;
 						}
-						if(Util.isVerify(request.getParameter("workTitle"), 1, 150, null)){
-							String workTitle = request.getParameter("workTitle").replaceAll("【", "【 ").replaceAll("】", " 】");
+						if(Util.isVerify(request.getParameter("workTitle").replaceAll("\n", " "), 1, 150, null)){
+							String workTitle = request.getParameter("workTitle").replaceAll("\n", " ");
 							params.put("i_workTitle", workTitle);
 						}else{
 							flag=false;
@@ -903,7 +903,7 @@ public class CompanyServiceImpl implements CompanyService{
 		                        		+ "\"%scale%\" : [\""+sizeStr+"\"], "
 		                        		+ "\"%salaryRange%\" : [\""+request.getParameter("minBidPrice")+"K~"+request.getParameter("maxBidPrice")+"K\"], "
 		                        		+ "\"%isOption%\" : [\""+isOption+"\"], "
-		                        		+ "\"%message%\" : [\""+request.getParameter("workTitle")+"\"], "
+		                        		+ "\"%message%\" : [\""+request.getParameter("workTitle").replaceAll("\n", " ")+"\"], "
 		                        		+ "\"%loginUrl%\" : [\""+SysConfig.getValue("SERVICE_URL")+"/talentform/jobbidlist\"]}}";
 		                        new Thread(new SendCloudThread("new_interview", substitution_vars, "您收到了新的面试邀请",false)).start();
 		                        
@@ -946,7 +946,7 @@ public class CompanyServiceImpl implements CompanyService{
 										        
 										        TemplateData keyword5 = new TemplateData();  
 										        keyword5.setColor("#272B5A");  
-										        keyword5.setValue(request.getParameter("workTitle"));  
+										        keyword5.setValue(request.getParameter("workTitle").replaceAll("\n", " "));  
 										        m.put("keyword5", keyword5); //提供职位
 										        
 										        TemplateData remark = new TemplateData();  

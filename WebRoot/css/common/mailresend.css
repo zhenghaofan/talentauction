@@ -73,6 +73,11 @@
 .item-btn:hover {
 	background-color: #4182c6;
 }
+.bid-modal .modal-body .popt-resume-warp{
+    text-align: center;
+    font-size: 18px;
+    color: #000;
+}
 
 /****** 页尾******/
 #footer {

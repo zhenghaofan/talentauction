@@ -342,6 +342,11 @@ pre {
 	margin-top: 2px;
 	background-color: #fff;
 }
+.bid-modal .modal-body .popt-resume-warp{
+    text-align: center;
+    font-size: 18px;
+    color: #000;
+}
 
 
 /****** 页尾******/
